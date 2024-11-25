@@ -1,13 +1,7 @@
 import { Link } from "@remix-run/react";
 import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
-import {
-  MessageSquare,
-  BookOpen,
-  FileText,
-  Settings,
-  Menu,
-} from "lucide-react";
+import { MessageSquare, BookOpen, FileText, Settings } from "lucide-react";
 
 const sidebarItems = [
   {
