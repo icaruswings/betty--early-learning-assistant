@@ -7,6 +7,9 @@ import { LoadingDots } from "~/components/ui/loading-dots";
 import { MarkdownMessage } from "~/components/markdown-message";
 import { cn } from "~/lib/utils";
 import { MessageSquare } from "lucide-react";
+import type { Message } from "~/schemas/chat";
+import { ModelSelector, type ModelId } from "~/components/ui/model-selector";
+import { ConversationStarters } from "~/components/ui/conversation-starters";
 
 export const meta: MetaFunction = () => {
   return [
@@ -16,11 +19,11 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Chat() {
-  const [messages, setMessages] = useState<{ role: string; content: string }[]>(
-    []
-  );
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [model, setModel] = useState<ModelId>("gpt-3.5-turbo");
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -39,10 +42,12 @@ export default function Chat() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!input.trim()) return;
+    await sendMessage(input);
+  };
 
-    const userMessage = { role: "user", content: input };
+  const sendMessage = async (content: string) => {
+    const userMessage: Message = { role: "user", content };
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setIsLoading(true);
@@ -53,27 +58,25 @@ export default function Chat() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ messages: [...messages, userMessage] }),
+        body: JSON.stringify({ 
+          messages: [...messages, userMessage],
+          model
+        }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        throw new Error(data.error || "An error occurred while processing your request");
       }
 
-      const data = await response.json();
       setMessages((prev) => [
         ...prev,
         { role: "assistant", content: data.content },
       ]);
     } catch (error) {
       console.error("Error:", error);
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content: "Sorry, there was an error processing your request.",
-        },
-      ]);
+      setError(error.message);
     } finally {
       setIsLoading(false);
     }
@@ -84,17 +87,23 @@ export default function Chat() {
   return (
     <RootLayout>
       <div className="flex flex-col h-screen max-w-4xl mx-auto p-4 pl-24">
+        <div className="mb-4 flex justify-end">
+          <ModelSelector model={model} onChange={setModel} />
+        </div>
         <div className={cn(
           "flex-grow overflow-y-auto space-y-4 pb-4",
-          isEmpty && "flex items-center justify-center"
+          isEmpty && "flex flex-col items-center justify-center"
         )}>
           {isEmpty ? (
-            <div className="text-center space-y-4">
-              <MessageSquare className="w-12 h-12 mx-auto text-muted-foreground" />
-              <h2 className="text-2xl font-semibold">Start a Conversation</h2>
-              <p className="text-muted-foreground max-w-sm">
-                Ask me anything about early education, lesson planning, or activities.
-              </p>
+            <div className="text-center space-y-6 w-full max-w-2xl mx-auto">
+              <div className="space-y-2">
+                <MessageSquare className="w-12 h-12 mx-auto text-muted-foreground" />
+                <h2 className="text-2xl font-semibold">Start a Conversation</h2>
+                <p className="text-muted-foreground max-w-sm mx-auto">
+                  Ask me anything about early education, lesson planning, or activities.
+                </p>
+              </div>
+              <ConversationStarters onSelect={sendMessage} />
             </div>
           ) : (
             <>
@@ -108,6 +117,11 @@ export default function Chat() {
               {isLoading && (
                 <div className="p-4 rounded-lg max-w-[80%] bg-gray-200 text-black">
                   <LoadingDots />
+                </div>
+              )}
+              {error && (
+                <div className="p-4 rounded-lg max-w-[80%] bg-destructive/10 text-destructive">
+                  {error}
                 </div>
               )}
             </>

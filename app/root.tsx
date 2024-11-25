@@ -14,30 +14,23 @@ import {
   useTheme,
 } from "remix-themes";
 import { themeSessionResolver } from "./sessions.server";
-
+import { rootAuthLoader } from "@clerk/remix/ssr.server";
+import { ClerkApp, useAuth } from "@clerk/remix";
 import stylesheet from "~/tailwind.css?url";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
-  { rel: "preconnect", href: "https://fonts.googleapis.com" },
-  {
-    rel: "preconnect",
-    href: "https://fonts.gstatic.com",
-    crossOrigin: "anonymous",
-  },
-  {
-    rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
-  },
 ];
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const { getTheme } = await themeSessionResolver(request);
+export const loader = async (args: LoaderFunctionArgs) => {
+  return await rootAuthLoader(args, async ({ request }) => {
+    const { getTheme } = await themeSessionResolver(request);
 
-  return {
-    theme: getTheme(),
-    ENV: {},
-  };
+    return {
+      theme: getTheme(),
+      ENV: {},
+    };
+  });
 };
 
 export const useRootLoaderData = () =>
@@ -65,7 +58,7 @@ function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function App() {
+function App() {
   const { theme, ENV } = useLoaderData<typeof loader>();
 
   return (
@@ -76,3 +69,5 @@ export default function App() {
     </ThemeProvider>
   );
 }
+
+export default ClerkApp(App);
