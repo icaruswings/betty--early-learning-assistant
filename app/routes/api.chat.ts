@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import { DEFAULT_MESSAGES } from "~/config/assistant.config";
+import { DEFAULT_MESSAGES } from "~/config/prompts";
 import type { ActionFunction } from "@remix-run/node";
 
 export const action: ActionFunction = async ({ request }) => {
@@ -28,18 +28,52 @@ export const action: ActionFunction = async ({ request }) => {
   });
 
   try {
-    // Create a completion
-    const completion = await openai.chat.completions.create({
+    // Create a streaming completion
+    const stream = await openai.chat.completions.create({
       model: model,
       messages: messages,
-      temperature: 0.7, // Balanced between consistency and creativity
-      max_tokens: 1000, // Reasonable limit for detailed responses
+      temperature: 0.7,
+      max_tokens: 1000,
+      stream: true,
     });
 
-    // Return the completion as a JSON response
-    return Response.json({
-      content: completion.choices[0]?.message?.content || "",
-      model: model,
+    // Create a TransformStream to convert chunks to SSE format
+    const encoder = new TextEncoder();
+    const transformStream = new TransformStream({
+      async transform(chunk, controller) {
+        const content = chunk.choices[0]?.delta?.content || "";
+        if (content) {
+          // Send each chunk as a JSON event
+          const data = JSON.stringify({ content });
+          controller.enqueue(encoder.encode(`data: ${data}\n\n`));
+        }
+      },
+    });
+
+    // Create a readable stream from the OpenAI stream
+    const readable = new ReadableStream({
+      async start(controller) {
+        try {
+          for await (const chunk of stream) {
+            controller.enqueue(chunk);
+          }
+          controller.close();
+        } catch (error) {
+          controller.error(error);
+        }
+      },
+    });
+
+    // Pipe through the transform stream
+    const responseStream = readable.pipeThrough(transformStream);
+
+    // Return the streaming response
+    return new Response(responseStream, {
+      headers: {
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+      },
     });
   } catch (error) {
     console.error("Error in chat API:", error);

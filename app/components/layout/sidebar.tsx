@@ -21,7 +21,7 @@ const sidebarItems = [
   {
     title: "Chat",
     icon: MessageSquare,
-    href: "/",
+    href: "/chat",
   },
   {
     title: "Learning",
@@ -90,7 +90,7 @@ export function Sidebar() {
                 ) ||
                 activeParent === item.title;
 
-              return (
+              return item.children ? (
                 <button
                   key={item.title}
                   onClick={() => handleItemClick(item)}
@@ -102,6 +102,19 @@ export function Sidebar() {
                   <item.icon className="h-4 w-4" />
                   <span className="text-[10px]">{item.title}</span>
                 </button>
+              ) : (
+                <Link
+                  key={item.title}
+                  to={item.href}
+                  onClick={() => handleItemClick(item)}
+                  className={cn(
+                    "w-full flex flex-col items-center gap-0.5 rounded-lg py-1.5 px-1 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground",
+                    isActive && "bg-accent text-accent-foreground"
+                  )}
+                >
+                  <item.icon className="h-4 w-4" />
+                  <span className="text-[10px]">{item.title}</span>
+                </Link>
               );
             })}
           </nav>

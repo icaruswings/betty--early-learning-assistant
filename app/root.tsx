@@ -25,9 +25,10 @@ export const links: LinksFunction = () => [
 export const loader = async (args: LoaderFunctionArgs) => {
   return await rootAuthLoader(args, async ({ request }) => {
     const { getTheme } = await themeSessionResolver(request);
+    const theme = await getTheme() || "light";
 
     return {
-      theme: getTheme(),
+      theme,
       ENV: {},
     };
   });

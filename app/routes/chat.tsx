@@ -37,7 +37,12 @@ export async function loader(args: LoaderFunctionArgs) {
 
 export default function Chat() {
   const { isLoaded, isSignedIn } = useUser();
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      role: "assistant",
+      content: "Hi! I'm Betty, your Early Learning Assistant. I'm here to help with observations, documentation, teaching strategies, and professional development. How can I support you today?",
+    },
+  ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -103,10 +108,12 @@ export default function Chat() {
   const sendMessage = async (content: string) => {
     const userMessage = { role: "user", content };
     setMessages((prev) => [...prev, userMessage]);
+    const assistantMessage = { role: "assistant", content: "" };
+    setMessages((prev) => [...prev, assistantMessage]);
     setInput("");
     setError(null);
     setIsLoading(true);
-    setSuggestions([]);
+    setSuggestions([]); // Clear suggestions immediately
 
     try {
       const response = await fetch("/api/chat", {
@@ -120,24 +127,57 @@ export default function Chat() {
         }),
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        throw new Error(
-          data.error || "An error occurred while processing your request"
-        );
+        throw new Error("Failed to send message");
       }
 
-      const assistantMessage = { role: "assistant", content: data.content };
-      setMessages((prev) => [...prev, assistantMessage]);
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      let accumulatedContent = "";
 
+      if (!reader) {
+        throw new Error("No response body");
+      }
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const text = decoder.decode(value);
+        const events = text.split("\n\n").filter(Boolean);
+
+        for (const event of events) {
+          if (event.startsWith("data: ")) {
+            try {
+              const data = JSON.parse(event.slice(6));
+              accumulatedContent += data.content;
+              setMessages((prev) => {
+                const newMessages = [...prev];
+                newMessages[newMessages.length - 1] = {
+                  role: "assistant",
+                  content: accumulatedContent,
+                };
+                return newMessages;
+              });
+            } catch (e) {
+              console.error("Error parsing SSE data:", e);
+            }
+          }
+        }
+      }
+
+      // Set loading to false after streaming is complete
+      setIsLoading(false);
+
+      // Only fetch suggestions after streaming is complete
+      setLoadingSuggestions(true);
       const suggestionsResponse = await fetch("/api/suggestions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          messages: [...messages, userMessage, assistantMessage],
+          messages: [...messages, userMessage, { role: "assistant", content: accumulatedContent }],
         }),
       });
 
@@ -147,17 +187,37 @@ export default function Chat() {
       }
     } catch (error) {
       console.error("Error sending message:", error);
-      setError(
-        error instanceof Error ? error.message : "An error occurred"
-      );
-      setMessages((prev) => prev.slice(0, -1));
-    } finally {
+      setError(error instanceof Error ? error.message : "An error occurred");
+      setMessages((prev) => prev.slice(0, -1)); // Remove the failed message
       setIsLoading(false);
+    } finally {
       setLoadingSuggestions(false);
     }
   };
 
-  const isEmpty = messages.length === 0;
+  const isEmpty = messages.length === 1 && messages[0].role === "assistant";
+
+  const renderSuggestions = () => {
+    if (isLoading) return null; // Don't show suggestions while streaming
+    if (loadingSuggestions) {
+      return (
+        <div className="flex items-center gap-2 text-muted-foreground">
+          <LoadingDots />
+          <span>Loading suggestions...</span>
+        </div>
+      );
+    }
+    if (suggestions.length > 0 && !isEmpty) {
+      return (
+        <SuggestionList
+          suggestions={suggestions}
+          onSelect={sendMessage}
+          isLoading={loadingSuggestions}
+        />
+      );
+    }
+    return null;
+  };
 
   return (
     <RootLayout>
@@ -181,7 +241,9 @@ export default function Chat() {
                 <div className="text-center space-y-6 w-full max-w-2xl mx-auto">
                   <div className="space-y-2">
                     <MessageSquare className="w-12 h-12 mx-auto text-muted-foreground" />
-                    <h2 className="text-2xl font-semibold">Start a Conversation</h2>
+                    <h2 className="text-2xl font-semibold">
+                      Start a Conversation
+                    </h2>
                     <p className="text-muted-foreground max-w-sm mx-auto">
                       Ask me anything about early education, lesson planning, or
                       activities.
@@ -192,8 +254,11 @@ export default function Chat() {
               ) : (
                 <>
                   {messages.map((message, i) => (
-                    <div key={i} ref={i === messages.length - 1 ? messagesEndRef : null}>
-                      <MarkdownMessage 
+                    <div
+                      key={i}
+                      ref={i === messages.length - 1 ? messagesEndRef : null}
+                    >
+                      <MarkdownMessage
                         content={message.content}
                         isUser={message.role === "user"}
                       />
@@ -215,13 +280,6 @@ export default function Chat() {
                 </div>
               )}
 
-              {!isEmpty && (
-                <SuggestionList
-                  suggestions={suggestions}
-                  onSelect={sendMessage}
-                  isLoading={loadingSuggestions}
-                />
-              )}
               <form
                 onSubmit={handleSubmit}
                 className={cn(
@@ -235,7 +293,9 @@ export default function Chat() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder={
-                    isEmpty ? "Type your question here..." : "Type your message..."
+                    isEmpty
+                      ? "Type your question here..."
+                      : "Type your message..."
                   }
                   disabled={isLoading}
                   className={cn("flex-grow", isEmpty && "text-lg py-6")}
@@ -248,6 +308,8 @@ export default function Chat() {
                   Send
                 </Button>
               </form>
+
+              {!isEmpty && renderSuggestions()}
             </div>
           </>
         ) : null}
