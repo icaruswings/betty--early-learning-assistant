@@ -1,6 +1,6 @@
-import { atom } from 'jotai';
-import type { ModelId } from '~/components/ui/model-selector';
+import { atom } from "jotai";
+import { defaultModel, type ModelId } from "~/components/model-selector";
 
 export const sidebarOpenAtom = atom(false);
 
-export const modelSelectionAtom = atom<ModelId>("gpt-4");
+export const modelSelectionAtom = atom<ModelId>(defaultModel);

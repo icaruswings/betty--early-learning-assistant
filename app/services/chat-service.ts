@@ -1,5 +1,5 @@
 import type { Message } from "~/schemas/chat";
-import type { ModelId } from "~/components/ui/model-selector";
+import type { ModelId } from "~/components/model-selector";
 
 interface ChatResponse {
   content: string;
@@ -11,7 +11,10 @@ interface SuggestionsResponse {
 }
 
 export class ChatService {
-  static async sendMessage(messages: Message[], model: ModelId): Promise<Response> {
+  static async sendMessage(
+    messages: Message[],
+    model: ModelId
+  ): Promise<Response> {
     const response = await fetch("/api/chat", {
       method: "POST",
       headers: {

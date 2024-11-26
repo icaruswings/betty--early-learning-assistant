@@ -10,25 +10,22 @@ import { RootLayout } from "~/components/layout/root-layout";
 import { MarkdownMessage } from "~/components/markdown-message";
 import { cn } from "~/lib/utils";
 import { MessageSquare } from "lucide-react";
-import { ModelSelector } from "~/components/ui/model-selector";
-import { ConversationStarters } from "~/components/ui/conversation-starters";
-import { SuggestionList } from "~/components/ui/suggestion-list";
+import { ConversationStarters } from "~/components/conversation-starters";
+import { SuggestionList } from "~/components/suggestion-list";
 import { getAuth } from "@clerk/remix/ssr.server";
 import { useUser } from "@clerk/remix";
 import { useChatState } from "~/hooks/use-chat-state";
 import { useChatMessages } from "~/hooks/use-chat-messages";
 import { useChatSuggestions } from "~/hooks/use-chat-suggestions";
 import { PageHeader } from "~/components/layout/page-header";
-import { useAtom } from "jotai";
-import { modelSelectionAtom } from "~/atoms";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Chat - Early Learning Assistant" }];
 };
 
 export async function loader(args: LoaderFunctionArgs) {
-  const { userId } = await getAuth(args);
-  if (!userId) return redirect("/");
+  const { sessionId } = await getAuth(args);
+  if (!sessionId) return redirect("/");
   return null;
 }
 
@@ -38,12 +35,10 @@ export default function Chat() {
     messages,
     input,
     isLoading,
-    error,
     model,
     suggestions,
     loadingSuggestions,
     setInput,
-    setModel,
     startMessage,
     appendAssistantMessage,
     setError,

@@ -1,4 +1,5 @@
 import { Sidebar } from "./sidebar";
+
 import { useAtom } from "jotai";
 import { sidebarOpenAtom } from "~/atoms";
 
@@ -12,6 +13,7 @@ export function RootLayout({ children }: RootLayoutProps) {
   return (
     <div className="relative flex min-h-screen">
       <Sidebar />
+
       <main className="flex-1 overflow-hidden">
         <div className="flex flex-col h-screen max-h-screen pl-24">
           {children}

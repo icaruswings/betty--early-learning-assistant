@@ -1,9 +1,9 @@
-import { Button } from "./button";
+import { Button } from "./ui/button";
 import { MessageSquarePlus, RefreshCw } from "lucide-react";
 import { useEffect, useState } from "react";
 import { cn } from "~/lib/utils";
-import { LoadingDots } from "./loading-dots";
-import { Skeleton } from "./skeleton";
+import { LoadingDots } from "./ui/loading-dots";
+import { Skeleton } from "./ui/skeleton";
 
 interface ConversationStartersProps {
   onSelect: (starter: string) => void;

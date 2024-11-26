@@ -6,8 +6,8 @@ import { useUser } from "@clerk/remix";
 import { redirect, type LoaderFunctionArgs } from "@remix-run/node";
 import { getAuth } from "@clerk/remix/ssr.server";
 import { Check, Copy, Settings as SettingsIcon } from "lucide-react";
-import { ModelSelector } from "~/components/ui/model-selector";
-import { ThemeToggle } from "~/components/ui/theme-toggle";
+import { ModelSelector } from "~/components/model-selector";
+import { ThemeToggle } from "~/components/theme-toggle";
 import { PageHeader } from "~/components/layout/page-header";
 
 export async function loader(args: LoaderFunctionArgs) {
@@ -101,7 +101,8 @@ export default function Settings() {
             Regenerate Token
           </Button>
           <p className="text-sm text-muted-foreground">
-            Use this token to authenticate API requests. Keep it secret and secure.
+            Use this token to authenticate API requests. Keep it secret and
+            secure.
           </p>
         </div>
       </div>

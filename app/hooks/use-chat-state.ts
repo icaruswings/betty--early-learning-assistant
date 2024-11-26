@@ -1,6 +1,6 @@
 import { useReducer, useCallback } from "react";
 import type { Message } from "~/schemas/chat";
-import type { ModelId } from "~/components/ui/model-selector";
+import type { ModelId } from "~/components/model-selector";
 
 interface ChatState {
   messages: Message[];

@@ -15,6 +15,7 @@ export const models = [
   { id: "o1-preview", name: "o1 Preview" },
 ] as const;
 
+export const defaultModel = "gpt-4o";
 export type ModelId = (typeof models)[number]["id"];
 
 export function ModelSelector() {
@@ -22,7 +23,7 @@ export function ModelSelector() {
   const selectedModel = models.find((m) => m.id === model);
 
   return (
-    <Select value={model} onValueChange={setModel}>
+    <Select value={model} onValueChange={(v: ModelId) => setModel(v)}>
       <SelectTrigger className="w-[180px]">
         <SelectValue>{selectedModel?.name}</SelectValue>
       </SelectTrigger>

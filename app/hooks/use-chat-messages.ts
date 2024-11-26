@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { ChatService } from "~/services/chat-service";
 import { useStreamReader } from "./use-stream-reader";
 import type { Message } from "~/schemas/chat";
-import type { ModelId } from "~/components/ui/model-selector";
+import type { ModelId } from "~/components/model-selector";
 
 interface UseChatMessagesProps {
   messages: Message[];
@@ -33,17 +33,15 @@ export function useChatMessages({
           model
         );
 
-        const { content: streamContent, error: streamError } = await streamReader(
-          response,
-          {
+        const { content: streamContent, error: streamError } =
+          await streamReader(response, {
             onChunk: (chunk) => {
               onMessageStream(chunk);
             },
             onComplete: () => {
               onMessageComplete();
             },
-          }
-        );
+          });
 
         if (streamError) {
           throw new Error(streamError);
@@ -55,7 +53,15 @@ export function useChatMessages({
         );
       }
     },
-    [messages, model, onMessageStart, onMessageStream, onMessageComplete, onMessageError, streamReader]
+    [
+      messages,
+      model,
+      onMessageStart,
+      onMessageStream,
+      onMessageComplete,
+      onMessageError,
+      streamReader,
+    ]
   );
 
   return { sendMessage };

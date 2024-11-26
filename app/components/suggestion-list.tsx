@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { Button } from "./button";
+import { Button } from "./ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "~/lib/utils";
-import { LoadingDots } from "./loading-dots";
+import { LoadingDots } from "./ui/loading-dots";
 
 interface SuggestionListProps {
   suggestions: string[];

@@ -1,6 +1,12 @@
 import { Link, useLocation } from "@remix-run/react";
-import { UserButton, SignInButton, SignOutButton, useUser } from "@clerk/remix";
-import { Button } from "~/components/ui/button";
+import {
+  UserButton,
+  SignInButton,
+  SignOutButton,
+  useUser,
+  SignedIn,
+  SignedOut,
+} from "@clerk/remix";
 import { cn } from "~/lib/utils";
 import {
   MessageSquare,
@@ -71,7 +77,6 @@ const sidebarItems = [
 export function Sidebar() {
   const [activeParent, setActiveParent] = useState<string | null>(null);
   const location = useLocation();
-  const { isSignedIn } = useUser();
 
   const handleItemClick = (item: (typeof sidebarItems)[0]) => {
     if (item.children) {
@@ -126,22 +131,22 @@ export function Sidebar() {
           </nav>
           <div className="px-1 pt-4 border-t">
             <div className="flex flex-col items-center gap-2">
-              {!isSignedIn ? (
-                <Link
-                  to="/sign-in"
-                  className="flex flex-col items-center gap-0.5 rounded-lg py-1.5 px-1 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
-                >
-                  <LogIn className="h-4 w-4" />
-                  <span className="text-[10px]">Sign in</span>
-                </Link>
-              ) : (
+              <SignedIn>
                 <SignOutButton>
-                  <button className="flex flex-col items-center gap-0.5 rounded-lg py-1.5 px-1 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground">
+                  <div className="flex flex-col items-center gap-2">
                     <LogOut className="h-4 w-4" />
                     <span className="text-[10px]">Sign out</span>
-                  </button>
+                  </div>
                 </SignOutButton>
-              )}
+              </SignedIn>
+              <SignedOut>
+                <SignInButton>
+                  <div className="flex flex-col items-center gap-2">
+                    <LogIn className="h-4 w-4" />
+                    <span className="text-[10px]">Sign in</span>
+                  </div>
+                </SignInButton>
+              </SignedOut>
             </div>
           </div>
         </div>
