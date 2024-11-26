@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
 import { MarkdownMessage } from "./markdown-message";
+import { useStreamReader } from "~/hooks/use-stream-reader";
 
 interface StreamingMessageProps {
   messagePromise: Promise<Response>;
@@ -7,43 +7,15 @@ interface StreamingMessageProps {
 }
 
 export function StreamingMessage({ messagePromise, onComplete }: StreamingMessageProps) {
-  const [content, setContent] = useState("");
+  const { content, error } = useStreamReader(messagePromise, { onComplete });
 
-  useEffect(() => {
-    let accumulated = "";
-
-    async function readStream() {
-      try {
-        const response = await messagePromise;
-        if (!response.ok) throw new Error("Stream response was not ok");
-        if (!response.body) throw new Error("No response body");
-
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
-
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-
-          const text = decoder.decode(value);
-          accumulated += text;
-          setContent(accumulated);
-        }
-
-        if (onComplete) {
-          onComplete(accumulated);
-        }
-      } catch (error) {
-        console.error("Error reading stream:", error);
-      }
-    }
-
-    readStream();
-
-    return () => {
-      // Cleanup if needed
-    };
-  }, [messagePromise, onComplete]);
+  if (error) {
+    return (
+      <div className="text-red-500 p-4 rounded-lg bg-red-50">
+        Error: {error}
+      </div>
+    );
+  }
 
   return <MarkdownMessage content={content} isUser={false} />;
 }

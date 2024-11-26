@@ -35,4 +35,82 @@ A learning story is a narrative approach to documenting a child's learning journ
 - **Use Clear Language:** Ensure the story is understandable for families, avoiding jargon.
 - **Include Visuals:** Photos or drawings can enhance the narrative and provide a fuller picture of the experience.
 
+**Learning Stories Assistant**
+
+This feature helps educators write meaningful and EYLF-aligned learning stories through a guided conversation flow.
+
+### Process Flow
+
+1. **Initial Context**
+   - Child's name and age group
+   - Date of observation
+   - Setting/context
+
+2. **Observation Details**
+   - What was the child doing?
+   - Who were they with?
+   - How long did the activity last?
+   - What materials were used?
+
+3. **Child's Engagement**
+   - Child's emotional state
+   - Level of involvement
+   - Interactions with others
+   - Problem-solving approaches
+
+4. **Learning Analysis**
+   - Skills demonstrated
+   - Interests shown
+   - Progress made
+   - Connections to previous learning
+
+5. **EYLF Alignment**
+   - Learning outcomes
+   - Principles
+   - Practices
+
+6. **Future Planning**
+   - Next steps
+   - Possible extensions
+   - Resources needed
+
+### AI Assistant Approach
+
+The AI will:
+1. Ask questions one at a time
+2. Use previous answers to inform subsequent questions
+3. Adapt questions based on the context
+4. Provide prompts for more detail when needed
+5. Generate a draft learning story
+6. Allow for revisions and refinements
+
+### Learning Story Structure
+
+1. **Title**
+   - Engaging and reflective of the learning
+
+2. **Introduction**
+   - Context and setting
+   - Child's initial engagement
+
+3. **What We Saw**
+   - Detailed observation
+   - Child's actions and words
+   - Interactions and relationships
+
+4. **What It Means**
+   - Analysis of learning
+   - Links to EYLF
+   - Developmental insights
+
+5. **Opportunities & Possibilities**
+   - Future learning opportunities
+   - Potential extensions
+   - Next steps
+
+6. **Parent Communication**
+   - Family-friendly language
+   - Celebration of learning
+   - Invitation for input
+
 By following these steps, educators can create meaningful learning stories that not only document a child's development but also inform future planning and foster strong connections with families.

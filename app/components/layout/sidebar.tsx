@@ -28,14 +28,14 @@ const sidebarItems = [
     icon: Brain,
     children: [
       {
-        title: "Stories",
+        title: "Learning Stories",
         icon: BookOpen,
-        href: "/learning-stories",
+        href: "/learning/stories",
       },
       {
         title: "Ideas",
         icon: Lightbulb,
-        href: "/learning-ideas",
+        href: "/learning/ideas",
       },
     ],
   },
