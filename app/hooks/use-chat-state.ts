@@ -51,7 +51,7 @@ function chatReducer(state: ChatState, action: ChatAction): ChatState {
     case "START_MESSAGE": {
       // Add the user message and prepare for assistant response
       const userMessage = action.payload;
-      const assistantMessage = { role: "assistant", content: "" };
+      const assistantMessage: Message = { role: "assistant", content: "" };
       return {
         ...state,
         messages: [...state.messages, userMessage, assistantMessage],
