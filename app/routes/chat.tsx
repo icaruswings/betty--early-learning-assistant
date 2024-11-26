@@ -130,15 +130,18 @@ export default function Chat() {
         throw new Error("Failed to send message");
       }
 
-      const { content: streamContent, error: streamError } = await streamReader(response, {
-        onChunk: (chunk) => {
-          appendAssistantMessage(chunk);
-        },
-        onComplete: () => {
-          setLoading(false);
-          fetchSuggestions();
-        },
-      });
+      const { content: streamContent, error: streamError } = await streamReader(
+        response,
+        {
+          onChunk: (chunk) => {
+            appendAssistantMessage(chunk);
+          },
+          onComplete: () => {
+            setLoading(false);
+            fetchSuggestions();
+          },
+        }
+      );
 
       if (streamError) {
         throw new Error(streamError);
@@ -160,13 +163,11 @@ export default function Chat() {
             <MessageSquare className="w-5 h-5" />
             <h1 className="text-lg font-semibold">Chat</h1>
           </div>
-          <ModelSelector value={model} onChange={setModel} />
+          <ModelSelector model={model} onChange={setModel} />
         </div>
 
         <div className="flex-1 overflow-y-auto">
           <div className="max-w-3xl mx-auto p-4 space-y-4">
-            {isEmpty && <ConversationStarters onSelect={sendMessage} />}
-
             {messages.map((message, i) => (
               <MarkdownMessage
                 key={i}
@@ -174,26 +175,15 @@ export default function Chat() {
                 isUser={message.role === "user"}
               />
             ))}
-
-            {isLoading && (
-              <div className="flex justify-center">
-                <LoadingDots />
-              </div>
-            )}
-
-            {error && (
-              <div className="p-4 text-red-500 bg-red-50 rounded-lg">
-                Error: {error}
-              </div>
-            )}
-
             <div ref={messagesEndRef} />
           </div>
         </div>
 
         <div className="border-t p-4">
           <div className="max-w-3xl mx-auto space-y-4">
-            {suggestions.length > 0 && (
+            {isEmpty && <ConversationStarters onSelect={sendMessage} />}
+
+            {messages.length >= 2 && (
               <SuggestionList
                 suggestions={suggestions}
                 onSelect={sendMessage}
@@ -210,7 +200,7 @@ export default function Chat() {
                 disabled={isLoading}
                 rows={3}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter' && !e.shiftKey) {
+                  if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
                     handleSubmit(e);
                   }

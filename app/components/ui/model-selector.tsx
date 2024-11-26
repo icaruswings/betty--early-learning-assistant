@@ -21,10 +21,12 @@ interface ModelSelectorProps {
 }
 
 export function ModelSelector({ model, onChange }: ModelSelectorProps) {
+  const selectedModel = models.find((m) => m.id === model);
+
   return (
-    <Select value={model} onValueChange={onChange}>
+    <Select defaultValue={model} value={model} onValueChange={onChange}>
       <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Select a model" />
+        <SelectValue>{selectedModel?.name}</SelectValue>
       </SelectTrigger>
       <SelectContent>
         {models.map((model) => (

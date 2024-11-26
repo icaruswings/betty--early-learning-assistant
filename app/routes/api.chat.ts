@@ -35,6 +35,9 @@ export const action: ActionFunction = async ({ request }) => {
       temperature: 0.7,
       max_tokens: 1000,
       stream: true,
+      stream_options: {
+        include_usage: true,
+      },
     });
 
     // Create a TransformStream to convert chunks to SSE format
@@ -72,7 +75,7 @@ export const action: ActionFunction = async ({ request }) => {
       headers: {
         "Content-Type": "text/event-stream",
         "Cache-Control": "no-cache",
-        "Connection": "keep-alive",
+        Connection: "keep-alive",
       },
     });
   } catch (error) {
