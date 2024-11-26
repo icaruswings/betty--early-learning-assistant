@@ -18,6 +18,9 @@ import { useUser } from "@clerk/remix";
 import { useChatState } from "~/hooks/use-chat-state";
 import { useChatMessages } from "~/hooks/use-chat-messages";
 import { useChatSuggestions } from "~/hooks/use-chat-suggestions";
+import { PageHeader } from "~/components/layout/page-header";
+import { useAtom } from "jotai";
+import { modelSelectionAtom } from "~/atoms";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Chat - Early Learning Assistant" }];
@@ -109,61 +112,56 @@ export default function Chat() {
 
   return (
     <RootLayout>
-      <div className="flex flex-col h-screen max-h-screen pl-24">
-        <div className="flex items-center justify-between p-4 border-b">
-          <div className="flex items-center gap-2">
-            <MessageSquare className="w-5 h-5" />
-            <h1 className="text-lg font-semibold">Chat</h1>
-          </div>
-          <ModelSelector model={model} onChange={setModel} />
+      <PageHeader>
+        <MessageSquare className="w-5 h-5" />
+        <h1 className="text-lg font-semibold">Chat</h1>
+      </PageHeader>
+
+      <div className="flex-1 overflow-y-auto">
+        <div className="max-w-3xl mx-auto p-4 space-y-4">
+          {messages.map((message, i) => (
+            <MarkdownMessage
+              key={i}
+              content={message.content}
+              isUser={message.role === "user"}
+            />
+          ))}
+          <div ref={messagesEndRef} />
         </div>
+      </div>
 
-        <div className="flex-1 overflow-y-auto">
-          <div className="max-w-3xl mx-auto p-4 space-y-4">
-            {messages.map((message, i) => (
-              <MarkdownMessage
-                key={i}
-                content={message.content}
-                isUser={message.role === "user"}
-              />
-            ))}
-            <div ref={messagesEndRef} />
-          </div>
-        </div>
+      <div className="border-t p-4">
+        <div className="max-w-3xl mx-auto space-y-4">
+          {isEmpty && <ConversationStarters onSelect={sendMessage} />}
 
-        <div className="border-t p-4">
-          <div className="max-w-3xl mx-auto space-y-4">
-            {isEmpty && <ConversationStarters onSelect={sendMessage} />}
+          {messages.length >= 2 && (
+            <SuggestionList
+              suggestions={suggestions}
+              onSelect={sendMessage}
+              isLoading={loadingSuggestions}
+            />
+          )}
 
-            {messages.length >= 2 && (
-              <SuggestionList
-                suggestions={suggestions}
-                onSelect={sendMessage}
-                isLoading={loadingSuggestions}
-              />
-            )}
-
-            <form onSubmit={handleSubmit} className="flex gap-2">
-              <Textarea
-                ref={inputRef}
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Type your message..."
-                disabled={isLoading}
-                rows={3}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault();
-                    handleSubmit(e);
-                  }
-                }}
-                className={cn(isLoading && "opacity-50")}
-              />
-              <Button type="submit" disabled={isLoading}>
-                Send
-              </Button>
-            </form>
-          </div>
+          <form onSubmit={handleSubmit} className="flex gap-2">
+            <Textarea
+              ref={inputRef}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Type your message..."
+              disabled={isLoading}
+              rows={3}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSubmit(e);
+                }
+              }}
+              className={cn(isLoading && "opacity-50")}
+            />
+            <Button type="submit" disabled={isLoading}>
+              Send
+            </Button>
+          </form>
         </div>
       </div>
     </RootLayout>

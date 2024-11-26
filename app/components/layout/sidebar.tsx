@@ -14,6 +14,7 @@ import {
   ArrowLeft,
   LogIn,
   LogOut,
+  Shapes,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -38,6 +39,11 @@ const sidebarItems = [
         href: "/learning/ideas",
       },
     ],
+  },
+  {
+    title: "Play",
+    icon: Shapes,
+    href: "/play",
   },
   {
     title: "Templates",

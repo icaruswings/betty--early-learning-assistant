@@ -10,7 +10,11 @@ interface SuggestionListProps {
   isLoading?: boolean;
 }
 
-export function SuggestionList({ suggestions, onSelect, isLoading }: SuggestionListProps) {
+export function SuggestionList({
+  suggestions,
+  onSelect,
+  isLoading,
+}: SuggestionListProps) {
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -69,7 +73,7 @@ export function SuggestionList({ suggestions, onSelect, isLoading }: SuggestionL
           </Button>
         ))}
       </div>
-      
+
       {canScrollLeft && (
         <Button
           variant="outline"
@@ -80,7 +84,7 @@ export function SuggestionList({ suggestions, onSelect, isLoading }: SuggestionL
           <ChevronLeft className="h-4 w-4" />
         </Button>
       )}
-      
+
       {canScrollRight && (
         <Button
           variant="outline"

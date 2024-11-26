@@ -5,6 +5,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
+import { useAtom } from "jotai";
+import { modelSelectionAtom } from "~/atoms";
 
 export const models = [
   { id: "gpt-3.5-turbo", name: "GPT-3.5 Turbo" },
@@ -15,16 +17,12 @@ export const models = [
 
 export type ModelId = (typeof models)[number]["id"];
 
-interface ModelSelectorProps {
-  model: ModelId;
-  onChange: (model: ModelId) => void;
-}
-
-export function ModelSelector({ model, onChange }: ModelSelectorProps) {
+export function ModelSelector() {
+  const [model, setModel] = useAtom(modelSelectionAtom);
   const selectedModel = models.find((m) => m.id === model);
 
   return (
-    <Select defaultValue={model} value={model} onValueChange={onChange}>
+    <Select value={model} onValueChange={setModel}>
       <SelectTrigger className="w-[180px]">
         <SelectValue>{selectedModel?.name}</SelectValue>
       </SelectTrigger>

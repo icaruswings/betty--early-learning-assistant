@@ -12,7 +12,11 @@ export function RootLayout({ children }: RootLayoutProps) {
   return (
     <div className="relative flex min-h-screen">
       <Sidebar />
-      <main className="flex-1 overflow-hidden">{children}</main>
+      <main className="flex-1 overflow-hidden">
+        <div className="flex flex-col h-screen max-h-screen pl-24">
+          {children}
+        </div>
+      </main>
     </div>
   );
 }
