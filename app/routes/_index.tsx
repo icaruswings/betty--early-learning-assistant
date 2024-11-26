@@ -2,7 +2,8 @@ import type { MetaFunction } from "@remix-run/node";
 import { Link } from "@remix-run/react";
 import { RootLayout } from "~/components/layout/root-layout";
 import { Button } from "~/components/ui/button";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, LogIn } from "lucide-react";
+import { useUser } from "@clerk/remix";
 
 export const meta: MetaFunction = () => {
   return [
@@ -12,6 +13,8 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index() {
+  const { isSignedIn } = useUser();
+
   return (
     <RootLayout>
       <div className="flex flex-col items-center justify-center min-h-screen max-w-4xl mx-auto p-4 pl-24 text-center">
@@ -21,12 +24,21 @@ export default function Index() {
           activity ideas, and educational resources.
         </p>
         
-        <Link to="/chat">
-          <Button size="lg" className="gap-2">
-            <MessageSquare className="w-5 h-5" />
-            Start Chatting
-          </Button>
-        </Link>
+        {isSignedIn ? (
+          <Link to="/chat">
+            <Button size="lg" className="gap-2">
+              <MessageSquare className="w-5 h-5" />
+              Start Chatting
+            </Button>
+          </Link>
+        ) : (
+          <Link to="/sign-in">
+            <Button size="lg" className="gap-2">
+              <LogIn className="w-5 h-5" />
+              Sign in to Start
+            </Button>
+          </Link>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12 text-left">
           <div className="p-6 rounded-lg border">

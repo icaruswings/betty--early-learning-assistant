@@ -7,11 +7,13 @@ import {
 } from "~/components/ui/select";
 
 export const models = [
-  { id: "gpt-4", name: "GPT-4" },
   { id: "gpt-3.5-turbo", name: "GPT-3.5 Turbo" },
+  { id: "gpt-4", name: "GPT-4" },
+  { id: "gpt-4o", name: "GPT-4o" },
+  { id: "o1-preview", name: "o1 Preview" },
 ] as const;
 
-export type ModelId = typeof models[number]["id"];
+export type ModelId = (typeof models)[number]["id"];
 
 interface ModelSelectorProps {
   model: ModelId;

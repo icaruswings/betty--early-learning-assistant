@@ -10,7 +10,7 @@ export const action: ActionFunction = async ({ request }) => {
 
   // Parse the incoming request body
   const body = await request.json();
-  const { messages: userMessages, model = "gpt-3.5-turbo" } = body;
+  const { messages: userMessages, model = "gpt-4" } = body;
 
   // Combine default messages with user messages
   const messages = [

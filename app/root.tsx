@@ -70,4 +70,4 @@ function App() {
   );
 }
 
-export default ClerkApp(App);
+export default ClerkApp(App, { afterSignOutUrl: "/" });

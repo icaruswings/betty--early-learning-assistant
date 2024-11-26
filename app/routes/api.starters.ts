@@ -12,15 +12,16 @@ export const loader: LoaderFunction = async () => {
 
   try {
     const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o-mini",
       messages: [
         {
           role: "system",
-          content: "You are an AI assistant specializing in early education and teaching. Generate 4 engaging conversation starters that would help teachers get started with using the AI assistant. Each starter should be a question about different aspects of teaching and education. Make them concise but specific.",
+          content:
+            "You are an AI assistant specializing in early childhood education, designed to help teachers with their professional needs. Generate conversation starters that address common teaching challenges, curriculum planning, classroom management, and professional development. Focus on questions that teachers would ask, such as 'How can I differentiate instruction for...' or 'What strategies work best for...'. The questions should be specific to teaching scenarios but concise. Return ONLY the questions, one per line, without any numbering or bullets.",
         },
         {
           role: "user",
-          content: "Generate 4 conversation starters.",
+          content: "Generate 4 conversation starters focused on teaching scenarios",
         },
       ],
       temperature: 0.7,
@@ -29,8 +30,8 @@ export const loader: LoaderFunction = async () => {
     const content = completion.choices[0]?.message?.content || "";
     const starters = content
       .split("\n")
-      .filter(line => line.trim())
-      .map(line => line.replace(/^\d+\.\s*/, ""))
+      .filter((line) => line.trim())
+      .map((line) => line.replace(/^\d+\.\s*/, ""))
       .slice(0, 4);
 
     return Response.json({ starters });
