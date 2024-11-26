@@ -7,7 +7,6 @@ import {
 import { Button } from "~/components/ui/button";
 import { Textarea } from "~/components/ui/textarea";
 import { RootLayout } from "~/components/layout/root-layout";
-import { LoadingDots } from "~/components/ui/loading-dots";
 import { MarkdownMessage } from "~/components/markdown-message";
 import { cn } from "~/lib/utils";
 import { MessageSquare } from "lucide-react";
@@ -16,8 +15,9 @@ import { ConversationStarters } from "~/components/ui/conversation-starters";
 import { SuggestionList } from "~/components/ui/suggestion-list";
 import { getAuth } from "@clerk/remix/ssr.server";
 import { useUser } from "@clerk/remix";
-import { useStreamReader } from "~/hooks/use-stream-reader";
 import { useChatState } from "~/hooks/use-chat-state";
+import { useChatMessages } from "~/hooks/use-chat-messages";
+import { useChatSuggestions } from "~/hooks/use-chat-suggestions";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Chat - Early Learning Assistant" }];
@@ -25,11 +25,7 @@ export const meta: MetaFunction = () => {
 
 export async function loader(args: LoaderFunctionArgs) {
   const { userId } = await getAuth(args);
-
-  if (!userId) {
-    return redirect("/");
-  }
-
+  if (!userId) return redirect("/");
   return null;
 }
 
@@ -56,15 +52,38 @@ export default function Chat() {
 
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  const { streamReader } = useStreamReader();
 
-  // Redirect if not authenticated (client-side backup)
+  // Chat message handling
+  const { sendMessage } = useChatMessages({
+    messages,
+    model,
+    onMessageStart: startMessage,
+    onMessageStream: appendAssistantMessage,
+    onMessageComplete: () => {
+      setLoading(false);
+      fetchSuggestions();
+    },
+    onMessageError: (error) => {
+      setError(error);
+      removeLastMessage();
+    },
+  });
+
+  // Suggestions handling
+  const { fetchSuggestions } = useChatSuggestions({
+    messages,
+    onSuggestionsLoading: setLoadingSuggestions,
+    onSuggestionsUpdate: setSuggestions,
+  });
+
+  // Authentication check
   useEffect(() => {
     if (isLoaded && !isSignedIn) {
       window.location.href = "/";
     }
   }, [isLoaded, isSignedIn]);
 
+  // Auto-scroll to bottom
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -73,6 +92,7 @@ export default function Chat() {
     scrollToBottom();
   }, [messages]);
 
+  // Auto-focus input
   useEffect(() => {
     if (isSignedIn && inputRef.current) {
       inputRef.current.focus();
@@ -83,74 +103,6 @@ export default function Chat() {
     e.preventDefault();
     if (!input.trim()) return;
     await sendMessage(input);
-  };
-
-  const fetchSuggestions = async () => {
-    if (!messages.length) return;
-
-    setLoadingSuggestions(true);
-    try {
-      const response = await fetch("/api/suggestions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          messages: [...messages],
-        }),
-      });
-
-      const data = await response.json();
-      if (response.ok && data.suggestions) {
-        setSuggestions(data.suggestions);
-      }
-    } catch (error) {
-      console.error("Error fetching suggestions:", error);
-    } finally {
-      setLoadingSuggestions(false);
-    }
-  };
-
-  const sendMessage = async (content: string) => {
-    startMessage(content);
-
-    try {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          messages: [...messages, { role: "user", content }],
-          model,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to send message");
-      }
-
-      const { content: streamContent, error: streamError } = await streamReader(
-        response,
-        {
-          onChunk: (chunk) => {
-            appendAssistantMessage(chunk);
-          },
-          onComplete: () => {
-            setLoading(false);
-            fetchSuggestions();
-          },
-        }
-      );
-
-      if (streamError) {
-        throw new Error(streamError);
-      }
-    } catch (error) {
-      console.error("Error sending message:", error);
-      setError(error instanceof Error ? error.message : "An error occurred");
-      removeLastMessage();
-    }
   };
 
   const isEmpty = messages.length === 1 && messages[0].role === "assistant";
