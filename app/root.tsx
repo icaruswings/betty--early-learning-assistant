@@ -5,6 +5,7 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
+  useLocation,
   useRouteLoaderData,
 } from "@remix-run/react";
 import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
@@ -15,8 +16,9 @@ import {
 } from "remix-themes";
 import { themeSessionResolver } from "./sessions.server";
 import { rootAuthLoader } from "@clerk/remix/ssr.server";
-import { ClerkApp, useAuth } from "@clerk/remix";
+import { ClerkApp, ClerkProvider } from "@clerk/remix";
 import stylesheet from "~/tailwind.css?url";
+import invariant from "tiny-invariant";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
@@ -26,9 +28,16 @@ export const loader = async (args: LoaderFunctionArgs) => {
   return await rootAuthLoader(args, async ({ request }) => {
     const { getTheme } = await themeSessionResolver(request);
 
+    invariant(
+      process.env.CLERK_PUBLISHABLE_KEY,
+      "CLERK_PUBLISHABLE_KEY is required"
+    );
+
     return {
       theme: getTheme(),
-      ENV: {},
+      ENV: {
+        CLERK_PUBLISHABLE_KEY: process.env.CLERK_PUBLISHABLE_KEY,
+      },
     };
   });
 };
@@ -60,11 +69,11 @@ function Layout({ children }: { children: React.ReactNode }) {
 
 function App() {
   const { theme, ENV } = useLoaderData<typeof loader>();
-
+  const { pathname } = useLocation();
   return (
     <ThemeProvider specifiedTheme={theme} themeAction="/action/set-theme">
       <Layout>
-        <Outlet />
+        <Outlet key={pathname} />
       </Layout>
     </ThemeProvider>
   );

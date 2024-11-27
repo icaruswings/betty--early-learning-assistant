@@ -25,6 +25,27 @@ Key Frameworks:
 - Early childhood development principles
 `;
 
+// Specific prompt for conversation starters
+export const STARTER_PROMPT = `${BASE_CONTEXT}
+
+Your task is to generate conversation starters that showcase how you can help educators with their professional development or documentation needs.
+
+Focus areas:
+1. Professional development
+2. Documentation
+3. Teaching strategies
+4. Learning observations
+5. Pedagogical guidance
+6. Parent communication
+7. Reflective practice
+8. Skill enhancement
+
+Guidelines:
+- Focus on questions that educators would ask
+- The questions should be specific to teaching scenarios but concise
+- Return ONLY the questions, one per line, without any numbering or bullets
+`;
+
 // Specific prompt for learning observations
 export const OBSERVATION_PROMPT = `${BASE_CONTEXT}
 

@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { cn } from "~/lib/utils";
 import { LoadingDots } from "./ui/loading-dots";
 import { Skeleton } from "./ui/skeleton";
+import { useAtom } from "jotai";
+import { conversationStartersAtom } from "~/atoms";
 
 interface ConversationStartersProps {
   onSelect: (starter: string) => void;
@@ -34,8 +36,8 @@ function LoadingState() {
 }
 
 export function ConversationStarters({ onSelect }: ConversationStartersProps) {
-  const [starters, setStarters] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [startersState, setStartersState] = useAtom(conversationStartersAtom);
 
   const fetchStarters = async () => {
     setIsLoading(true);
@@ -43,7 +45,10 @@ export function ConversationStarters({ onSelect }: ConversationStartersProps) {
       const response = await fetch("/api/starters");
       const data = await response.json();
       if (response.ok && data.starters) {
-        setStarters(data.starters);
+        setStartersState({
+          starters: data.starters,
+          lastFetched: Date.now(),
+        });
       }
     } catch (error) {
       console.error("Error fetching starters:", error);
@@ -53,42 +58,51 @@ export function ConversationStarters({ onSelect }: ConversationStartersProps) {
   };
 
   useEffect(() => {
-    fetchStarters();
-  }, []);
+    // Only fetch if we haven't fetched before or if it's been more than 1 hour
+    const shouldFetch =
+      !startersState.lastFetched ||
+      Date.now() - startersState.lastFetched > 3600000;
+
+    if (shouldFetch) {
+      fetchStarters();
+    } else {
+      setIsLoading(false);
+    }
+  }, [startersState.lastFetched]);
+
+  if (isLoading) {
+    return <LoadingState />;
+  }
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between text-muted-foreground">
-        <div className="flex items-center gap-2">
-          <MessageSquarePlus className="h-5 w-5" />
-          <span>Try asking about:</span>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-2">
+          <MessageSquarePlus className="w-5 h-5" />
+          <h2 className="text-lg font-semibold">Start a conversation</h2>
         </div>
         <Button
           variant="ghost"
           size="icon"
           onClick={fetchStarters}
-          disabled={isLoading}
           className={cn("h-8 w-8", isLoading && "animate-spin")}
         >
-          <RefreshCw className="h-4 w-4" />
+          <RefreshCw className="w-4 h-4" />
         </Button>
       </div>
-      {isLoading ? (
-        <LoadingState />
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-          {starters.map((starter) => (
-            <Button
-              key={starter}
-              variant="outline"
-              className="h-auto whitespace-normal text-left justify-start py-3"
-              onClick={() => onSelect(starter)}
-            >
-              {starter}
-            </Button>
-          ))}
-        </div>
-      )}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+        {startersState.starters.map((starter, i) => (
+          <Button
+            key={i}
+            variant="outline"
+            className="h-auto min-h-[52px] whitespace-normal text-left justify-start"
+            onClick={() => onSelect(starter)}
+          >
+            {starter}
+          </Button>
+        ))}
+      </div>
     </div>
   );
 }

@@ -22,6 +22,7 @@ import {
   LogIn,
   LogOut,
   Shapes,
+  BadgeDollarSign,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -87,10 +88,24 @@ export function Sidebar() {
 
   return (
     <>
-      <aside className="fixed left-0 top-0 z-30 h-screen w-16 border-r bg-background">
+      <aside className="fixed left-0 top-0 z-30 h-screen w-20 border-r bg-background">
         <div className="flex h-full flex-col py-2">
           <div className="flex flex-col items-center">
-            <UserButton />
+            <UserButton>
+              <UserButton.MenuItems>
+                <UserButton.Link
+                  label="My Plan"
+                  labelIcon={<BadgeDollarSign />}
+                  href="/plan"
+                />
+                <UserButton.Link
+                  label="App Settings"
+                  labelIcon={<Settings />}
+                  href="/settings"
+                />
+                {/* <UserButton.Action label="manageAccount" /> */}
+              </UserButton.MenuItems>
+            </UserButton>
             <div className="my-4 h-[1px] w-8 bg-border" />
           </div>
           <nav className="space-y-1 px-1 flex-1">
@@ -156,7 +171,7 @@ export function Sidebar() {
       {/* Sliding sub-sidebar */}
       <aside
         className={cn(
-          "fixed left-16 top-0 z-20 h-screen w-16 border-r bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
+          "fixed left-20 top-0 z-20 h-screen w-20 border-r bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
           "transition-transform duration-300",
           activeParent ? "translate-x-0" : "-translate-x-full"
         )}

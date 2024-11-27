@@ -58,15 +58,17 @@ export default function Settings() {
         <h1 className="text-lg font-semibold">Settings</h1>
       </PageHeader>
 
-      <div className="flex flex-col max-w-4xl mx-auto p-4 space-y-8">
-        <div className="space-y-4">
-          <h2 className="text-xl font-semibold">Preferences</h2>
-          <div className="space-y-4">
-            <div className="flex flex-col space-y-2">
-              <label className="text-sm font-medium">Model</label>
-              <ModelSelector />
-            </div>
-            <div className="flex flex-col space-y-2">
+      <div className="flex flex-col max-w-4xl mx-auto p-4 space-y-12">
+        {/* Appearance Section */}
+        <div>
+          <div className="flex items-center space-x-2 mb-6">
+            <h2 className="text-xl font-semibold">Appearance</h2>
+            <p className="text-sm text-muted-foreground">
+              Customize how the app looks and feels
+            </p>
+          </div>
+          <div className="grid gap-6">
+            <div className="space-y-2">
               <label className="text-sm font-medium">Theme</label>
               <div className="flex items-center space-x-2">
                 <ThemeToggle />
@@ -78,32 +80,68 @@ export default function Settings() {
           </div>
         </div>
 
-        <div className="space-y-4">
-          <h2 className="text-xl font-semibold">API Token</h2>
-          <div className="flex items-center space-x-2">
-            <code className="flex-1 p-4 bg-secondary rounded-lg font-mono text-sm">
-              {apiToken}
-            </code>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={copyToClipboard}
-              className="h-14 w-14"
-            >
-              {copied ? (
-                <Check className="h-4 w-4" />
-              ) : (
-                <Copy className="h-4 w-4" />
-              )}
-            </Button>
+        <div className="h-px bg-border" aria-hidden="true" />
+
+        {/* Chat Settings Section */}
+        <div>
+          <div className="flex items-center space-x-2 mb-6">
+            <h2 className="text-xl font-semibold">Chat Settings</h2>
+            <p className="text-sm text-muted-foreground">
+              Configure your chat experience
+            </p>
           </div>
-          <Button onClick={regenerateToken} variant="outline">
-            Regenerate Token
-          </Button>
-          <p className="text-sm text-muted-foreground">
-            Use this token to authenticate API requests. Keep it secret and
-            secure.
-          </p>
+          <div className="grid gap-6">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Default Model</label>
+              <ModelSelector />
+              <p className="text-sm text-muted-foreground">
+                Select the AI model to use for your conversations
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="h-px bg-border" aria-hidden="true" />
+
+        {/* Access Section */}
+        <div>
+          <div className="flex items-center space-x-2 mb-6">
+            <h2 className="text-xl font-semibold">Access</h2>
+            <p className="text-sm text-muted-foreground">
+              Manage your API access and security settings
+            </p>
+          </div>
+          <div className="grid gap-6">
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">API Token</label>
+                <div className="flex items-center space-x-2">
+                  <code className="flex-1 p-4 bg-secondary rounded-lg font-mono text-sm">
+                    {apiToken}
+                  </code>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={copyToClipboard}
+                    className="h-14 w-14"
+                  >
+                    {copied ? (
+                      <Check className="h-4 w-4" />
+                    ) : (
+                      <Copy className="h-4 w-4" />
+                    )}
+                  </Button>
+                </div>
+                <Button onClick={regenerateToken} variant="outline">
+                  Regenerate Token
+                </Button>
+                <p className="text-sm text-muted-foreground">
+                  Use this token to authenticate API requests. Keep it secret
+                  and secure.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </RootLayout>
