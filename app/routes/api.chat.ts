@@ -1,6 +1,8 @@
 import OpenAI from "openai";
 import { DEFAULT_MESSAGES } from "~/config/prompts";
 import type { ActionFunction } from "@remix-run/node";
+import { defaultModel } from "~/components/model-selector";
+import { ServerError } from "~/lib/errors";
 
 export const action: ActionFunction = async ({ request }) => {
   // Ensure the request method is POST
@@ -10,7 +12,7 @@ export const action: ActionFunction = async ({ request }) => {
 
   // Parse the incoming request body
   const body = await request.json();
-  const { messages: userMessages, model = "gpt-4" } = body;
+  const { messages: userMessages, model = defaultModel } = body;
 
   // Combine default messages with user messages
   const messages = [
@@ -80,9 +82,6 @@ export const action: ActionFunction = async ({ request }) => {
     });
   } catch (error) {
     console.error("Error in chat API:", error);
-    return Response.json(
-      { error: "Error processing chat request" },
-      { status: 500 }
-    );
+    return ServerError("Error processing chat request");
   }
 };

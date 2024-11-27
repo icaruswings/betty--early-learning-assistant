@@ -1,5 +1,7 @@
 import OpenAI from "openai";
-import type { LoaderFunction } from "@remix-run/node";
+import { type LoaderFunction } from "@remix-run/node";
+import { ServerError } from "~/lib/errors";
+import { Starters } from "~/lib/responses";
 
 export const loader: LoaderFunction = async () => {
   const openai = new OpenAI({
@@ -21,7 +23,8 @@ export const loader: LoaderFunction = async () => {
         },
         {
           role: "user",
-          content: "Generate 4 conversation starters focused on teaching scenarios",
+          content:
+            "Generate 4 conversation starters focused on teaching scenarios",
         },
       ],
       temperature: 0.7,
@@ -34,12 +37,9 @@ export const loader: LoaderFunction = async () => {
       .map((line) => line.replace(/^\d+\.\s*/, ""))
       .slice(0, 4);
 
-    return Response.json({ starters });
+    return Starters(starters);
   } catch (error) {
     console.error("Error generating starters:", error);
-    return Response.json(
-      { error: "Failed to generate conversation starters" },
-      { status: 500 }
-    );
+    return ServerError("Failed to generate conversation starters");
   }
 };

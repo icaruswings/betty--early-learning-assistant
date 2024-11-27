@@ -1,5 +1,7 @@
 import OpenAI from "openai";
 import type { ActionFunction } from "@remix-run/node";
+import { Suggestions } from "~/lib/responses";
+import { ServerError } from "~/lib/errors";
 
 export const action: ActionFunction = async ({ request }) => {
   const openai = new OpenAI({
@@ -35,12 +37,9 @@ export const action: ActionFunction = async ({ request }) => {
       .map((line) => line.replace(/^[-\d.)\s]+/, ""))
       .slice(0, 4);
 
-    return Response.json({ suggestions });
+    return Suggestions(suggestions);
   } catch (error) {
     console.error("Error generating suggestions:", error);
-    return Response.json(
-      { error: "Failed to generate suggestions" },
-      { status: 500 }
-    );
+    return ServerError("Failed to generate suggestions");
   }
 };
