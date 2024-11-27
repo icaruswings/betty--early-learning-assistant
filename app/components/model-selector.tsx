@@ -15,8 +15,9 @@ export const models = [
   { id: "o1-preview", name: "o1 Preview" },
 ] as const;
 
-export const defaultModel = "gpt-4o";
 export type ModelId = (typeof models)[number]["id"];
+
+export const DEFAULT_MODEL = "gpt-4o";
 
 export function ModelSelector() {
   const [model, setModel] = useAtom(modelSelectionAtom);
