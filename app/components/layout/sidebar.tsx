@@ -3,7 +3,6 @@ import {
   UserButton,
   SignInButton,
   SignOutButton,
-  useUser,
   SignedIn,
   SignedOut,
 } from "@clerk/remix";
@@ -12,23 +11,18 @@ import {
   MessageSquare,
   BookOpen,
   Eye,
-  FileText,
   Settings,
   Brain,
   Lightbulb,
-  Code,
-  Book,
   ArrowLeft,
   LogIn,
   LogOut,
-  Shapes,
-  BadgeDollarSign,
 } from "lucide-react";
 import { useState } from "react";
 
 const sidebarItems = [
   {
-    title: "Chat",
+    title: "Betty",
     icon: MessageSquare,
     href: "/chat",
   },
@@ -54,22 +48,6 @@ const sidebarItems = [
     ],
   },
   {
-    title: "Templates",
-    icon: FileText,
-    children: [
-      {
-        title: "Code",
-        icon: Code,
-        href: "/templates/code",
-      },
-      {
-        title: "Docs",
-        icon: Book,
-        href: "/templates/docs",
-      },
-    ],
-  },
-  {
     title: "Settings",
     icon: Settings,
     href: "/settings",
@@ -91,21 +69,7 @@ export function Sidebar() {
       <aside className="fixed left-0 top-0 z-30 h-screen w-20 border-r bg-background">
         <div className="flex h-full flex-col py-2">
           <div className="flex flex-col items-center">
-            <UserButton>
-              <UserButton.MenuItems>
-                <UserButton.Link
-                  label="My Plan"
-                  labelIcon={<BadgeDollarSign />}
-                  href="/plan"
-                />
-                <UserButton.Link
-                  label="App Settings"
-                  labelIcon={<Settings />}
-                  href="/settings"
-                />
-                {/* <UserButton.Action label="manageAccount" /> */}
-              </UserButton.MenuItems>
-            </UserButton>
+            <UserButton />
             <div className="my-4 h-[1px] w-8 bg-border" />
           </div>
           <nav className="space-y-1 px-1 flex-1">

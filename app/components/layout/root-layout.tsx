@@ -1,6 +1,5 @@
 import { useLocation } from "@remix-run/react";
 import { Sidebar } from "./sidebar";
-
 import { useAtom } from "jotai";
 import { sidebarOpenAtom } from "~/atoms";
 

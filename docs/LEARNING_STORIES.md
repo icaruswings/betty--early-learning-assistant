@@ -42,29 +42,34 @@ This feature helps educators write meaningful and EYLF-aligned learning stories 
 ### Process Flow
 
 1. **Initial Context**
+
    - Child's name and age group
    - Date of observation
    - Setting/context
 
 2. **Observation Details**
+
    - What was the child doing?
    - Who were they with?
    - How long did the activity last?
    - What materials were used?
 
 3. **Child's Engagement**
+
    - Child's emotional state
    - Level of involvement
    - Interactions with others
    - Problem-solving approaches
 
 4. **Learning Analysis**
+
    - Skills demonstrated
    - Interests shown
    - Progress made
    - Connections to previous learning
 
 5. **EYLF Alignment**
+
    - Learning outcomes
    - Principles
    - Practices
@@ -77,6 +82,7 @@ This feature helps educators write meaningful and EYLF-aligned learning stories 
 ### AI Assistant Approach
 
 The AI will:
+
 1. Ask questions one at a time
 2. Use previous answers to inform subsequent questions
 3. Adapt questions based on the context
@@ -87,23 +93,28 @@ The AI will:
 ### Learning Story Structure
 
 1. **Title**
+
    - Engaging and reflective of the learning
 
 2. **Introduction**
+
    - Context and setting
    - Child's initial engagement
 
 3. **What We Saw**
+
    - Detailed observation
    - Child's actions and words
    - Interactions and relationships
 
 4. **What It Means**
+
    - Analysis of learning
    - Links to EYLF
    - Developmental insights
 
 5. **Opportunities & Possibilities**
+
    - Future learning opportunities
    - Potential extensions
    - Next steps
