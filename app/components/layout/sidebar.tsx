@@ -11,6 +11,7 @@ import { cn } from "~/lib/utils";
 import {
   MessageSquare,
   BookOpen,
+  Eye,
   FileText,
   Settings,
   Brain,
@@ -35,7 +36,12 @@ const sidebarItems = [
     icon: Brain,
     children: [
       {
-        title: "Learning Stories",
+        title: "Observations",
+        icon: Eye,
+        href: "/learning/observations",
+      },
+      {
+        title: "Stories",
         icon: BookOpen,
         href: "/learning/stories",
       },
@@ -45,11 +51,6 @@ const sidebarItems = [
         href: "/learning/ideas",
       },
     ],
-  },
-  {
-    title: "Play",
-    icon: Shapes,
-    href: "/play",
   },
   {
     title: "Templates",
@@ -141,7 +142,7 @@ export function Sidebar() {
               </SignedIn>
               <SignedOut>
                 <SignInButton>
-                  <div className="flex flex-col items-center gap-2">
+                  <div className="flex items-center gap-2">
                     <LogIn className="h-4 w-4" />
                     <span className="text-[10px]">Sign in</span>
                   </div>
