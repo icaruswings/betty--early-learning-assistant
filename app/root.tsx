@@ -73,7 +73,7 @@ function App() {
   return (
     <ThemeProvider specifiedTheme={theme} themeAction="/action/set-theme">
       <Layout>
-        <Outlet key={pathname} />
+        <Outlet />
       </Layout>
     </ThemeProvider>
   );

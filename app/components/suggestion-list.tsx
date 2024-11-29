@@ -59,7 +59,7 @@ export function SuggestionList({
     <div className="relative group">
       <div
         ref={containerRef}
-        className="flex gap-2 overflow-x-auto scrollbar-hide scroll-smooth py-2"
+        className="flex gap-2 overflow-hidden scrollbar-hide scroll-smooth py-2"
         onScroll={checkScroll}
       >
         {suggestions.map((suggestion, i) => (

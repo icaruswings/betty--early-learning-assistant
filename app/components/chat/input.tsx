@@ -44,7 +44,7 @@ export default function ChatInput({
     onSubmit(content);
     setContent("");
     setShowPlaceholder(true);
-    
+
     if (divRef.current) {
       divRef.current.innerText = "";
     }
@@ -74,7 +74,7 @@ export default function ChatInput({
       <div
         ref={containerRef}
         onClick={focusInput}
-        className="bg-gray-50 rounded-lg pb-4 cursor-text relative"
+        className="bg-gray-50 dark:bg-accent rounded-lg pb-4 cursor-text relative"
       >
         <div
           ref={divRef}
@@ -85,7 +85,7 @@ export default function ChatInput({
           aria-label="Message input"
         />
         {showPlaceholder && (
-          <p className="absolute top-4 left-4 text-gray-400 pointer-events-none">
+          <p className="absolute top-4 left-4 text-gray-400 dark: text-accent-foreground pointer-events-none">
             {placeholder}
           </p>
         )}

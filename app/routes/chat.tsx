@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import {
   LoaderFunctionArgs,
   redirect,
@@ -21,6 +21,9 @@ import { PageHeader } from "~/components/layout/page-header";
 import EmptyState from "~/components/chat/empty-state";
 import MessageList from "~/components/chat/message-list";
 import ChatInput from "~/components/chat/input";
+import { useChatScroll } from "~/hooks/use-chat-scroll";
+import { ScrollArea } from "~/components/ui/scroll-area";
+import { ChatScrollAnchor } from "~/components/chat/chat-scroll-anchor";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Chat - Early Learning Assistant" }];
@@ -77,15 +80,6 @@ export default function Chat() {
     onSuggestionsUpdate: setSuggestions,
   });
 
-  // Auto-scroll to bottom
-  // const scrollToBottom = () => {
-  //   messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  // };
-
-  // useEffect(() => {
-  //   scrollToBottom();
-  // }, [messages]);
-
   // Auto-focus input
   useEffect(() => {
     inputRef.current?.focus();
@@ -100,41 +94,40 @@ export default function Chat() {
 
   return (
     <RootLayout>
-      <div className="flex-1 overflow-y-auto">
-        {isEmpty ? (
-          <div className="max-w-3xl mx-auto p-4 flex flex-col gap-6">
-            <EmptyState />
-            <ChatInput
-              isLoading={isLoading}
-              onSubmit={handleSubmit}
-              placeholder="Message Betty"
-            />
-            <ConversationStarters onSelect={sendMessage} />
+      {isEmpty ? (
+        <div className="h-screen w-full max-w-3xl mx-auto p-4 ">
+          <div className="h-full flex flex-col">
+            <div className="flex-1 flex flex-col justify-center">
+              <EmptyState />
+              <div className="w-full">
+                <ConversationStarters onSelect={sendMessage} />
+              </div>
+            </div>
+            <div className="flex-shrink-0 pt-4">
+              <ChatInput
+                isLoading={isLoading}
+                onSubmit={handleSubmit}
+                placeholder="Message Betty"
+              />
+            </div>
           </div>
-        ) : (
-          <div className="max-w-3xl mx-auto p-4 space-y-4">
-            <MessageList messages={messages} />
-            <ChatInput
-              isLoading={isLoading}
-              onSubmit={handleSubmit}
-              placeholder="Ask a follow up..."
-            />
-            <div ref={messagesEndRef} />
-          </div>
-        )}
-      </div>
-
-      <div className="border-t p-4">
-        <div className="max-w-3xl mx-auto space-y-4">
-          {messages.length >= 2 && (
-            <SuggestionList
-              suggestions={suggestions}
-              onSelect={sendMessage}
-              isLoading={loadingSuggestions}
-            />
-          )}
         </div>
-      </div>
+      ) : (
+        <div className="h-screen w-full max-w-3xl mx-auto p-4 ">
+          <div className="h-full flex flex-col">
+            <ScrollArea className="flex-1">
+              <MessageList messages={messages} />
+            </ScrollArea>
+            <div className="flex-shrink-0">
+              <ChatInput
+                isLoading={isLoading}
+                onSubmit={handleSubmit}
+                placeholder="Ask a follow up..."
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </RootLayout>
   );
 }

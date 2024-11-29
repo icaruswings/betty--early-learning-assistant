@@ -15,7 +15,7 @@ export function RootLayout({ children }: RootLayoutProps) {
   const { pathname } = useLocation();
 
   return (
-    <div className="relative flex min-h-screen">
+    <div className="relative flex overflow-hidden">
       {/* Mobile Menu Button */}
       <Button
         variant="ghost"
@@ -36,10 +36,8 @@ export function RootLayout({ children }: RootLayoutProps) {
 
       <Sidebar isOpen={sidebarOpen} />
 
-      <main className="flex-1 overflow-hidden">
-        <div key={pathname} className="flex flex-col h-full w-full">
-          {children}
-        </div>
+      <main className="flex-1">
+        <div className="flex flex-col h-full w-full">{children}</div>
       </main>
     </div>
   );

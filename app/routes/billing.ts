@@ -14,7 +14,7 @@ export async function loader(args: LoaderFunctionArgs) {
 
   const portalSession = await createPortalSession(
     customer.id,
-    `${new URL(args.request.url).origin}/account`
+    `${new URL(args.request.url).origin}/`
   );
 
   return redirect(portalSession.url);

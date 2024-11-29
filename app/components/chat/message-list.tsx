@@ -7,7 +7,7 @@ export default function MessageList({ messages }: { messages: Message[] }) {
     const isAssistantMessage = message.role === "assistant";
 
     return (
-      <div className="p-4" key={i}>
+      <div className="px-4" key={i}>
         {isUserMessage && <h5 className="sr-only">You said:</h5>}
         {isAssistantMessage && <h6 className="sr-only">Betty said:</h6>}
         <MarkdownMessage

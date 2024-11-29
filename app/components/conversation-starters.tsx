@@ -15,14 +15,21 @@ interface ConversationStartersProps {
 function LoadingState() {
   const isMdScreen = useIsMdScreen();
   return (
-    <div className="relative">
+    <div className="relative space-y-4">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-2">
+          <MessageSquarePlus className="w-5 h-5" />
+          <h2 className="text-lg font-semibold">Start a conversation</h2>
+        </div>
+      </div>
+
       <div className="flex flex-row md:grid md:grid-cols-2 gap-2">
         {Array.from({ length: isMdScreen ? 2 : 4 }).map((_, i) => (
           <div
             key={i}
             className="flex-1 md:flex-none flex h-auto min-h-[52px] items-center rounded-md border bg-background px-4 py-3"
           >
-            <div className="space-y-2 w-full">
+            <div className="space-y-1 w-full">
               <Skeleton className="h-4 w-[80%]" />
               <Skeleton className="h-4 w-[60%]" />
               <Skeleton className="h-4 w-[40%]" />

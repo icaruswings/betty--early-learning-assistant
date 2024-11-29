@@ -1,27 +1,15 @@
 import { Link, useLocation } from "@remix-run/react";
-import {
-  UserButton,
-  SignInButton,
-  SignOutButton,
-  SignedIn,
-  SignedOut,
-} from "@clerk/remix";
+import { UserButton, SignInButton, SignedIn, SignedOut } from "@clerk/remix";
 import { cn } from "~/lib/utils";
 import {
   MessageSquare,
-  BookOpen,
-  Eye,
   Settings,
   Brain,
-  Lightbulb,
-  ArrowLeft,
   LogIn,
-  LogOut,
+  CreditCard,
 } from "lucide-react";
-import { useState, useEffect } from "react";
 import { Tooltip, TooltipProvider } from "~/components/ui/tooltip";
-import { TooltipContent, TooltipTrigger } from "@radix-ui/react-tooltip";
-import Logo from "~/assets/logo.svg";
+import Logo from "~/assets/logo";
 
 const sidebarItems = [
   {
@@ -56,12 +44,14 @@ export function Sidebar({ isOpen }: SidebarProps) {
       )}
     >
       <div className="flex h-full flex-col">
-        <div className="flex-1 py-4">
-          <Link to="/">
-            <img className="w-8 h-8" src={Logo} />
+        <div className="flex-1 flex flex-col py-4 space-y-3">
+          <Link to="/" className="flex items-center justify-center">
+            <div className="w-8 text-white">
+              <Logo />
+            </div>
           </Link>
 
-          <nav className="space-y-1 px-1 flex-1">
+          <nav className="space-y-1 px-1.5 flex-1">
             {sidebarItems.map((item) => {
               const isActive = item.href === location.pathname;
 
@@ -107,10 +97,18 @@ export function Sidebar({ isOpen }: SidebarProps) {
             })}
           </nav>
         </div>
-        <div className="mt-auto border-t px-2 py-4">
+        <div className="px-2 py-4">
           <div className="flex items-center gap-2">
             <SignedIn>
-              <UserButton />
+              <UserButton>
+                <UserButton.MenuItems>
+                  <UserButton.Link
+                    href="/billing"
+                    label="Billing"
+                    labelIcon={<CreditCard className="h-4 w-4" />}
+                  />
+                </UserButton.MenuItems>
+              </UserButton>
             </SignedIn>
             <SignedOut>
               <TooltipProvider delayDuration={0}>
