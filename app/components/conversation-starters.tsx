@@ -6,24 +6,26 @@ import { LoadingDots } from "./ui/loading-dots";
 import { Skeleton } from "./ui/skeleton";
 import { useAtom } from "jotai";
 import { conversationStartersAtom } from "~/atoms";
+import useIsMdScreen from "~/hooks/use-is-mobile";
 
 interface ConversationStartersProps {
   onSelect: (starter: string) => void;
 }
 
 function LoadingState() {
+  const isMdScreen = useIsMdScreen();
   return (
     <div className="relative">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-        {Array.from({ length: 4 }).map((_, i) => (
+      <div className="flex flex-row md:grid md:grid-cols-2 gap-2">
+        {Array.from({ length: isMdScreen ? 2 : 4 }).map((_, i) => (
           <div
             key={i}
-            className="flex h-auto min-h-[52px] items-center rounded-md border bg-background px-4 py-3"
+            className="flex-1 md:flex-none flex h-auto min-h-[52px] items-center rounded-md border bg-background px-4 py-3"
           >
             <div className="space-y-2 w-full">
-              <Skeleton className="h-5 w-[80%]" />
-              <Skeleton className="h-5 w-[85%]" />
-              <Skeleton className="h-5 w-[60%]" />
+              <Skeleton className="h-4 w-[80%]" />
+              <Skeleton className="h-4 w-[60%]" />
+              <Skeleton className="h-4 w-[40%]" />
             </div>
           </div>
         ))}
@@ -37,10 +39,12 @@ function LoadingState() {
 
 export function ConversationStarters({ onSelect }: ConversationStartersProps) {
   const [isLoading, setIsLoading] = useState(true);
+  const isMdScreen = useIsMdScreen();
   const [startersState, setStartersState] = useAtom(conversationStartersAtom);
 
   const fetchStarters = async () => {
     setIsLoading(true);
+
     try {
       const response = await fetch("/api/starters");
       const data = await response.json();
@@ -91,17 +95,19 @@ export function ConversationStarters({ onSelect }: ConversationStartersProps) {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-        {startersState.starters.map((starter, i) => (
-          <Button
-            key={i}
-            variant="outline"
-            className="h-auto min-h-[52px] whitespace-normal text-left justify-start"
-            onClick={() => onSelect(starter)}
-          >
-            {starter}
-          </Button>
-        ))}
+      <div className="flex flex-row md:grid md:grid-cols-2 gap-2">
+        {startersState.starters
+          .slice(0, isMdScreen ? 2 : undefined)
+          .map((starter, i) => (
+            <Button
+              key={i}
+              variant="outline"
+              className="flex-1 md:flex-none h-auto min-h-[52px] whitespace-normal text-left justify-start"
+              onClick={() => onSelect(starter)}
+            >
+              <span className="line-clamp-3">{starter}</span>
+            </Button>
+          ))}
       </div>
     </div>
   );

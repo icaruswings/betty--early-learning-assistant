@@ -25,13 +25,7 @@ type ChatAction =
   | { type: "REMOVE_LAST_MESSAGE" };
 
 const initialState: ChatState = {
-  messages: [
-    {
-      role: "assistant",
-      content:
-        "Hi! I'm Betty, your Early Learning Assistant. I'm here to help with observations, documentation, teaching strategies, and professional development. How can I support you today?",
-    },
-  ],
+  messages: [],
   input: "",
   isLoading: false,
   error: null,

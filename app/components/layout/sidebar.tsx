@@ -18,34 +18,21 @@ import {
   LogIn,
   LogOut,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Tooltip, TooltipProvider } from "~/components/ui/tooltip";
+import { TooltipContent, TooltipTrigger } from "@radix-ui/react-tooltip";
+import Logo from "~/assets/logo.svg";
 
 const sidebarItems = [
   {
-    title: "Betty",
+    title: "Ask Betty",
     icon: MessageSquare,
     href: "/chat",
   },
   {
     title: "Learning",
     icon: Brain,
-    children: [
-      {
-        title: "Observations",
-        icon: Eye,
-        href: "/learning/observations",
-      },
-      {
-        title: "Stories",
-        icon: BookOpen,
-        href: "/learning/stories",
-      },
-      {
-        title: "Ideas",
-        icon: Lightbulb,
-        href: "/learning/ideas",
-      },
-    ],
+    href: "/learning",
   },
   {
     title: "Settings",
@@ -54,123 +41,102 @@ const sidebarItems = [
   },
 ];
 
-export function Sidebar() {
-  const [activeParent, setActiveParent] = useState<string | null>(null);
+interface SidebarProps {
+  isOpen: boolean;
+}
+
+export function Sidebar({ isOpen }: SidebarProps) {
   const location = useLocation();
 
-  const handleItemClick = (item: (typeof sidebarItems)[0]) => {
-    if (item.children) {
-      setActiveParent(activeParent === item.title ? null : item.title);
-    }
-  };
-
   return (
-    <>
-      <aside className="fixed left-0 top-0 z-30 h-screen w-20 border-r bg-background">
-        <div className="flex h-full flex-col py-2">
-          <div className="flex flex-col items-center">
-            <UserButton />
-            <div className="my-4 h-[1px] w-8 bg-border" />
-          </div>
+    <aside
+      className={cn(
+        "fixed left-0 top-0 z-30 h-screen border-none shadow-sm bg-background transition-all duration-300 ease-in-out",
+        isOpen ? "w-[281px]" : "w-[50px]"
+      )}
+    >
+      <div className="flex h-full flex-col">
+        <div className="flex-1 py-4">
+          <Link to="/">
+            <img className="w-8 h-8" src={Logo} />
+          </Link>
+
           <nav className="space-y-1 px-1 flex-1">
             {sidebarItems.map((item) => {
-              const isActive =
-                item.href === location.pathname ||
-                item.children?.some(
-                  (child) => child.href === location.pathname
-                ) ||
-                activeParent === item.title;
+              const isActive = item.href === location.pathname;
 
-              return item.children ? (
-                <button
-                  key={item.title}
-                  onClick={() => handleItemClick(item)}
-                  className={cn(
-                    "w-full flex flex-col items-center gap-0.5 rounded-lg py-1.5 px-1 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground",
-                    isActive && "bg-accent text-accent-foreground"
-                  )}
-                >
-                  <item.icon className="h-4 w-4" />
-                  <span className="text-[10px]">{item.title}</span>
-                </button>
-              ) : (
-                <Link
-                  key={item.title}
-                  to={item.href}
-                  onClick={() => handleItemClick(item)}
-                  className={cn(
-                    "w-full flex flex-col items-center gap-0.5 rounded-lg py-1.5 px-1 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground",
-                    isActive && "bg-accent text-accent-foreground"
-                  )}
-                >
-                  <item.icon className="h-4 w-4" />
-                  <span className="text-[10px]">{item.title}</span>
-                </Link>
+              return (
+                <TooltipProvider key={item.title} delayDuration={0}>
+                  <Tooltip
+                    side="right"
+                    content={isOpen ? undefined : item.title}
+                  >
+                    <Link
+                      to={item.href}
+                      className={cn(
+                        "relative w-full flex items-center h-10 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground rounded-md",
+                        !isOpen && "justify-center px-0",
+                        item.href === "/chat"
+                          ? "border-1 border-gray-300 hover:border-accent"
+                          : [
+                              "px-2",
+                              isActive && "bg-accent/50 text-accent-foreground",
+                            ]
+                      )}
+                    >
+                      <item.icon
+                        className={cn(
+                          "h-5 w-5 shrink-0",
+                          item.href === "/chat" && "text-foreground"
+                        )}
+                      />
+                      {isOpen && (
+                        <span
+                          className={cn(
+                            "ml-3 text-sm font-medium",
+                            item.href === "/chat" && "text-foreground"
+                          )}
+                        >
+                          {item.title}
+                        </span>
+                      )}
+                    </Link>
+                  </Tooltip>
+                </TooltipProvider>
               );
             })}
           </nav>
-          <div className="px-1 pt-4 border-t">
-            <div className="flex flex-col items-center gap-2">
-              <SignedIn>
-                <SignOutButton>
-                  <div className="flex flex-col items-center gap-2">
-                    <LogOut className="h-4 w-4" />
-                    <span className="text-[10px]">Sign out</span>
-                  </div>
-                </SignOutButton>
-              </SignedIn>
-              <SignedOut>
-                <SignInButton>
-                  <div className="flex items-center gap-2">
-                    <LogIn className="h-4 w-4" />
-                    <span className="text-[10px]">Sign in</span>
-                  </div>
-                </SignInButton>
-              </SignedOut>
-            </div>
+        </div>
+        <div className="mt-auto border-t px-2 py-4">
+          <div className="flex items-center gap-2">
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
+            <SignedOut>
+              <TooltipProvider delayDuration={0}>
+                <Tooltip side="right" content={isOpen ? undefined : "Sign in"}>
+                  <SignInButton>
+                    <div
+                      className={cn(
+                        "flex items-center h-10 text-muted-foreground transition-colors hover:text-foreground rounded-md",
+                        isOpen && "w-full",
+                        !isOpen && "justify-center px-0"
+                      )}
+                    >
+                      <LogIn className="h-5 w-5 shrink-0" />
+                      {isOpen && (
+                        <span className="ml-3 text-sm font-medium">
+                          Sign in
+                        </span>
+                      )}
+                    </div>
+                  </SignInButton>
+                </Tooltip>
+              </TooltipProvider>
+            </SignedOut>
           </div>
         </div>
-      </aside>
-
-      {/* Sliding sub-sidebar */}
-      <aside
-        className={cn(
-          "fixed left-20 top-0 z-20 h-screen w-20 border-r bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
-          "transition-transform duration-300",
-          activeParent ? "translate-x-0" : "-translate-x-full"
-        )}
-      >
-        <div className="flex h-full flex-col py-2">
-          <div className="flex flex-col items-center">
-            <button
-              onClick={() => setActiveParent(null)}
-              className="p-1 text-muted-foreground hover:text-foreground"
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </button>
-            <div className="my-4 h-[1px] w-8 bg-border" />
-          </div>
-          <nav className="space-y-1 px-1">
-            {activeParent &&
-              sidebarItems
-                .find((item) => item.title === activeParent)
-                ?.children?.map((child) => (
-                  <Link
-                    key={child.href}
-                    to={child.href}
-                    className={cn(
-                      "flex flex-col items-center gap-0.5 rounded-lg py-1.5 px-1 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground",
-                      location.pathname === child.href &&
-                        "bg-accent text-accent-foreground"
-                    )}
-                  >
-                    <child.icon className="h-4 w-4" />
-                    <span className="text-[10px]">{child.title}</span>
-                  </Link>
-                ))}
-          </nav>
-        </div>
-      </aside>
-    </>
+      </div>
+    </aside>
   );
 }

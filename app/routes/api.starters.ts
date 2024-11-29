@@ -2,6 +2,7 @@ import OpenAI from "openai";
 import { type LoaderFunction } from "@remix-run/node";
 import { ServerError } from "~/lib/errors";
 import { Starters } from "~/lib/responses";
+import { STARTER_PROMPT } from "~/config/prompts";
 
 export const loader: LoaderFunction = async () => {
   const openai = new OpenAI({
@@ -18,8 +19,7 @@ export const loader: LoaderFunction = async () => {
       messages: [
         {
           role: "system",
-          content:
-            "You are an AI assistant specializing in early childhood education, designed to help teachers with their professional needs. Generate conversation starters that address common teaching challenges, curriculum planning, classroom management, and professional development. Focus on questions that teachers would ask, such as 'How can I differentiate instruction for...' or 'What strategies work best for...'. The questions should be specific to teaching scenarios but concise. Return ONLY the questions, one per line, without any numbering or bullets.",
+          content: STARTER_PROMPT,
         },
         {
           role: "user",
