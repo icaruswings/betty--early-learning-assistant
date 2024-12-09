@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-import { DEFAULT_MODEL, type ModelId } from "~/components/model-selector";
+import { DEFAULT_MODEL, type ModelId } from "~/lib/constants";
 
 export const sidebarOpenAtom = atom<boolean>(false);
 

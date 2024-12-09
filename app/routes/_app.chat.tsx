@@ -1,6 +1,5 @@
 import { useRef, useEffect } from "react";
 import { LoaderFunctionArgs, redirect, type MetaFunction } from "@remix-run/node";
-import { RootLayout } from "~/components/layout/root-layout";
 import { ConversationStarters } from "~/components/conversation-starters";
 import { getAuth } from "@clerk/remix/ssr.server";
 import { useChatState } from "~/hooks/use-chat-state";
@@ -73,17 +72,17 @@ export default function Chat() {
   const isEmpty = messages.length === 0;
 
   return (
-    <RootLayout>
+    <div className="h-full flex-1 bg-purple-400">
       {isEmpty ? (
-        <div className="h-screen w-full max-w-3xl mx-auto p-4 ">
-          <div className="h-full flex flex-col">
-            <div className="flex-1 flex flex-col justify-center">
+        <div className="mx-auto h-full w-full max-w-3xl flex-1 p-4">
+          <div className="flex h-full flex-col">
+            <div className="flex h-full flex-1 flex-col justify-center bg-orange-300">
               <EmptyState />
               <div className="w-full">
                 <ConversationStarters onSelect={sendMessage} />
               </div>
             </div>
-            <div className="flex-shrink-0 pt-4">
+            <div className="flex-none bg-green-400 pt-4">
               <ChatInput
                 isLoading={isLoading}
                 onSubmit={handleSubmit}
@@ -93,8 +92,8 @@ export default function Chat() {
           </div>
         </div>
       ) : (
-        <div className="h-screen w-full max-w-3xl mx-auto p-4 ">
-          <div className="h-full flex flex-col">
+        <div className="mx-auto h-screen w-full max-w-3xl p-4">
+          <div className="flex h-full flex-col">
             <ScrollArea className="flex-1">
               <MessageList messages={messages} />
             </ScrollArea>
@@ -108,6 +107,6 @@ export default function Chat() {
           </div>
         </div>
       )}
-    </RootLayout>
+    </div>
   );
 }
