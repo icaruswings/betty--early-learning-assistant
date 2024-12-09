@@ -1,10 +1,7 @@
-import { useLocation } from "@remix-run/react";
-import { Sidebar } from "./sidebar";
+import { AppSidebar } from "./app-sidebar";
 import { useAtom } from "jotai";
 import { sidebarOpenAtom } from "~/atoms";
-import { Menu } from "lucide-react";
-import { Button } from "~/components/ui/button";
-import { cn } from "~/lib/utils";
+import { SidebarProvider, SidebarTrigger } from "../ui/sidebar";
 
 interface RootLayoutProps {
   children: React.ReactNode;
@@ -12,33 +9,18 @@ interface RootLayoutProps {
 
 export function RootLayout({ children }: RootLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useAtom(sidebarOpenAtom);
-  const { pathname } = useLocation();
 
   return (
     <div className="relative flex overflow-hidden">
-      {/* Mobile Menu Button */}
-      <Button
-        variant="ghost"
-        size="icon"
-        className="fixed h-12 top-[10px] left-4 z-50 md:hidden"
-        onClick={() => setSidebarOpen(!sidebarOpen)}
-      >
-        <Menu className="h-6 w-6" />
-      </Button>
+      <SidebarProvider>
+        <AppSidebar />
 
-      {/* Backdrop */}
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm md:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
+        <main className="flex-1">
+          <SidebarTrigger />
 
-      <Sidebar isOpen={sidebarOpen} />
-
-      <main className="flex-1">
-        <div className="flex flex-col h-full w-full">{children}</div>
-      </main>
+          <div className="flex h-full w-full flex-col">{children}</div>
+        </main>
+      </SidebarProvider>
     </div>
   );
 }

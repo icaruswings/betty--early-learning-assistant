@@ -1,3 +1,19 @@
+/**
+ * A custom hook that provides functionality for reading and processing streaming responses.
+ * It handles the low-level details of reading a streaming response using the ReadableStream API
+ * and provides callbacks for handling chunks of data and completion.
+ * 
+ * @returns {Object} An object containing a function that takes a Response object and options, 
+ * and returns a Promise with the accumulated content and any error that occurred.
+ * 
+ * @example
+ * const { streamReader } = useStreamReader();
+ * const result = await streamReader(response, {
+ *   onChunk: (chunk) => console.log(chunk),
+ *   onComplete: (content) => console.log('Complete:', content)
+ * });
+ */
+
 import { useCallback } from "react";
 
 interface StreamOptions {

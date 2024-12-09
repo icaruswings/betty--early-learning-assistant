@@ -1,3 +1,14 @@
+/**
+ * A custom hook that manages chat suggestions based on the current message history.
+ * It handles fetching and updating suggestions for the chat interface.
+ * 
+ * @param {Object} props - The hook's configuration object
+ * @param {Message[]} props.messages - Array of current chat messages
+ * @param {Function} props.onSuggestionsLoading - Callback fired when suggestions are being loaded
+ * @param {Function} props.onSuggestionsUpdate - Callback fired when new suggestions are available
+ * @returns {Function} A function to trigger fetching new suggestions
+ */
+
 import { useCallback } from "react";
 import { ChatService } from "~/services/chat-service";
 import type { Message } from "~/schemas/chat";

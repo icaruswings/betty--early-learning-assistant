@@ -1,29 +1,15 @@
-import { useRef, useEffect, useState } from "react";
-import {
-  LoaderFunctionArgs,
-  redirect,
-  type MetaFunction,
-} from "@remix-run/node";
-import { Button } from "~/components/ui/button";
-import { Textarea } from "~/components/ui/textarea";
+import { useRef, useEffect } from "react";
+import { LoaderFunctionArgs, redirect, type MetaFunction } from "@remix-run/node";
 import { RootLayout } from "~/components/layout/root-layout";
-import { MarkdownMessage } from "~/components/markdown-message";
-import { cn } from "~/lib/utils";
-import { MessageSquare } from "lucide-react";
 import { ConversationStarters } from "~/components/conversation-starters";
-import { SuggestionList } from "~/components/suggestion-list";
 import { getAuth } from "@clerk/remix/ssr.server";
-import { useUser } from "@clerk/remix";
 import { useChatState } from "~/hooks/use-chat-state";
 import { useChatMessages } from "~/hooks/use-chat-messages";
 import { useChatSuggestions } from "~/hooks/use-chat-suggestions";
-import { PageHeader } from "~/components/layout/page-header";
 import EmptyState from "~/components/chat/empty-state";
 import MessageList from "~/components/chat/message-list";
 import ChatInput from "~/components/chat/input";
-import { useChatScroll } from "~/hooks/use-chat-scroll";
 import { ScrollArea } from "~/components/ui/scroll-area";
-import { ChatScrollAnchor } from "~/components/chat/chat-scroll-anchor";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Chat - Early Learning Assistant" }];
@@ -36,15 +22,10 @@ export async function loader(args: LoaderFunctionArgs) {
 }
 
 export default function Chat() {
-  const { isLoaded, isSignedIn } = useUser();
   const {
     messages,
-    input,
     isLoading,
     model,
-    suggestions,
-    loadingSuggestions,
-    setInput,
     startMessage,
     appendAssistantMessage,
     setError,
@@ -54,7 +35,6 @@ export default function Chat() {
     removeLastMessage,
   } = useChatState();
 
-  const messagesEndRef = useRef<null | HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   // Chat message handling

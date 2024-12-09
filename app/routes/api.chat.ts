@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import { DEFAULT_MESSAGES } from "~/config/prompts";
+import { DEFAULT_MESSAGES, PEDAGOGY_PROMPT } from "~/config/prompts";
 import type { ActionFunction } from "@remix-run/node";
 import { ServerError } from "~/lib/errors";
 
@@ -15,7 +15,10 @@ export const action: ActionFunction = async ({ request }) => {
 
   // Combine default messages with user messages
   const messages = [
-    ...DEFAULT_MESSAGES,
+    {
+      role: "system",
+      content: PEDAGOGY_PROMPT,
+    },
     ...userMessages.filter((msg: any) => msg.role === "user"),
   ];
 

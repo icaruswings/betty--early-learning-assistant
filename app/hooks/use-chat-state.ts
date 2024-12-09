@@ -1,3 +1,30 @@
+/**
+ * A custom hook that manages the complete state of a chat interface.
+ * This includes messages, input state, loading states, error handling,
+ * model selection, and chat suggestions.
+ * 
+ * The hook implements a reducer pattern to handle various chat actions
+ * such as setting input, changing models, and managing message flow.
+ * 
+ * @returns {Object} An object containing:
+ * - messages: Current array of chat messages
+ * - input: Current input field value
+ * - isLoading: Loading state of the chat
+ * - error: Current error state if any
+ * - model: Selected AI model
+ * - suggestions: Array of chat suggestions
+ * - setInput: Function to set input field value
+ * - setModel: Function to change AI model
+ * - startMessage: Function to start a new message
+ * - appendAssistantMessage: Function to append assistant message
+ * - setError: Function to set error state
+ * - clearError: Function to clear error state
+ * - setSuggestions: Function to set chat suggestions
+ * - setLoadingSuggestions: Function to set loading state of suggestions
+ * - setLoading: Function to set loading state of chat
+ * - removeLastMessage: Function to remove last message
+ */
+
 import { useReducer, useCallback } from "react";
 import type { Message } from "~/schemas/chat";
 import type { ModelId } from "~/components/model-selector";

@@ -3,8 +3,15 @@ import { type LoaderFunction } from "@remix-run/node";
 import { ServerError } from "~/lib/errors";
 import { Starters } from "~/lib/responses";
 import { STARTER_PROMPT } from "~/config/prompts";
+import { getAuth } from "@clerk/remix/ssr.server";
 
-export const loader: LoaderFunction = async () => {
+export const loader: LoaderFunction = async (args) => {
+  const { sessionId } = await getAuth(args);
+
+  if (!sessionId) {
+    throw new Response("Unauthorized", { status: 401 });
+  }
+
   const openai = new OpenAI({
     baseURL: "https://oai.hconeai.com/v1",
     apiKey: process.env.OPENAI_API_KEY,
@@ -23,8 +30,7 @@ export const loader: LoaderFunction = async () => {
         },
         {
           role: "user",
-          content:
-            "Generate 4 conversation starters focused on teaching scenarios",
+          content: "Generate 4 conversation starters focused on teaching scenarios",
         },
       ],
       temperature: 0.7,
