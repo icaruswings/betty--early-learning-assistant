@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import { DEFAULT_MESSAGES, PEDAGOGY_PROMPT } from "~/config/prompts";
+import { PEDAGOGY_PROMPT } from "~/config/prompts";
 import type { ActionFunction } from "@remix-run/node";
 import { ServerError } from "~/lib/errors";
 
@@ -49,11 +49,8 @@ export const action: ActionFunction = async ({ request }) => {
     const transformStream = new TransformStream({
       async transform(chunk, controller) {
         const content = chunk.choices[0]?.delta?.content || "";
-        if (content) {
-          // Send each chunk as a JSON event
-          const data = JSON.stringify({ content });
-          controller.enqueue(encoder.encode(`data: ${data}\n\n`));
-        }
+        const data = JSON.stringify({ content });
+        controller.enqueue(encoder.encode(`data: ${data}\n\n`));
       },
     });
 

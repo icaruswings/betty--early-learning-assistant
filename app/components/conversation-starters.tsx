@@ -15,30 +15,31 @@ interface ConversationStartersProps {
 function LoadingState() {
   const isMdScreen = useIsMdScreen();
   return (
-    <div className="relative space-y-4">
+    <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
-          <MessageSquarePlus className="w-5 h-5" />
+          <MessageSquarePlus className="h-5 w-5" />
           <h2 className="text-lg font-semibold">Start a conversation</h2>
         </div>
+        <div className="h-8 w-8" />
       </div>
 
-      <div className="flex flex-row md:grid md:grid-cols-2 gap-2">
+      <div className="flex flex-row gap-2 md:grid md:grid-cols-2">
         {Array.from({ length: isMdScreen ? 2 : 4 }).map((_, i) => (
           <div
             key={i}
-            className="flex-1 md:flex-none flex h-auto min-h-[52px] items-center rounded-md border bg-background px-4 py-3"
+            className="h-auto min-h-[52px] flex-1 items-center rounded-md border bg-background px-4 py-3 md:flex-none"
           >
-            <div className="space-y-1 w-full">
+            <div className="w-full space-y-1">
               <Skeleton className="h-4 w-[80%]" />
               <Skeleton className="h-4 w-[60%]" />
               <Skeleton className="h-4 w-[40%]" />
             </div>
           </div>
         ))}
-      </div>
-      <div className="absolute inset-0 flex items-center justify-center bg-background/50">
-        <LoadingDots />
+        <div className="absolute inset-0 flex items-center justify-center bg-background/50">
+          <LoadingDots />
+        </div>
       </div>
     </div>
   );
@@ -71,8 +72,7 @@ export function ConversationStarters({ onSelect }: ConversationStartersProps) {
   useEffect(() => {
     // Only fetch if we haven't fetched before or if it's been more than 1 hour
     const shouldFetch =
-      !startersState.lastFetched ||
-      Date.now() - startersState.lastFetched > 3600000;
+      !startersState.lastFetched || Date.now() - startersState.lastFetched > 3600000;
 
     if (shouldFetch) {
       fetchStarters();
@@ -89,7 +89,7 @@ export function ConversationStarters({ onSelect }: ConversationStartersProps) {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
-          <MessageSquarePlus className="w-5 h-5" />
+          <MessageSquarePlus className="h-5 w-5" />
           <h2 className="text-lg font-semibold">Start a conversation</h2>
         </div>
         <Button
@@ -98,23 +98,21 @@ export function ConversationStarters({ onSelect }: ConversationStartersProps) {
           onClick={fetchStarters}
           className={cn("h-8 w-8", isLoading && "animate-spin")}
         >
-          <RefreshCw className="w-4 h-4" />
+          <RefreshCw className="h-4 w-4" />
         </Button>
       </div>
 
-      <div className="flex flex-row md:grid md:grid-cols-2 gap-2">
-        {startersState.starters
-          .slice(0, isMdScreen ? 2 : undefined)
-          .map((starter, i) => (
-            <Button
-              key={i}
-              variant="outline"
-              className="flex-1 md:flex-none h-auto min-h-[52px] whitespace-normal text-left justify-start"
-              onClick={() => onSelect(starter)}
-            >
-              <span className="line-clamp-3">{starter}</span>
-            </Button>
-          ))}
+      <div className="flex flex-row gap-2 md:grid md:grid-cols-2">
+        {startersState.starters.slice(0, isMdScreen ? 2 : undefined).map((starter, i) => (
+          <Button
+            key={i}
+            variant="outline"
+            className="h-auto min-h-[52px] flex-1 justify-start whitespace-normal text-left md:flex-none"
+            onClick={() => onSelect(starter)}
+          >
+            <span className="line-clamp-3">{starter}</span>
+          </Button>
+        ))}
       </div>
     </div>
   );

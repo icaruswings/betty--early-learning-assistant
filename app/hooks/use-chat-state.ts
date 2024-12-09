@@ -2,10 +2,10 @@
  * A custom hook that manages the complete state of a chat interface.
  * This includes messages, input state, loading states, error handling,
  * model selection, and chat suggestions.
- * 
+ *
  * The hook implements a reducer pattern to handle various chat actions
  * such as setting input, changing models, and managing message flow.
- * 
+ *
  * @returns {Object} An object containing:
  * - messages: Current array of chat messages
  * - input: Current input field value
@@ -27,7 +27,7 @@
 
 import { useReducer, useCallback } from "react";
 import type { Message } from "~/schemas/chat";
-import type { ModelId } from "~/components/model-selector";
+import type { ModelId } from "~/lib/constants";
 
 interface ChatState {
   messages: Message[];

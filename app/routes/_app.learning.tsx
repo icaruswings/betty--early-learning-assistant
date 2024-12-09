@@ -2,10 +2,6 @@ import { getAuth } from "@clerk/remix/ssr.server";
 import { LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { Outlet } from "@remix-run/react";
 import { PropsWithChildren } from "react";
-import { AppSidebar } from "~/components/layout/app-sidebar";
-import Footer from "~/components/layout/footer";
-import { SidebarProvider, SidebarTrigger } from "~/components/ui/sidebar";
-import ErrorBoundary from "~/components/error-boundary";
 
 export const loader = async (args: LoaderFunctionArgs) => {
   const { sessionId } = await getAuth(args);
@@ -19,17 +15,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
 };
 
 function Layout({ children }: PropsWithChildren<unknown>) {
-  return (
-    <SidebarProvider className="flex h-full">
-      <AppSidebar />
-
-      <main className="relative flex flex-1 flex-col items-center">
-        <SidebarTrigger className="absolute left-2 top-2 z-50" />
-        {children}
-        <Footer />
-      </main>
-    </SidebarProvider>
-  );
+  return <div>{children}</div>;
 }
 
 export default function () {
@@ -39,5 +25,3 @@ export default function () {
     </Layout>
   );
 }
-
-export { ErrorBoundary };

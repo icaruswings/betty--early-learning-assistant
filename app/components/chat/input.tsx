@@ -74,18 +74,18 @@ export default function ChatInput({
       <div
         ref={containerRef}
         onClick={focusInput}
-        className="bg-gray-50 dark:bg-accent rounded-lg pb-4 cursor-text relative"
+        className="relative cursor-text rounded-lg bg-gray-50 pb-4 dark:bg-accent"
       >
         <div
           ref={divRef}
           contentEditable
           onInput={handleInput}
           onKeyDown={handleKeyDown}
-          className="bg-transparent resize-none focus:outline-none text-lg rounded-t-lg px-4 pt-4 min-h-[56px]"
+          className="min-h-[56px] resize-none rounded-t-lg bg-transparent px-4 pt-4 text-lg focus:outline-none"
           aria-label="Message input"
         />
         {showPlaceholder && (
-          <p className="absolute top-4 left-4 text-gray-400 dark: text-accent-foreground pointer-events-none">
+          <p className="pointer-events-none absolute left-4 top-4 text-muted-foreground/30">
             {placeholder}
           </p>
         )}
@@ -97,7 +97,7 @@ export default function ChatInput({
           tabIndex={-1}
           aria-hidden="true"
         />
-        <div className="flex justify-between items-center px-4">
+        <div className="flex items-center justify-between px-4">
           <div className="space-x-2">{/* Space for future actions */}</div>
           <Button
             type="submit"
@@ -105,8 +105,8 @@ export default function ChatInput({
             size="icon"
             disabled={isLoading || isEmpty}
             className={cn(
-              "rounded-full bg-black hover:bg-gray-600 text-white hover:text-white p-0",
-              "disabled:opacity-20 disabled:cursor-not-allowed"
+              "rounded-full bg-black p-0 text-white hover:bg-gray-600 hover:text-white",
+              "disabled:cursor-not-allowed disabled:opacity-20"
             )}
           >
             <ArrowUp className="h-6 w-6" />

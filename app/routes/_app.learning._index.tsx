@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { useUser } from "@clerk/remix";
 import { getAuth } from "@clerk/remix/ssr.server";
-import { RootLayout } from "~/components/layout/root-layout";
 import { PageHeader } from "~/components/layout/page-header";
 import { Book, Plus, Filter } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
@@ -58,9 +57,7 @@ const stories: Story[] = [
   {
     id: 2,
     title: "Musical Discovery",
-    children: [
-      { name: "Mia K.", initials: "MK", image: null },
-    ],
+    children: [{ name: "Mia K.", initials: "MK", image: null }],
     date: "2024-01-13",
     framework: "EYLF",
     outcomes: ["1.3", "5.3"],
@@ -91,9 +88,9 @@ export default function Learning() {
   };
 
   return (
-    <RootLayout>
+    <div className="h-full flex-1 bg-purple-400">
       <PageHeader>
-        <Book className="w-5 h-5" />
+        <Book className="h-5 w-5" />
         <h1 className="text-lg font-semibold">Learning</h1>
         <div className="ml-auto">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -106,23 +103,19 @@ export default function Learning() {
       </PageHeader>
 
       <div className="flex-1 overflow-y-auto">
-        <div className="max-w-4xl mx-auto p-4">
+        <div className="mx-auto max-w-4xl p-4">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsContent value="observations" className="space-y-6">
               {/* Header with actions */}
               <div className="flex items-center justify-between gap-4">
-                <div className="flex-1 flex items-center gap-2">
-                  <Input
-                    placeholder="Search observations..."
-                    className="max-w-sm"
-                    type="search"
-                  />
+                <div className="flex flex-1 items-center gap-2">
+                  <Input placeholder="Search observations..." className="max-w-sm" type="search" />
                   <Button variant="outline" size="icon">
                     <Filter className="h-4 w-4" />
                   </Button>
                 </div>
                 <Button onClick={() => setShowNewObservation(true)}>
-                  <Plus className="h-4 w-4 mr-2" />
+                  <Plus className="mr-2 h-4 w-4" />
                   New Observation
                 </Button>
               </div>
@@ -142,7 +135,7 @@ export default function Learning() {
             <TabsContent value="stories" className="space-y-6">
               {/* Header with actions */}
               <div className="flex items-center justify-between gap-4">
-                <div className="flex-1 flex items-center gap-2">
+                <div className="flex flex-1 items-center gap-2">
                   <Input
                     placeholder="Search learning stories..."
                     className="max-w-sm"
@@ -153,7 +146,7 @@ export default function Learning() {
                   </Button>
                 </div>
                 <Button>
-                  <Plus className="h-4 w-4 mr-2" />
+                  <Plus className="mr-2 h-4 w-4" />
                   New Story
                 </Button>
               </div>
@@ -161,11 +154,7 @@ export default function Learning() {
               {/* Stories list */}
               <div className="grid gap-4">
                 {stories.map((story) => (
-                  <StoryCard
-                    key={story.id}
-                    story={story}
-                    onEdit={() => handleEdit(story.id)}
-                  />
+                  <StoryCard key={story.id} story={story} onEdit={() => handleEdit(story.id)} />
                 ))}
               </div>
             </TabsContent>
@@ -178,6 +167,6 @@ export default function Learning() {
         onOpenChange={setShowNewObservation}
         onSave={handleNewObservation}
       />
-    </RootLayout>
+    </div>
   );
 }

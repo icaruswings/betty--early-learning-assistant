@@ -120,7 +120,7 @@
 // }
 
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/remix";
-import { Book, Home, LogIn, MessageSquare, Settings } from "lucide-react";
+import { Binoculars, Book, Home, LogIn, MessageSquare, Settings } from "lucide-react";
 import { useMemo } from "react";
 import {
   Sidebar,
@@ -150,8 +150,8 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
-        <h2 className="text-lg font-semibold tracking-tight">
-          {state === "expanded" ? "Betty" : "B"}
+        <h2 className="flex h-8 w-8 items-center justify-center rounded-full bg-pink-300 p-2 text-center text-lg font-bold tracking-tight text-background">
+          B
         </h2>
       </SidebarHeader>
       <SidebarContent>
@@ -173,9 +173,17 @@ export function AppSidebar() {
             <SidebarGroupContent>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link to="/">
+                  <Link to="/learning/observations">
+                    <Binoculars />
+                    <span>Observations</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to="/learning/stories">
                     <Book />
-                    <span>Home</span>
+                    <span>Stories</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

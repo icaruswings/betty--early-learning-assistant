@@ -1,7 +1,7 @@
 /**
  * A custom hook for managing chat message interactions and streaming responses.
  * This hook handles sending messages to the chat service and processing streaming responses.
- * 
+ *
  * @param {Object} props - The hook's configuration object
  * @param {Message[]} props.messages - Array of existing chat messages
  * @param {ModelId} props.model - The ID of the AI model to use
@@ -16,7 +16,7 @@ import { useCallback } from "react";
 import { ChatService } from "~/services/chat-service";
 import { useStreamReader } from "./use-stream-reader";
 import type { Message } from "~/schemas/chat";
-import type { ModelId } from "~/components/model-selector";
+import { ModelId } from "~/lib/constants";
 
 interface UseChatMessagesProps {
   messages: Message[];
@@ -47,24 +47,21 @@ export function useChatMessages({
           model
         );
 
-        const { content: streamContent, error: streamError } =
-          await streamReader(response, {
-            onChunk: (chunk) => {
-              onMessageStream(chunk);
-            },
-            onComplete: () => {
-              onMessageComplete();
-            },
-          });
+        const { content: streamContent, error: streamError } = await streamReader(response, {
+          onChunk: (chunk) => {
+            onMessageStream(chunk);
+          },
+          onComplete: () => {
+            onMessageComplete();
+          },
+        });
 
         if (streamError) {
           throw new Error(streamError);
         }
       } catch (error) {
         console.error("Error sending message:", error);
-        onMessageError(
-          error instanceof Error ? error.message : "An error occurred"
-        );
+        onMessageError(error instanceof Error ? error.message : "An error occurred");
       }
     },
     [

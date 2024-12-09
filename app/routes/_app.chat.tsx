@@ -1,6 +1,5 @@
 import { useRef, useEffect } from "react";
 import { LoaderFunctionArgs, redirect, type MetaFunction } from "@remix-run/node";
-import { RootLayout } from "~/components/layout/root-layout";
 import { ConversationStarters } from "~/components/conversation-starters";
 import { getAuth } from "@clerk/remix/ssr.server";
 import { useChatState } from "~/hooks/use-chat-state";
@@ -73,41 +72,22 @@ export default function Chat() {
   const isEmpty = messages.length === 0;
 
   return (
-    <RootLayout>
+    <div className="mx-auto flex h-screen w-full max-w-3xl flex-1 flex-col">
       {isEmpty ? (
-        <div className="h-screen w-full max-w-3xl mx-auto p-4 ">
-          <div className="h-full flex flex-col">
-            <div className="flex-1 flex flex-col justify-center">
-              <EmptyState />
-              <div className="w-full">
-                <ConversationStarters onSelect={sendMessage} />
-              </div>
-            </div>
-            <div className="flex-shrink-0 pt-4">
-              <ChatInput
-                isLoading={isLoading}
-                onSubmit={handleSubmit}
-                placeholder="Message Betty"
-              />
-            </div>
-          </div>
+        <div className="flex flex-1 flex-col justify-center gap-6">
+          <EmptyState />
+          <ConversationStarters onSelect={sendMessage} />
         </div>
       ) : (
-        <div className="h-screen w-full max-w-3xl mx-auto p-4 ">
-          <div className="h-full flex flex-col">
-            <ScrollArea className="flex-1">
-              <MessageList messages={messages} />
-            </ScrollArea>
-            <div className="flex-shrink-0">
-              <ChatInput
-                isLoading={isLoading}
-                onSubmit={handleSubmit}
-                placeholder="Ask a follow up..."
-              />
-            </div>
-          </div>
+        <div className="flex flex-1 flex-col">
+          <ScrollArea type="scroll" className="flex-1">
+            <MessageList messages={messages} />
+          </ScrollArea>
         </div>
       )}
-    </RootLayout>
+      <div className="flex-none pt-4">
+        <ChatInput isLoading={isLoading} onSubmit={handleSubmit} placeholder="Ask Betty ..." />
+      </div>
+    </div>
   );
 }
