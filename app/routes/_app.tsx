@@ -20,7 +20,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
 
 function Layout({ children }: PropsWithChildren<unknown>) {
   return (
-    <SidebarProvider className="flex h-full">
+    <SidebarProvider>
       <AppSidebar />
 
       <main className="relative flex flex-1 flex-col items-center">

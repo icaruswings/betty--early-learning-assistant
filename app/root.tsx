@@ -17,6 +17,7 @@ import invariant from "tiny-invariant";
 import { useState } from "react";
 import { ConvexReactClient } from "convex/react";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
+import { cn } from "./lib/utils";
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: stylesheet }];
 
@@ -51,7 +52,7 @@ function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body className="min-h-screen bg-background font-sans text-foreground antialiased">
+      <body className={cn("font-sans antialiased")}>
         {children}
         <ScrollRestoration />
         <PreventFlashOnWrongTheme ssrTheme={Boolean(data?.theme)} />

@@ -36,6 +36,13 @@ export default function Chat() {
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
+  // Suggestions handling
+  const { fetchSuggestions } = useChatSuggestions({
+    messages,
+    onSuggestionsLoading: setLoadingSuggestions,
+    onSuggestionsUpdate: setSuggestions,
+  });
+
   // Chat message handling
   const { sendMessage } = useChatMessages({
     messages,
@@ -50,13 +57,6 @@ export default function Chat() {
       setError(error);
       removeLastMessage();
     },
-  });
-
-  // Suggestions handling
-  const { fetchSuggestions } = useChatSuggestions({
-    messages,
-    onSuggestionsLoading: setLoadingSuggestions,
-    onSuggestionsUpdate: setSuggestions,
   });
 
   // Auto-focus input
