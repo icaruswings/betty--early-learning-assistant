@@ -2,11 +2,20 @@ import OpenAI from "openai";
 import { PEDAGOGY_PROMPT } from "~/config/prompts";
 import type { ActionFunction } from "@remix-run/node";
 import { ServerError } from "~/lib/errors";
+import { getAuth } from "@clerk/remix/ssr.server";
 
-export const action: ActionFunction = async ({ request }) => {
+export const action: ActionFunction = async (args) => {
+  const { request } = args;
+
   // Ensure the request method is POST
   if (request.method !== "POST") {
     return new Response("Method Not Allowed", { status: 405 });
+  }
+
+  const { sessionId } = await getAuth(args);
+
+  if (!sessionId) {
+    throw new Response("Unauthorized", { status: 401 });
   }
 
   // Parse the incoming request body
