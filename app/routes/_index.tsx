@@ -6,7 +6,7 @@ import { useUser } from "@clerk/remix";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "Early Education Assistant" },
+    { title: "Ask Betty" },
     {
       name: "description",
       content: "Your AI-powered early education assistant",
@@ -18,7 +18,7 @@ export default function Index() {
   const { isSignedIn } = useUser();
 
   return (
-    <div className="w-full flex-1">
+    <div className="min-h-svh w-full flex-1">
       <div className="mx-auto flex h-full w-full max-w-3xl flex-1 flex-col justify-center">
         <h1 className="mb-4 text-4xl font-bold">Meet Betty,</h1>
         <p className="mb-8 max-w-2xl text-xl text-muted-foreground">
