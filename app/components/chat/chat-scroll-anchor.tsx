@@ -23,8 +23,7 @@ export function ChatScrollAnchor({
 
       const scrollAreaElement = scrollAreaRef.current;
 
-      scrollAreaElement.scrollTop =
-        scrollAreaElement.scrollHeight - scrollAreaElement.clientHeight;
+      scrollAreaElement.scrollTop = scrollAreaElement.scrollHeight - scrollAreaElement.clientHeight;
     }
   }, [inView, entry, isAtBottom, trackVisibility]);
 

@@ -77,4 +77,4 @@ function App() {
   );
 }
 
-export default ClerkApp(App, { afterSignOutUrl: "/sign-in" });
+export default ClerkApp(App);

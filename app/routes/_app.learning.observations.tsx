@@ -10,8 +10,10 @@ export default function LearningObservations() {
       </PageHeader>
       <div className="container mx-auto py-6">
         <div className="flex flex-col items-center justify-center p-8 text-center">
-          <h2 className="text-2xl font-bold mb-4">Coming Soon</h2>
-          <p className="text-gray-600 mb-4">Learning observations feature is under development.</p>
+          <h2 className="mb-4 text-2xl font-bold">Coming Soon</h2>
+          <p className="mb-4 text-gray-600">
+            Our learning observations feature is under development.
+          </p>
         </div>
       </div>
     </div>

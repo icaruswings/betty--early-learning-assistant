@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { LoaderFunctionArgs, redirect, type MetaFunction } from "@remix-run/node";
 import { ConversationStarters } from "~/components/conversation-starters";
 import { getAuth } from "@clerk/remix/ssr.server";
@@ -9,6 +9,7 @@ import EmptyState from "~/components/chat/empty-state";
 import MessageList from "~/components/chat/message-list";
 import ChatInput from "~/components/chat/input";
 import { ScrollArea } from "~/components/ui/scroll-area";
+import { ChatScrollAnchor } from "~/components/chat/chat-scroll-anchor";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Chat - Early Learning Assistant" }];
@@ -35,6 +36,14 @@ export default function Chat() {
   } = useChatState();
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const [isAtBottom, setIsAtBottom] = useState(true);
+
+  const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
+    const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
+    const isBottom = Math.abs(scrollHeight - clientHeight - scrollTop) < 10;
+    setIsAtBottom(isBottom);
+  };
 
   // Suggestions handling
   const { fetchSuggestions } = useChatSuggestions({
@@ -79,11 +88,14 @@ export default function Chat() {
           <ConversationStarters onSelect={sendMessage} />
         </div>
       ) : (
-        <div className="flex flex-1 flex-col">
-          <ScrollArea type="scroll" className="flex-1">
-            <MessageList messages={messages} />
-          </ScrollArea>
-        </div>
+        <ScrollArea ref={scrollAreaRef} onScroll={handleScroll} type="hover" className="flex-1">
+          <MessageList messages={messages} />
+          <ChatScrollAnchor
+            trackVisibility={isLoading}
+            isAtBottom={isAtBottom}
+            scrollAreaRef={scrollAreaRef}
+          />
+        </ScrollArea>
       )}
       <div className="flex-none pt-4">
         <ChatInput isLoading={isLoading} onSubmit={handleSubmit} placeholder="Ask Betty ..." />

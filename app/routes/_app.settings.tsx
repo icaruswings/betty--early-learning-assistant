@@ -51,12 +51,11 @@ export default function Settings() {
   }
 
   return (
-    <div className="h-full flex-1">
+    <div className="mx-auto flex h-screen w-full max-w-3xl flex-1 flex-col">
       <PageHeader>
         <SettingsIcon className="h-5 w-5" />
         <h1 className="text-lg font-semibold">Settings</h1>
       </PageHeader>
-
       <div className="mx-auto flex max-w-4xl flex-col space-y-12 p-4">
         {/* Appearance Section */}
         <div>
