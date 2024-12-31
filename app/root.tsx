@@ -19,7 +19,12 @@ import { ConvexReactClient } from "convex/react";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
 import { cn } from "./lib/utils";
 
-export const links: LinksFunction = () => [{ rel: "stylesheet", href: stylesheet }];
+export const links: LinksFunction = () => [
+  { rel: "stylesheet", href: stylesheet },
+  { rel: "preconnect", href: "https://fonts.googleapis.com" },
+  { rel: "preconnect", href: "https://fonts.gstatic.com", crossorigin: true },
+  { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Smooch&display=swap" },
+];
 
 export const loader = async (args: LoaderFunctionArgs) => {
   return await rootAuthLoader(args, async ({ request }) => {

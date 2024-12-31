@@ -14,14 +14,6 @@ export const loader = async (args: LoaderFunctionArgs) => {
   return null;
 };
 
-function Layout({ children }: PropsWithChildren<unknown>) {
-  return <div className="mx-auto flex h-screen w-full max-w-3xl flex-1 flex-col">{children}</div>;
-}
-
 export default function () {
-  return (
-    <Layout>
-      <Outlet />
-    </Layout>
-  );
+  return <Outlet />;
 }

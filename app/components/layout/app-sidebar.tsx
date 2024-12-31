@@ -142,6 +142,7 @@ import { useTheme } from "remix-themes";
 import { dark } from "@clerk/themes";
 import { Link } from "@remix-run/react";
 import { Button } from "../ui/button";
+import Logo from "./logo";
 
 export function AppSidebar() {
   const [theme] = useTheme();
@@ -150,9 +151,7 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
-        <h2 className="flex h-8 w-8 items-center justify-center rounded-full bg-pink-300 p-2 text-center text-lg font-bold tracking-tight text-background">
-          B
-        </h2>
+        <Logo />
       </SidebarHeader>
       <SidebarContent>
         <SidebarMenu>

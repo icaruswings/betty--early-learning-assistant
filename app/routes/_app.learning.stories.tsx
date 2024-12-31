@@ -3,7 +3,7 @@ import { Book } from "lucide-react";
 
 export default function LearningStories() {
   return (
-    <div className="h-full flex-1">
+    <div className="flex-1">
       <PageHeader>
         <Book className="h-5 w-5" />
         <h1 className="text-lg font-semibold">Learning Stories</h1>

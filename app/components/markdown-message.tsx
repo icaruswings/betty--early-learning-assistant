@@ -16,7 +16,7 @@ interface MarkdownMessageProps {
 const STYLES = {
   container: {
     base: "px-8 py-4",
-    user: "ml-auto max-w-[80%] rounded-3xl bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100",
+    user: "ml-auto max-w-[80%] rounded-2xl bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100",
   },
   code: {
     inline: "rounded bg-gray-100 px-1 py-0.5 text-gray-900 dark:bg-gray-800 dark:text-gray-100",

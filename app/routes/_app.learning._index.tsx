@@ -88,7 +88,7 @@ export default function Learning() {
   };
 
   return (
-    <div className="h-full flex-1 bg-purple-400">
+    <div className="h-full bg-purple-400">
       <PageHeader>
         <Book className="h-5 w-5" />
         <h1 className="text-lg font-semibold">Learning</h1>

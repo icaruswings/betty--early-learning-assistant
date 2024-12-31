@@ -23,9 +23,9 @@ function Layout({ children }: PropsWithChildren<unknown>) {
     <SidebarProvider>
       <AppSidebar />
 
-      <main className="relative flex flex-1 flex-col items-center">
+      <main className="relative flex min-h-svh w-full flex-col items-center px-6 pt-6">
         <SidebarTrigger className="absolute left-2 top-2 z-50" />
-        {children}
+        <div className="w-full flex-1">{children}</div>
         <Footer />
       </main>
     </SidebarProvider>

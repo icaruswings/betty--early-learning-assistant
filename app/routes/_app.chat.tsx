@@ -81,14 +81,19 @@ export default function Chat() {
   const isEmpty = messages.length === 0;
 
   return (
-    <div className="mx-auto flex h-screen w-full max-w-3xl flex-1 flex-col">
+    <div className="mx-auto flex h-full w-full max-w-3xl flex-col">
       {isEmpty ? (
         <div className="flex flex-1 flex-col justify-center gap-6">
           <EmptyState />
           <ConversationStarters onSelect={sendMessage} />
         </div>
       ) : (
-        <ScrollArea ref={scrollAreaRef} onScroll={handleScroll} type="hover" className="flex-1">
+        <ScrollArea
+          type="hover"
+          ref={scrollAreaRef}
+          onScroll={handleScroll}
+          className="h-full w-full"
+        >
           <MessageList messages={messages} />
           <ChatScrollAnchor
             trackVisibility={isLoading}
@@ -97,7 +102,8 @@ export default function Chat() {
           />
         </ScrollArea>
       )}
-      <div className="flex-none pt-4">
+
+      <div className="pt-4">
         <ChatInput isLoading={isLoading} onSubmit={handleSubmit} placeholder="Ask Betty ..." />
       </div>
     </div>
