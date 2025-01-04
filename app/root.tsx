@@ -22,7 +22,7 @@ import { cn } from "./lib/utils";
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
-  { rel: "preconnect", href: "https://fonts.gstatic.com", crossorigin: true },
+  { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
   { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Smooch&display=swap" },
 ];
 

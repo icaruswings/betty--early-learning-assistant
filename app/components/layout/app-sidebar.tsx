@@ -136,6 +136,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  SidebarTrigger,
   useSidebar,
 } from "~/components/ui/sidebar";
 import { useTheme } from "remix-themes";
@@ -150,8 +151,10 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader>
-        <Logo />
+      <SidebarHeader className="h-12">
+        <div className="flex items-center justify-start">
+          <SidebarTrigger className="size-8 [&_svg]:size-4" />
+        </div>
       </SidebarHeader>
       <SidebarContent>
         <SidebarMenu>
@@ -214,30 +217,18 @@ export function AppSidebar() {
           </SidebarGroup>
         </SidebarMenu>
       </SidebarContent>
-      <SidebarFooter>
-        <SignedIn>
-          <UserButton
-            appearance={{
-              baseTheme: theme === "dark" ? dark : undefined,
-              elements: {
-                userButtonBox: {
-                  flexDirection: "row-reverse",
-                  flexShrink: "0",
-                },
+      <SidebarFooter className="md:hidden">
+        <UserButton
+          showName
+          appearance={{
+            baseTheme: theme === "dark" ? dark : undefined,
+            elements: {
+              userButtonBox: {
+                flexDirection: "row-reverse",
               },
-            }}
-            showName={true}
-          />
-        </SignedIn>
-
-        <SignedOut>
-          <SignInButton>
-            <Button variant="ghost" className="justify-start">
-              <LogIn />
-              <span>Sign In</span>
-            </Button>
-          </SignInButton>
-        </SignedOut>
+            },
+          }}
+        />
       </SidebarFooter>
     </Sidebar>
   );

@@ -1,9 +1,31 @@
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useEffect, useState } from "react";
+import { UserButton } from "@clerk/remix";
+import { useTheme } from "remix-themes";
+import { dark } from "@clerk/themes";
+import { usePageHeader } from "~/hooks/use-page-header";
+import { SidebarTrigger } from "../ui/sidebar";
+import { cn } from "~/lib/utils";
 
 export function PageHeader({ children }: PropsWithChildren<unknown>) {
+  const [theme] = useTheme();
+  const { title, Icon } = usePageHeader();
+
   return (
-    <div className="flex items-center justify-between p-4 pl-14 md:pl-4 border-b">
-      <div className="flex items-center gap-4">{children}</div>
-    </div>
+    <header className="flex h-12 items-center bg-white/30 py-2 pl-2 pr-4 backdrop-blur-lg sm:pl-4">
+      <div className="flex h-full w-full flex-none items-center">
+        <div className="flex flex-1 items-center gap-4">
+          <SidebarTrigger className="md:hidden [&_svg]:size-4" />
+          {Icon && <Icon className="h-5 w-5" />}
+          <h1 className="m-0 p-0 text-lg font-semibold">{title}</h1>
+        </div>
+        <div className="hidden md:block">
+          <UserButton
+            appearance={{
+              baseTheme: theme === "dark" ? dark : undefined,
+            }}
+          />
+        </div>
+      </div>
+    </header>
   );
 }

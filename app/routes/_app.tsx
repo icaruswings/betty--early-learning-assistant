@@ -4,8 +4,10 @@ import { Outlet } from "@remix-run/react";
 import { PropsWithChildren } from "react";
 import { AppSidebar } from "~/components/layout/app-sidebar";
 import Footer from "~/components/layout/footer";
-import { SidebarProvider, SidebarTrigger } from "~/components/ui/sidebar";
+import { SidebarProvider } from "~/components/ui/sidebar";
 import ErrorBoundary from "~/components/error-boundary";
+import { PageHeaderProvider } from "~/hooks/use-page-header";
+import { PageHeader } from "~/components/layout/page-header";
 
 export const loader = async (args: LoaderFunctionArgs) => {
   const { sessionId } = await getAuth(args);
@@ -20,15 +22,15 @@ export const loader = async (args: LoaderFunctionArgs) => {
 
 function Layout({ children }: PropsWithChildren<unknown>) {
   return (
-    <SidebarProvider>
-      <AppSidebar />
-
-      <main className="relative flex min-h-svh w-full flex-col items-center px-6 pt-6">
-        <SidebarTrigger className="absolute left-2 top-2 z-50" />
-        <div className="w-full flex-1">{children}</div>
-        <Footer />
-      </main>
-    </SidebarProvider>
+    <PageHeaderProvider>
+      <SidebarProvider className="w-full">
+        <AppSidebar />
+        <div className="flex h-svh w-full flex-col">
+          <main className="w-full flex-1 overflow-hidden">{children}</main>
+          <Footer />
+        </div>
+      </SidebarProvider>
+    </PageHeaderProvider>
   );
 }
 

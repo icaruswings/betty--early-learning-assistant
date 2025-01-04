@@ -13,6 +13,7 @@ export function ChatScrollAnchor({
   scrollAreaRef,
 }: ChatScrollAnchorProps) {
   const { ref, inView, entry } = useInView({
+    rootMargin: "20px",
     trackVisibility,
     delay: 100,
   });

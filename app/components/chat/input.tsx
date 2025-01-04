@@ -70,7 +70,7 @@ export default function ChatInput({
   const isEmpty = !content.trim();
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit} className="w-full">
+    <form ref={formRef} onSubmit={handleSubmit} className="w-full flex-none">
       <div
         ref={containerRef}
         onClick={focusInput}
@@ -93,7 +93,7 @@ export default function ChatInput({
           ref={textareaRef}
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          className="sr-only"
+          className="hidden"
           tabIndex={-1}
           aria-hidden="true"
         />
