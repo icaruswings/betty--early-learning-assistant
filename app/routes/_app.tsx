@@ -25,8 +25,8 @@ function Layout({ children }: PropsWithChildren<unknown>) {
     <PageHeaderProvider>
       <SidebarProvider className="w-full">
         <AppSidebar />
-        <div className="flex h-svh w-full flex-col">
-          <main className="w-full flex-1 overflow-hidden">{children}</main>
+        <div className="flex h-svh w-full flex-col overflow-hidden">
+          <main className="flex-1 overflow-hidden">{children}</main>
           <Footer />
         </div>
       </SidebarProvider>

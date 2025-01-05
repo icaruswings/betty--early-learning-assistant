@@ -70,11 +70,15 @@ export default function ChatInput({
   const isEmpty = !content.trim();
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit} className="w-full flex-none">
+    <form
+      ref={formRef}
+      onSubmit={handleSubmit}
+      className="flex w-full flex-none items-end gap-2"
+    >
       <div
         ref={containerRef}
         onClick={focusInput}
-        className="relative cursor-text rounded-lg bg-gray-50 pb-4 dark:bg-accent"
+        className="relative w-full cursor-text rounded-lg bg-gray-50 pb-4 dark:bg-accent"
       >
         <div
           ref={divRef}

@@ -5,13 +5,19 @@ import { dark } from "@clerk/themes";
 import { usePageHeader } from "~/hooks/use-page-header";
 import { SidebarTrigger } from "../ui/sidebar";
 import { cn } from "~/lib/utils";
+import { ClassValue } from "clsx";
 
-export function PageHeader({ children }: PropsWithChildren<unknown>) {
+export function PageHeader({ className }: { className?: ClassValue }) {
   const [theme] = useTheme();
   const { title, Icon } = usePageHeader();
 
   return (
-    <header className="flex h-12 items-center bg-white/30 py-2 pl-2 pr-4 backdrop-blur-lg sm:pl-4">
+    <header
+      className={cn(
+        "flex h-12 items-center bg-white/30 py-2 pl-2 pr-4 backdrop-blur-lg sm:pl-4",
+        className
+      )}
+    >
       <div className="flex h-full w-full flex-none items-center">
         <div className="flex flex-1 items-center gap-4">
           <SidebarTrigger className="md:hidden [&_svg]:size-4" />

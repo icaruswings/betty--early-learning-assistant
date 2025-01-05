@@ -8,13 +8,13 @@ import { useChatSuggestions } from "~/hooks/use-chat-suggestions";
 import EmptyState from "~/components/chat/empty-state";
 import MessageList from "~/components/chat/message-list";
 import ChatInput from "~/components/chat/input";
-import { ScrollArea } from "~/components/ui/scroll-area";
 import { ChatScrollAnchor } from "~/components/chat/chat-scroll-anchor";
 import { PageHeader } from "~/components/layout/page-header";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, ArrowDown } from "lucide-react";
 import { cn } from "~/lib/utils";
 import { usePageHeader } from "~/hooks/use-page-header";
 import { Message } from "~/schemas/chat";
+import { Button } from "~/components/ui/button";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Chat - Early Learning Assistant" }];
@@ -47,7 +47,7 @@ const ConversationContent = ({
   isAtBottom: boolean;
 }) => {
   return (
-    <div className="flex flex-col">
+    <div className="relative h-full">
       <MessageList messages={messages} />
       <ChatScrollAnchor
         trackVisibility={isLoading}
@@ -72,13 +72,17 @@ export default function Chat() {
     removeLastMessage,
   } = useChatState();
 
-  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const { setTitle, setIcon } = usePageHeader();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const [isAtBottom, setIsAtBottom] = useState(true);
 
+  useEffect(() => {
+    setTitle("Chat");
+    setIcon(MessageSquare);
+  }, [setTitle, setIcon]);
+
   const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
     const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
-    console.log({ scrollTop, scrollHeight, clientHeight });
     const isBottom = Math.abs(scrollHeight - clientHeight - scrollTop) < 10;
     setIsAtBottom(isBottom);
   };
@@ -106,109 +110,58 @@ export default function Chat() {
     },
   });
 
-  // Auto-focus input
-  useEffect(() => {
-    inputRef.current?.focus();
-  }, []);
-
-  const handleSubmit = async (input: string) => {
-    if (!input.trim()) return;
-    await sendMessage(input);
-  };
-
   const isEmpty = messages.length === 0;
 
-  const { setTitle, setIcon } = usePageHeader();
-
-  useEffect(() => {
-    setTitle("Chat");
-    setIcon(MessageSquare);
-  }, [setTitle, setIcon]);
+  const scrollToBottom = () => {
+    if (scrollAreaRef.current) {
+      scrollAreaRef.current.scrollTo({
+        top: scrollAreaRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  };
 
   return (
-    <div className="relative flex h-full w-full flex-col">
-      <div ref={scrollAreaRef} className="flex-1 overflow-y-auto">
-        <div className="relative flex h-full flex-col">
-          <div className="sticky top-0 mb-4">
-            <PageHeader />
+    <div className="flex h-full flex-col overflow-hidden">
+      <PageHeader className="flex-none" />
+      <div 
+        ref={scrollAreaRef}
+        className="flex-1 overflow-y-auto relative" 
+        onScroll={handleScroll}
+      >
+        <div className="mx-auto h-full w-full max-w-3xl px-4">
+          {isEmpty ? (
+            <EmptyStateContent onSelect={sendMessage} />
+          ) : (
+            <ConversationContent
+              messages={messages}
+              isLoading={isLoading}
+              scrollAreaRef={scrollAreaRef}
+              isAtBottom={isAtBottom}
+            />
+          )}
+        </div>
+        {!isAtBottom && !isEmpty && (
+          <div className="sticky bottom-4 flex justify-center">
+            <Button
+              size="icon"
+              variant="secondary"
+              className="rounded-full shadow-lg"
+              onClick={scrollToBottom}
+            >
+              <ArrowDown className="h-4 w-4" />
+            </Button>
           </div>
-
-          <div className="m-auto w-full max-w-3xl flex-1 px-4 pb-2">
-            {isEmpty && <EmptyStateContent onSelect={sendMessage} />}
-
-            {!isEmpty && (
-              <ConversationContent
-                messages={messages}
-                isLoading={isLoading}
-                scrollAreaRef={scrollAreaRef}
-                isAtBottom={isAtBottom}
-              />
-            )}
-          </div>
+        )}
+      </div>
+      <div className="sticky bottom-0 z-10 bg-background/80 backdrop-blur">
+        <div className="mx-auto w-full max-w-3xl px-4 pb-4">
+          <ChatInput
+            onSubmit={sendMessage}
+            isLoading={isLoading}
+          />
         </div>
       </div>
-
-      <div className="m-auto w-full max-w-3xl px-4 md:px-0">
-        <ChatInput isLoading={isLoading} onSubmit={handleSubmit} placeholder="Ask Betty ..." />
-      </div>
     </div>
-
-    // <div className="relative h-full overflow-y-auto">
-    //   <div className="h-[3000px] bg-purple-400">&nbsp;</div>
-
-    //   {isEmpty && <EmptyStateContent onSelect={sendMessage} />}
-
-    //     {!isEmpty && (
-    //       <ConversationContent
-    //         messages={messages}
-    //         isLoading={isLoading}
-    //         scrollAreaRef={scrollAreaRef}
-    //         isAtBottom={isAtBottom}
-    //       />
-    //     )}
-
-    //   <div className="sticky bottom-0 mt-4">
-    //     <ChatInput isLoading={isLoading} onSubmit={handleSubmit} placeholder="Ask Betty ..." />
-    //   </div>
-    // </div>
-
-    // <div className="flex h-full flex-col overflow-hidden bg-red-400">
-    //   <div className="flex flex-1 flex-col bg-green-300">
-    //     <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col bg-yellow-400">
-    //       {isEmpty ? (
-    //         <div className="flex flex-1 flex-col justify-center gap-6">
-    //           <EmptyState />
-    //           <ConversationStarters onSelect={sendMessage} />
-    //           <div className="pt-4">
-    //             <ChatInput
-    //               isLoading={isLoading}
-    //               onSubmit={handleSubmit}
-    //               placeholder="Ask Betty ..."
-    //             />
-    //           </div>
-    //         </div>
-    //       ) : (
-    //         <div ref={scrollAreaRef} onScroll={handleScroll} className="flex h-full flex-col">
-    //           <div className="flex-1 overflow-y-auto">
-    //             <MessageList messages={messages} />
-    //             <ChatScrollAnchor
-    //               trackVisibility={isLoading}
-    //               isAtBottom={isAtBottom}
-    //               scrollAreaRef={scrollAreaRef}
-    //             />
-    //           </div>
-
-    //           <div className="pt-4">
-    //             <ChatInput
-    //               isLoading={isLoading}
-    //               onSubmit={handleSubmit}
-    //               placeholder="Ask Betty ..."
-    //             />
-    //           </div>
-    //         </div>
-    //       )}
-    //     </div>
-    //   </div>
-    // </div>
   );
 }
