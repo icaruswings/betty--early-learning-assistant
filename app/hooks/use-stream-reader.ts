@@ -35,6 +35,8 @@ export function useStreamReader() {
       const reader = response.body?.getReader();
       const decoder = new TextDecoder();
       let accumulatedContent = "";
+      let lastChunkTime = Date.now();
+      const TIMEOUT_MS = 10000; // 10 seconds timeout
 
       if (!reader) {
         return { content: "", error: "No response body" };
@@ -44,6 +46,12 @@ export function useStreamReader() {
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
+
+          const currentTime = Date.now();
+          if (currentTime - lastChunkTime > TIMEOUT_MS) {
+            throw new Error("Stream timeout - no data received for 10 seconds");
+          }
+          lastChunkTime = currentTime;
 
           const text = decoder.decode(value);
           const events = text.split("\n\n").filter(Boolean);
@@ -55,13 +63,19 @@ export function useStreamReader() {
                 if (data.error) {
                   throw new Error(data.error);
                 }
-                if (data.content) {
+                if (data.content !== undefined) {
                   accumulatedContent += data.content;
-                  // Call onChunk with the new content
                   options?.onChunk?.(accumulatedContent);
+                }
+                if (data.done) {
+                  options?.onComplete?.(accumulatedContent);
+                  return { content: accumulatedContent, error: null };
                 }
               } catch (e) {
                 console.error("Error parsing SSE data:", e);
+                if (e instanceof Error) {
+                  return { content: accumulatedContent, error: e.message };
+                }
               }
             }
           }
@@ -73,8 +87,7 @@ export function useStreamReader() {
         console.error("Error reading stream:", error);
         return {
           content: accumulatedContent,
-          error:
-            error instanceof Error ? error.message : "Unknown error occurred",
+          error: error instanceof Error ? error.message : "Unknown error occurred",
         };
       } finally {
         reader.releaseLock();

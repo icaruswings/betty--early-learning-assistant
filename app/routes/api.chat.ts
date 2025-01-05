@@ -57,9 +57,25 @@ export const action: ActionFunction = async (args) => {
     const encoder = new TextEncoder();
     const transformStream = new TransformStream({
       async transform(chunk, controller) {
-        const content = chunk.choices[0]?.delta?.content || "";
-        const data = JSON.stringify({ content });
-        controller.enqueue(encoder.encode(`data: ${data}\n\n`));
+        try {
+          if (chunk.choices && chunk.choices[0]?.delta?.content !== undefined) {
+            const content = chunk.choices[0].delta.content;
+            const data = JSON.stringify({ content });
+            controller.enqueue(encoder.encode(`data: ${data}\n\n`));
+          }
+        } catch (error) {
+          console.error("Error in transform stream:", error);
+          const errorData = JSON.stringify({ error: "Error processing stream chunk" });
+          controller.enqueue(encoder.encode(`data: ${errorData}\n\n`));
+        }
+      },
+      flush(controller) {
+        try {
+          const data = JSON.stringify({ content: "", done: true });
+          controller.enqueue(encoder.encode(`data: ${data}\n\n`));
+        } catch (error) {
+          console.error("Error in transform stream flush:", error);
+        }
       },
     });
 
@@ -72,8 +88,13 @@ export const action: ActionFunction = async (args) => {
           }
           controller.close();
         } catch (error) {
+          console.error("Error in readable stream:", error);
           controller.error(error);
         }
+      },
+      cancel() {
+        // Ensure we clean up if the stream is cancelled
+        stream.controller.abort();
       },
     });
 
