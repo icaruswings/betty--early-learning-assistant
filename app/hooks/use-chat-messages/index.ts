@@ -14,7 +14,7 @@
 
 import { useCallback } from "react";
 import { ChatService } from "~/services/chat-service";
-import { useStreamReader } from "./use-stream-reader";
+import { useStreamReader } from "../use-stream-reader";
 import type { Message } from "~/schemas/chat";
 import { ModelId } from "~/lib/constants";
 
