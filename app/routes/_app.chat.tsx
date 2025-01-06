@@ -9,7 +9,7 @@ import EmptyState from "~/components/chat/empty-state";
 import MessageList from "~/components/chat/message-list";
 import ChatInput from "~/components/chat/input";
 import { ChatScrollAnchor } from "~/components/chat/chat-scroll-anchor";
-import { PageHeader } from "~/components/layout/page-header";
+// import { PageHeader } from "~/components/layout/page-header";
 import { MessageSquare, ArrowDown } from "lucide-react";
 import { cn } from "~/lib/utils";
 import { usePageHeader } from "~/hooks/use-page-header";
@@ -123,13 +123,9 @@ export default function Chat() {
 
   return (
     <div className="flex h-full flex-col overflow-hidden">
-      <PageHeader className="flex-none" />
-      <div 
-        ref={scrollAreaRef}
-        className="flex-1 overflow-y-auto relative" 
-        onScroll={handleScroll}
-      >
-        <div className="mx-auto h-full w-full max-w-3xl px-4">
+      {/* <PageHeader className="flex-none" /> */}
+      <div ref={scrollAreaRef} className="relative flex-1 overflow-y-auto" onScroll={handleScroll}>
+        <div className="mx-auto w-full max-w-3xl px-4">
           {isEmpty ? (
             <EmptyStateContent onSelect={sendMessage} />
           ) : (
@@ -141,6 +137,7 @@ export default function Chat() {
             />
           )}
         </div>
+
         {!isAtBottom && !isEmpty && (
           <div className="sticky bottom-4 flex justify-center">
             <Button
@@ -156,10 +153,7 @@ export default function Chat() {
       </div>
       <div className="sticky bottom-0 z-10 bg-background/80 backdrop-blur">
         <div className="mx-auto w-full max-w-3xl px-4 pb-4">
-          <ChatInput
-            onSubmit={sendMessage}
-            isLoading={isLoading}
-          />
+          <ChatInput onSubmit={sendMessage} isLoading={isLoading} />
         </div>
       </div>
     </div>

@@ -32,7 +32,7 @@ export default function Index() {
           <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 md:flex-row md:items-center md:gap-12">
             <div className="flex flex-1 flex-col">
               <h1 className="mb-4 text-4xl font-bold md:text-5xl">
-                Empowering early childhood educators to excel
+                Supporting early childhood educators to excel
               </h1>
               <p className="mb-8 text-lg text-muted-foreground">
                 Streamline your workflow, enhance your teaching methods, and deliver better outcomes
@@ -76,9 +76,9 @@ export default function Index() {
             <div className="mb-12 text-center">
               <h2 className="mb-4 text-3xl font-bold">Features</h2>
               <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-                Your intelligent teaching companion that understands early childhood education.
-                Get expert guidance on best practices, receive tailored advice for specific
-                learning scenarios, and access professional development support whenever you need it.
+                Your intelligent teaching companion that understands early childhood education. Get
+                expert guidance on best practices, receive tailored advice for specific learning
+                scenarios, and access professional development support whenever you need it.
               </p>
             </div>
 
@@ -89,7 +89,8 @@ export default function Index() {
                 </div>
                 <h3 className="mb-2 text-xl font-semibold">Enhance teaching quality</h3>
                 <p className="text-muted-foreground">
-                  Get personalized guidance and feedback to improve your teaching methods and outcomes.
+                  Get personalized guidance and feedback to improve your teaching methods and
+                  outcomes.
                 </p>
               </div>
 
@@ -99,7 +100,8 @@ export default function Index() {
                 </div>
                 <h3 className="mb-2 text-xl font-semibold">Develop professional skills</h3>
                 <p className="text-muted-foreground">
-                  Access continuous professional development resources and guidance at your own pace.
+                  Access continuous professional development resources and guidance at your own
+                  pace.
                 </p>
               </div>
 
@@ -109,7 +111,8 @@ export default function Index() {
                 </div>
                 <h3 className="mb-2 text-xl font-semibold">Reduce training costs</h3>
                 <p className="text-muted-foreground">
-                  Cut down on expensive external training with our comprehensive AI-powered support system.
+                  Cut down on expensive external training with our comprehensive AI-powered support
+                  system.
                 </p>
               </div>
 
@@ -132,8 +135,8 @@ export default function Index() {
             <div className="mb-12 text-center">
               <h2 className="mb-4 text-3xl font-bold">Simple, transparent pricing</h2>
               <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-                Choose the plan that works best for you or your center. All plans include full access
-                to Betty's features.
+                Choose the plan that works best for you or your center. All plans include full
+                access to Betty's features.
               </p>
             </div>
 
@@ -235,8 +238,8 @@ export default function Index() {
             <div className="mt-8 flex items-start gap-2 rounded-lg border bg-muted p-4 text-sm">
               <Info className="mt-0.5 h-4 w-4 flex-none" />
               <p className="text-muted-foreground">
-                A request is defined as one chat interaction, one document generation, or one document
-                refinement after creation.
+                A request is defined as one chat interaction, one document generation, or one
+                document refinement after creation.
               </p>
             </div>
           </div>

@@ -7,7 +7,8 @@ import { getAuth } from "@clerk/remix/ssr.server";
 import { Check, Copy, Settings as SettingsIcon } from "lucide-react";
 import { ModelSelector } from "~/components/model-selector";
 import { ThemeToggle } from "~/components/theme-toggle";
-import { PageHeader } from "~/components/layout/page-header";
+import { usePageHeader } from "~/hooks/use-page-header";
+import { useSearchParams } from "react-router-dom";
 
 export async function loader(args: LoaderFunctionArgs) {
   const { userId } = await getAuth(args);
@@ -23,27 +24,43 @@ export default function Settings() {
   const { isLoaded, isSignedIn } = useUser();
   const [apiToken, setApiToken] = useState("");
   const [copied, setCopied] = useState(false);
+  const [searchParams] = useSearchParams();
+  const showDebug = searchParams.get("debug") === "true";
+
+  const { setIcon, setTitle } = usePageHeader();
+
+  useEffect(() => {
+    setIcon(SettingsIcon);
+    setTitle("Settings");
+
+    // Cleanup function to reset the header when component unmounts
+    return () => {
+      setIcon(undefined);
+      setTitle("");
+    };
+  }, [setIcon, setTitle]);
 
   useEffect(() => {
     // Generate token on component mount if none exists
     if (!apiToken) {
-      setApiToken(nanoid(32));
+      generateToken();
     }
-  }, []);
+  }, [apiToken]);
 
-  const copyToClipboard = async () => {
+  const generateToken = () => {
+    const token = crypto.randomUUID();
+    setApiToken(token);
+    setCopied(false);
+  };
+
+  const copyToken = async () => {
     try {
       await navigator.clipboard.writeText(apiToken);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
-      console.error("Failed to copy text: ", err);
+      console.error("Failed to copy token:", err);
     }
-  };
-
-  const regenerateToken = () => {
-    setApiToken(nanoid(32));
-    setCopied(false);
   };
 
   if (!isLoaded || !isSignedIn) {
@@ -52,86 +69,95 @@ export default function Settings() {
 
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col">
-      <PageHeader>
-        <SettingsIcon className="h-5 w-5" />
-        <h1 className="text-lg font-semibold">Settings</h1>
-      </PageHeader>
       <div className="mx-auto flex max-w-4xl flex-col space-y-12 p-4">
         {/* Appearance Section */}
         <div>
-          <div className="mb-6 flex items-center space-x-2">
-            <h2 className="text-xl font-semibold">Appearance</h2>
-            <p className="text-sm text-muted-foreground">Customize how the app looks and feels</p>
-          </div>
-          <div className="grid gap-6">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Theme</label>
-              <div className="flex items-center space-x-2">
-                <ThemeToggle />
-                <span className="text-sm text-muted-foreground">
-                  Toggle between light and dark mode
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="h-px bg-border" aria-hidden="true" />
-
-        {/* Chat Settings Section */}
-        <div>
-          <div className="mb-6 flex items-center space-x-2">
-            <h2 className="text-xl font-semibold">Chat Settings</h2>
-            <p className="text-sm text-muted-foreground">Configure your chat experience</p>
-          </div>
-          <div className="grid gap-6">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Default Model</label>
-              <ModelSelector />
-              <p className="text-sm text-muted-foreground">
-                Select the AI model to use for your conversations
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="h-px bg-border" aria-hidden="true" />
-
-        {/* Access Section */}
-        <div>
-          <div className="mb-6 flex items-center space-x-2">
-            <h2 className="text-xl font-semibold">Access</h2>
-            <p className="text-sm text-muted-foreground">
-              Manage your API access and security settings
-            </p>
-          </div>
-          <div className="grid gap-6">
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium">API Token</label>
-                <div className="flex items-center space-x-2">
-                  <code className="flex-1 rounded-lg bg-secondary p-4 font-mono text-sm">
-                    {apiToken}
-                  </code>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={copyToClipboard}
-                    className="h-14 w-14"
-                  >
-                    {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                  </Button>
-                </div>
-                <Button onClick={regenerateToken} variant="outline">
-                  Regenerate Token
-                </Button>
-                <p className="text-sm text-muted-foreground">
-                  Use this token to authenticate API requests. Keep it secret and secure.
+          <h2 className="text-lg font-medium">Appearance</h2>
+          <p className="text-sm text-muted-foreground">
+            Customize how Betty looks on your device.
+          </p>
+          <div className="mt-4 space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex flex-col space-y-0.5">
+                <label
+                  htmlFor="theme"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  Theme
+                </label>
+                <p className="text-[0.8rem] text-muted-foreground">
+                  Select your preferred theme
                 </p>
               </div>
+              <ThemeToggle />
             </div>
           </div>
         </div>
+
+        {showDebug && (
+          <>
+            {/* Chat Settings Section */}
+            <div>
+              <h2 className="text-lg font-medium">Chat Settings</h2>
+              <p className="text-sm text-muted-foreground">
+                Configure chat behavior and model settings.
+              </p>
+              <div className="mt-4 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex flex-col space-y-0.5">
+                    <label
+                      htmlFor="model"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      Model
+                    </label>
+                    <p className="text-[0.8rem] text-muted-foreground">
+                      Select which model to use for chat
+                    </p>
+                  </div>
+                  <ModelSelector />
+                </div>
+              </div>
+            </div>
+
+            {/* Access Token Section */}
+            <div>
+              <h2 className="text-lg font-medium">Access Token</h2>
+              <p className="text-sm text-muted-foreground">
+                Your API access token for external integrations.
+              </p>
+
+              <div className="mt-4 space-y-4">
+                <div className="flex flex-col space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <code className="flex-1 rounded-lg bg-secondary p-4 font-mono text-sm">
+                      {apiToken}
+                    </code>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={copyToken}
+                      className="shrink-0"
+                    >
+                      {copied ? (
+                        <Check className="h-4 w-4" />
+                      ) : (
+                        <Copy className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={generateToken}
+                  >
+                    Generate New Token
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
