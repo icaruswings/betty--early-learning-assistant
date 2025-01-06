@@ -10,6 +10,7 @@ import { Input } from "~/components/ui/input";
 import { ObservationCard, type Observation } from "~/components/cards/observation-card";
 import { StoryCard, type Story } from "~/components/cards/story-card";
 import { NewObservationDialog } from "~/components/new-observation-dialog";
+import { usePageHeader } from "~/hooks/use-page-header";
 
 export async function loader(args: LoaderFunctionArgs) {
   const { sessionId } = await getAuth(args);
@@ -87,20 +88,27 @@ export default function Learning() {
     setShowNewObservation(false);
   };
 
+  const { setIcon, setTitle } = usePageHeader();
+  useEffect(() => {
+    setIcon(Book);
+    setTitle("Learning");
+
+    return () => {
+      setIcon(null);
+      setTitle("");
+    };
+  }, [setIcon, setTitle]);
+
   return (
     <div className="h-full bg-purple-400">
-      <PageHeader>
-        <Book className="h-5 w-5" />
-        <h1 className="text-lg font-semibold">Learning</h1>
-        <div className="ml-auto">
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList>
-              <TabsTrigger value="observations">Observations</TabsTrigger>
-              <TabsTrigger value="stories">Stories</TabsTrigger>
-            </TabsList>
-          </Tabs>
-        </div>
-      </PageHeader>
+      <div className="ml-auto">
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList>
+            <TabsTrigger value="observations">Observations</TabsTrigger>
+            <TabsTrigger value="stories">Stories</TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
 
       <div className="flex-1 overflow-y-auto">
         <div className="mx-auto max-w-4xl p-4">

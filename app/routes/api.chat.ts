@@ -1,26 +1,30 @@
 import OpenAI from "openai";
 import { PEDAGOGY_PROMPT } from "~/config/prompts";
-import type { ActionFunction } from "@remix-run/node";
+import type { ActionFunction, DataFunctionArgs } from "@remix-run/node";
 import { ServerError } from "~/lib/errors";
 import { getAuth } from "@clerk/remix/ssr.server";
+
+function ensureHttpMethodAllowed(request: Request, allowedMethods: string[]) {
+  if (!allowedMethods.includes(request.method)) {
+    throw new Response("Method Not Allowed", { status: 405 });
+  }
+}
+
+async function ensureSessionExists(args: DataFunctionArgs) {
+  const { sessionId } = await getAuth(args);
+  if (!sessionId) {
+    throw new Response("Unauthorized", { status: 401 });
+  }
+}
 
 export const action: ActionFunction = async (args) => {
   const { request } = args;
 
-  // Ensure the request method is POST
-  if (request.method !== "POST") {
-    return new Response("Method Not Allowed", { status: 405 });
-  }
-
-  const { sessionId } = await getAuth(args);
-
-  if (!sessionId) {
-    throw new Response("Unauthorized", { status: 401 });
-  }
+  ensureHttpMethodAllowed(request, ["POST"]);
+  ensureSessionExists(args);
 
   // Parse the incoming request body
-  const body = await request.json();
-  const { messages: userMessages, model } = body;
+  const { messages: userMessages, model } = await request.json();
 
   // Combine default messages with user messages
   const messages = [
@@ -53,7 +57,7 @@ export const action: ActionFunction = async (args) => {
       },
     });
 
-    // Create a TransformStream to convert chunks to SSE format
+    // Create a TransformStream to convert chunks to SSE (Server-sent events) format
     const encoder = new TextEncoder();
     const transformStream = new TransformStream({
       async transform(chunk, controller) {

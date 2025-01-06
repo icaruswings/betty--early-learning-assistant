@@ -29,29 +29,23 @@ export function ObservationChat({ onSave }: ObservationChatProps) {
     setIsLoading(true);
 
     try {
-      const response = await ChatService.sendMessage(
-        [...messages, userMessage],
-        "gpt-4"
-      );
+      const response = await ChatService.sendMessage([...messages, userMessage], "gpt-4");
 
       // Create a temporary assistant message
       setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
 
-      const { content: streamContent, error: streamError } = await streamReader(
-        response,
-        {
-          onChunk: (chunk) => {
-            setMessages((prev) => {
-              const newMessages = [...prev];
-              const lastMessage = newMessages[newMessages.length - 1];
-              if (lastMessage?.role === "assistant") {
-                lastMessage.content = chunk;
-              }
-              return newMessages;
-            });
-          },
-        }
-      );
+      const { content: streamContent, error: streamError } = await streamReader(response, {
+        onChunk: (chunk) => {
+          setMessages((prev) => {
+            const newMessages = [...prev];
+            const lastMessage = newMessages[newMessages.length - 1];
+            if (lastMessage?.role === "assistant") {
+              lastMessage.content = chunk;
+            }
+            return newMessages;
+          });
+        },
+      });
 
       if (streamError) {
         throw new Error(streamError);
@@ -71,9 +65,9 @@ export function ObservationChat({ onSave }: ObservationChatProps) {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex h-full flex-col">
       <div className="flex-1 overflow-y-auto">
-        <div className="max-w-3xl mx-auto space-y-4 p-4">
+        <div className="mx-auto max-w-3xl space-y-4 p-4">
           {messages.map((message, i) => (
             <MarkdownMessage
               key={i}
@@ -85,7 +79,7 @@ export function ObservationChat({ onSave }: ObservationChatProps) {
       </div>
 
       <div className="border-t p-4">
-        <div className="max-w-3xl mx-auto">
+        <div className="mx-auto max-w-3xl">
           <ChatInput
             isLoading={isLoading}
             onSubmit={handleSubmit}

@@ -4,17 +4,16 @@ import { ConversationStarters } from "~/components/conversation-starters";
 import { getAuth } from "@clerk/remix/ssr.server";
 import { useChatState } from "~/hooks/use-chat-state";
 import { useChatMessages } from "~/hooks/use-chat-messages";
-import { useChatSuggestions } from "~/hooks/use-chat-suggestions";
+// import { useChatSuggestions } from "~/hooks/use-chat-suggestions";
 import EmptyState from "~/components/chat/empty-state";
 import MessageList from "~/components/chat/message-list";
 import ChatInput from "~/components/chat/input";
 import { ChatScrollAnchor } from "~/components/chat/chat-scroll-anchor";
-// import { PageHeader } from "~/components/layout/page-header";
 import { MessageSquare, ArrowDown } from "lucide-react";
-import { cn } from "~/lib/utils";
 import { usePageHeader } from "~/hooks/use-page-header";
 import { Message } from "~/schemas/chat";
 import { Button } from "~/components/ui/button";
+import ScrollToBottomButton from "~/components/scroll-to-bottom-button";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Chat - Early Learning Assistant" }];
@@ -66,8 +65,6 @@ export default function Chat() {
     startMessage,
     appendAssistantMessage,
     setError,
-    setSuggestions,
-    setLoadingSuggestions,
     setLoading,
     removeLastMessage,
   } = useChatState();
@@ -87,13 +84,6 @@ export default function Chat() {
     setIsAtBottom(isBottom);
   };
 
-  // Suggestions handling
-  const { fetchSuggestions } = useChatSuggestions({
-    messages,
-    onSuggestionsLoading: setLoadingSuggestions,
-    onSuggestionsUpdate: setSuggestions,
-  });
-
   // Chat message handling
   const { sendMessage } = useChatMessages({
     messages,
@@ -102,7 +92,6 @@ export default function Chat() {
     onMessageStream: appendAssistantMessage,
     onMessageComplete: () => {
       setLoading(false);
-      fetchSuggestions();
     },
     onMessageError: (error) => {
       setError(error);
@@ -123,9 +112,8 @@ export default function Chat() {
 
   return (
     <div className="flex h-full flex-col overflow-hidden">
-      {/* <PageHeader className="flex-none" /> */}
       <div ref={scrollAreaRef} className="relative flex-1 overflow-y-auto" onScroll={handleScroll}>
-        <div className="mx-auto w-full max-w-3xl px-4">
+        <div className="container max-w-3xl">
           {isEmpty ? (
             <EmptyStateContent onSelect={sendMessage} />
           ) : (
@@ -140,19 +128,12 @@ export default function Chat() {
 
         {!isAtBottom && !isEmpty && (
           <div className="sticky bottom-4 flex justify-center">
-            <Button
-              size="icon"
-              variant="secondary"
-              className="rounded-full shadow-lg"
-              onClick={scrollToBottom}
-            >
-              <ArrowDown className="h-4 w-4" />
-            </Button>
+            <ScrollToBottomButton onClick={scrollToBottom} />
           </div>
         )}
       </div>
       <div className="sticky bottom-0 z-10 bg-background/80 backdrop-blur">
-        <div className="mx-auto w-full max-w-3xl px-4 pb-4">
+        <div className="container max-w-3xl pb-4">
           <ChatInput onSubmit={sendMessage} isLoading={isLoading} />
         </div>
       </div>
