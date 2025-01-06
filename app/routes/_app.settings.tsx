@@ -35,7 +35,7 @@ export default function Settings() {
 
     // Cleanup function to reset the header when component unmounts
     return () => {
-      setIcon(undefined);
+      setIcon(null);
       setTitle("");
     };
   }, [setIcon, setTitle]);
@@ -73,9 +73,7 @@ export default function Settings() {
         {/* Appearance Section */}
         <div>
           <h2 className="text-lg font-medium">Appearance</h2>
-          <p className="text-sm text-muted-foreground">
-            Customize how Betty looks on your device.
-          </p>
+          <p className="text-sm text-muted-foreground">Customize how Betty looks on your device.</p>
           <div className="mt-4 space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex flex-col space-y-0.5">
@@ -85,9 +83,7 @@ export default function Settings() {
                 >
                   Theme
                 </label>
-                <p className="text-[0.8rem] text-muted-foreground">
-                  Select your preferred theme
-                </p>
+                <p className="text-[0.8rem] text-muted-foreground">Select your preferred theme</p>
               </div>
               <ThemeToggle />
             </div>
@@ -133,24 +129,11 @@ export default function Settings() {
                     <code className="flex-1 rounded-lg bg-secondary p-4 font-mono text-sm">
                       {apiToken}
                     </code>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={copyToken}
-                      className="shrink-0"
-                    >
-                      {copied ? (
-                        <Check className="h-4 w-4" />
-                      ) : (
-                        <Copy className="h-4 w-4" />
-                      )}
+                    <Button variant="outline" size="icon" onClick={copyToken} className="shrink-0">
+                      {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                     </Button>
                   </div>
-                  <Button
-                    variant="outline"
-                    className="w-full"
-                    onClick={generateToken}
-                  >
+                  <Button variant="outline" className="w-full" onClick={generateToken}>
                     Generate New Token
                   </Button>
                 </div>

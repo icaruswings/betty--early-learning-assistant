@@ -2,29 +2,28 @@ import type { MetaFunction } from "@remix-run/node";
 import { Link } from "@remix-run/react";
 import { Button } from "~/components/ui/button";
 import { MessageSquare, LogIn, Check, Info } from "lucide-react";
-import { useUser, UserButton } from "@clerk/remix";
+import { useUser, UserButton, SignedIn, SignedOut, SignInButton } from "@clerk/remix";
+import { useTheme } from "remix-themes";
+import { dark } from "@clerk/themes";
+import { PageHeader } from "~/components/layout/page-header";
 
 export const meta: MetaFunction = () => {
   return [
     { title: "Ask Betty" },
     {
       name: "description",
-      content: "Your AI-powered early education assistant",
+      content: "An AI-powered early education assistant built to save time and improve quality.",
     },
   ];
 };
 
 export default function Index() {
   const { isSignedIn } = useUser();
+  const [theme] = useTheme();
 
   return (
     <div className="flex min-h-svh w-full flex-col">
-      <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur">
-        <div className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between px-4">
-          <span className="text-xl font-bold">Ask Betty</span>
-          <UserButton />
-        </div>
-      </header>
+      <PageHeader />
 
       <main className="flex-1">
         {/* Hero Section */}
@@ -124,6 +123,38 @@ export default function Index() {
                 <p className="text-muted-foreground">
                   Get instant help whenever you need it, day or night, completely free of charge.
                 </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Coming Soon Section */}
+        <div className="bg-gradient-to-t from-primary/5 to-background pb-16 pt-8">
+          <div className="mx-auto w-full max-w-5xl px-4">
+            <div className="rounded-lg border bg-card p-8 shadow-lg">
+              <div className="mb-6 flex items-center gap-3">
+                <h2 className="text-2xl font-semibold">Coming Soon</h2>
+                <span className="rounded-full bg-primary/10 px-3 py-1 text-sm text-primary">
+                  in-development
+                </span>
+              </div>
+              <p className="mb-6 text-lg text-muted-foreground">
+                Transform your teaching insights into meaningful documentation. Create detailed
+                observations and engaging learning narratives that showcase children's growth.
+              </p>
+              <div className="grid gap-6 md:grid-cols-2">
+                <div className="rounded-lg border bg-card/50 p-4">
+                  <h3 className="mb-2 font-semibold">Rich learning observations</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Document children's learning moments with AI-assisted observation tools.
+                  </p>
+                </div>
+                <div className="rounded-lg border bg-card/50 p-4">
+                  <h3 className="mb-2 font-semibold">Developmental narratives</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Create engaging stories that capture and celebrate learning progress.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -241,38 +272,6 @@ export default function Index() {
                 A request is defined as one chat interaction, one document generation, or one
                 document refinement after creation.
               </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Coming Soon Section */}
-        <div className="bg-gradient-to-t from-primary/5 to-background py-16">
-          <div className="mx-auto w-full max-w-5xl px-4">
-            <div className="rounded-lg border bg-card p-8 shadow-lg">
-              <div className="mb-6 flex items-center gap-3">
-                <h2 className="text-2xl font-semibold">Coming Soon</h2>
-                <span className="rounded-full bg-primary/10 px-3 py-1 text-sm text-primary">
-                  in-development
-                </span>
-              </div>
-              <p className="mb-6 text-lg text-muted-foreground">
-                Transform your teaching insights into meaningful documentation. Create detailed
-                observations and engaging learning narratives that showcase children's growth.
-              </p>
-              <div className="grid gap-6 md:grid-cols-2">
-                <div className="rounded-lg border bg-card/50 p-4">
-                  <h3 className="mb-2 font-semibold">Rich learning observations</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Document children's learning moments with AI-assisted observation tools.
-                  </p>
-                </div>
-                <div className="rounded-lg border bg-card/50 p-4">
-                  <h3 className="mb-2 font-semibold">Developmental narratives</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Create engaging stories that capture and celebrate learning progress.
-                  </p>
-                </div>
-              </div>
             </div>
           </div>
         </div>

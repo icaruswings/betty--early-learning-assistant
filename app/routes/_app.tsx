@@ -22,16 +22,14 @@ export const loader = async (args: LoaderFunctionArgs) => {
 
 function Layout({ children }: PropsWithChildren<unknown>) {
   return (
-    <PageHeaderProvider>
-      <SidebarProvider className="w-full">
-        <AppSidebar />
-        <div className="flex h-svh w-full flex-col overflow-hidden">
-          <PageHeader />
-          <main className="flex-1 overflow-hidden">{children}</main>
-          <Footer />
-        </div>
-      </SidebarProvider>
-    </PageHeaderProvider>
+    <SidebarProvider className="w-full">
+      <AppSidebar />
+      <div className="flex h-svh w-full flex-col overflow-hidden">
+        <PageHeader includeSidebarTrigger />
+        <main className="flex-1 overflow-hidden">{children}</main>
+        <Footer />
+      </div>
+    </SidebarProvider>
   );
 }
 

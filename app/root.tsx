@@ -18,6 +18,7 @@ import { useState } from "react";
 import { ConvexReactClient } from "convex/react";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
 import { cn } from "./lib/utils";
+import { PageHeaderProvider } from "./hooks/use-page-header";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
@@ -74,9 +75,11 @@ function App() {
   return (
     <ThemeProvider specifiedTheme={theme} themeAction="/action/set-theme">
       <ConvexProviderWithClerk client={convexClient} useAuth={useAuth}>
-        <Layout>
-          <Outlet />
-        </Layout>
+        <PageHeaderProvider>
+          <Layout>
+            <Outlet />
+          </Layout>
+        </PageHeaderProvider>
       </ConvexProviderWithClerk>
     </ThemeProvider>
   );
