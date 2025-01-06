@@ -1,18 +1,33 @@
 import type { MetaFunction } from "@remix-run/node";
 import { Link } from "@remix-run/react";
 import { Button } from "~/components/ui/button";
-import { MessageSquare, LogIn, Check, Info } from "lucide-react";
+import {
+  MessageSquare,
+  LogIn,
+  Check,
+  Info,
+  Clock,
+  BookOpen,
+  GraduationCap,
+  FileText,
+  Brain,
+  Heart
+} from "lucide-react";
 import { useUser, UserButton, SignedIn, SignedOut, SignInButton } from "@clerk/remix";
 import { useTheme } from "remix-themes";
 import { dark } from "@clerk/themes";
 import { PageHeader } from "~/components/layout/page-header";
+import { usePageHeader } from "~/hooks/use-page-header";
+import { useEffect } from "react";
+import Footer from "~/components/layout/footer";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "Ask Betty" },
+    { title: "AskBetty" },
     {
       name: "description",
-      content: "An AI-powered early education assistant built to save time and improve quality.",
+      content:
+        "Save hours on documentation with an AI teaching assistant that understands EYLF and NQS. Streamline your workflow and improve quality outcomes.",
     },
   ];
 };
@@ -20,6 +35,13 @@ export const meta: MetaFunction = () => {
 export default function Index() {
   const { isSignedIn } = useUser();
   const [theme] = useTheme();
+
+  const { setIcon, setTitle } = usePageHeader();
+
+  useEffect(() => {
+    setIcon(null);
+    setTitle("AskBetty");
+  }, []);
 
   return (
     <div className="flex min-h-svh w-full flex-col">
@@ -34,94 +56,113 @@ export default function Index() {
                 Supporting early childhood educators to excel
               </h1>
               <p className="mb-8 text-lg text-muted-foreground">
-                Streamline your workflow, enhance your teaching methods, and deliver better outcomes
-                with our intuitive AI assistant
+                Save hours each week with your AI teaching assistant that understands EYLF and NQS.
+                Streamline documentation, enhance teaching practices, and deliver exceptional
+                outcomes aligned with Australian learning frameworks.
               </p>
-              {isSignedIn ? (
-                <Link to="/chat">
-                  <Button size="lg" className="gap-2">
-                    <MessageSquare className="h-5 w-5" />
-                    Start Chatting
+              <div className="flex flex-col gap-4 sm:flex-row">
+                {isSignedIn ? (
+                  <Button asChild size="lg">
+                    <Link to="/chat">
+                      <MessageSquare className="mr-2 h-5 w-5" />
+                      Start Chatting
+                    </Link>
                   </Button>
-                </Link>
-              ) : (
-                <Link to="/sign-in">
-                  <Button size="lg" className="gap-2">
-                    <LogIn className="h-5 w-5" />
-                    Sign in to Start
+                ) : (
+                  <Button asChild size="lg">
+                    <Link to="/sign-in">
+                      <LogIn className="mr-2 h-5 w-5" />
+                      Get Started Free
+                    </Link>
                   </Button>
-                </Link>
-              )}
-            </div>
-            <div className="aspect-video w-full flex-1 overflow-hidden rounded-lg border bg-muted shadow-lg">
-              <div className="h-full w-full bg-muted">
-                {/* Video placeholder - replace src with actual demo video */}
-                <video
-                  className="h-full w-full object-cover"
-                  poster="/video-placeholder.png"
-                  controls
-                >
-                  <source src="/demo.mp4" type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
+                )}
               </div>
+            </div>
+            <div className="flex-1">
+              <div className="aspect-video w-full rounded-lg border bg-card shadow-lg" />
             </div>
           </div>
         </div>
 
         {/* Features Section */}
-        <div className="py-16">
+        <div className="pb-16 pt-12">
           <div className="mx-auto w-full max-w-5xl px-4">
             <div className="mb-12 text-center">
-              <h2 className="mb-4 text-3xl font-bold">Features</h2>
+              <h2 className="mb-4 text-3xl font-bold">Transform Your Teaching Practice</h2>
               <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-                Your intelligent teaching companion that understands early childhood education. Get
-                expert guidance on best practices, receive tailored advice for specific learning
-                scenarios, and access professional development support whenever you need it.
+                AskBetty is your intelligent teaching companion that deeply understands early
+                childhood education in Australia. Get framework-aligned guidance, save precious time
+                on documentation, and elevate your professional practice.
               </p>
             </div>
 
-            <div className="mb-16 grid gap-8 md:grid-cols-2">
-              <div className="rounded-lg border bg-card p-6 shadow-sm">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-                  <MessageSquare className="h-6 w-6 text-primary" />
+            <div className="grid gap-8 md:grid-cols-2">
+              <div>
+                <div className="mb-4">
+                  <Clock className="h-8 w-8 text-primary" />
                 </div>
-                <h3 className="mb-2 text-xl font-semibold">Enhance teaching quality</h3>
+                <h3 className="mb-2 text-xl font-semibold">Save Time, Focus on Teaching</h3>
                 <p className="text-muted-foreground">
-                  Get personalized guidance and feedback to improve your teaching methods and
+                  Reduce documentation time by up to 50%. AskBetty helps you quickly create
+                  high-quality observations, learning stories, and reflections that align with EYLF
                   outcomes.
                 </p>
               </div>
 
-              <div className="rounded-lg border bg-card p-6 shadow-sm">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-                  <MessageSquare className="h-6 w-6 text-primary" />
+              <div>
+                <div className="mb-4">
+                  <BookOpen className="h-8 w-8 text-primary" />
                 </div>
-                <h3 className="mb-2 text-xl font-semibold">Develop professional skills</h3>
+                <h3 className="mb-2 text-xl font-semibold">Framework-Aligned Excellence</h3>
                 <p className="text-muted-foreground">
-                  Access continuous professional development resources and guidance at your own
-                  pace.
+                  Get instant guidance on EYLF outcomes and NQS quality areas. Ensure your practice
+                  consistently meets and exceeds national quality standards.
                 </p>
               </div>
 
-              <div className="rounded-lg border bg-card p-6 shadow-sm">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-                  <MessageSquare className="h-6 w-6 text-primary" />
+              <div>
+                <div className="mb-4">
+                  <GraduationCap className="h-8 w-8 text-primary" />
                 </div>
-                <h3 className="mb-2 text-xl font-semibold">Reduce training costs</h3>
+                <h3 className="mb-2 text-xl font-semibold">Professional Growth</h3>
                 <p className="text-muted-foreground">
-                  Cut down on expensive external training with our comprehensive AI-powered support
-                  system.
+                  Level-up your practice with personalized professional development aligned with
+                  Australian frameworks. Get expert guidance on implementing best practices.
                 </p>
               </div>
 
-              <div className="rounded-lg border bg-card p-6 shadow-sm">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-                  <MessageSquare className="h-6 w-6 text-primary" />
+              <div>
+                <div className="mb-4">
+                  <FileText className="h-8 w-8 text-primary" />
                 </div>
-                <h3 className="mb-2 text-xl font-semibold">24/7 support at your fingertips</h3>
+                <h3 className="mb-2 text-xl font-semibold">Quality Documentation</h3>
                 <p className="text-muted-foreground">
-                  Get instant help whenever you need it, day or night, completely free of charge.
+                  Create rich, meaningful documentation that showcases children's learning journeys.
+                  AskBetty helps you capture and communicate learning moments effectively.
+                </p>
+              </div>
+
+              <div>
+                <div className="mb-4">
+                  <Brain className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="mb-2 text-xl font-semibold">Pedagogical Mentor & Coach</h3>
+                <p className="text-muted-foreground">
+                  Get personalized guidance on pedagogical practices, critical reflection, and
+                  teaching strategies. AskBetty helps you deepen your understanding of early
+                  childhood theory and practice.
+                </p>
+              </div>
+
+              <div>
+                <div className="mb-4">
+                  <Heart className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="mb-2 text-xl font-semibold">Enhanced Learning Experiences</h3>
+                <p className="text-muted-foreground">
+                  When educators spend less time on paperwork, they have more quality time with
+                  children. AskBetty helps create richer learning environments and more meaningful
+                  interactions that support each child's unique journey.
                 </p>
               </div>
             </div>
@@ -129,7 +170,7 @@ export default function Index() {
         </div>
 
         {/* Coming Soon Section */}
-        <div className="bg-gradient-to-t from-primary/5 to-background pb-16 pt-8">
+        <div className="bg-gradient-to-b from-background to-primary/5 pb-16 pt-12">
           <div className="mx-auto w-full max-w-5xl px-4">
             <div className="rounded-lg border bg-card p-8 shadow-lg">
               <div className="mb-6 flex items-center gap-3">
@@ -164,10 +205,13 @@ export default function Index() {
         <div className="py-16">
           <div className="mx-auto w-full max-w-5xl px-4">
             <div className="mb-12 text-center">
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-sm text-primary">
+                <span>🎉 Introductory Pricing - Limited Time Only</span>
+              </div>
               <h2 className="mb-4 text-3xl font-bold">Simple, transparent pricing</h2>
               <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-                Choose the plan that works best for you or your center. All plans include full
-                access to Betty's features.
+                Choose the plan that's right for you. All plans include unlimited access to
+                AskBetty's core features.
               </p>
             </div>
 
@@ -208,9 +252,10 @@ export default function Index() {
                 <div className="mb-4">
                   <h3 className="text-xl font-semibold">Personal</h3>
                   <div className="mt-4 flex items-baseline">
-                    <span className="text-3xl font-bold">$19</span>
-                    <span className="ml-1 text-muted-foreground">/month per seat</span>
+                    <span className="text-3xl font-bold">$14</span>
+                    <span className="ml-1 text-muted-foreground">/month</span>
                   </div>
+                  <p className="mt-2 text-sm text-muted-foreground">Billed monthly</p>
                 </div>
                 <ul className="mb-6 space-y-3">
                   <li className="flex items-center gap-2">
@@ -276,6 +321,7 @@ export default function Index() {
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

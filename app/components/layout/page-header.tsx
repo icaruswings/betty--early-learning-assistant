@@ -1,5 +1,5 @@
 import { PropsWithChildren, useEffect, useState } from "react";
-import { UserButton } from "@clerk/remix";
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/remix";
 import { useTheme } from "remix-themes";
 import { dark } from "@clerk/themes";
 import { usePageHeader } from "~/hooks/use-page-header";
@@ -31,11 +31,16 @@ export function PageHeader({
           <h1 className="m-0 p-0 text-lg font-semibold">{title}</h1>
         </div>
         <div className="hidden md:block">
-          <UserButton
-            appearance={{
-              baseTheme: theme === "dark" ? dark : undefined,
-            }}
-          />
+          <SignedIn>
+            <UserButton
+              appearance={{
+                baseTheme: theme === "dark" ? dark : undefined,
+              }}
+            />
+          </SignedIn>
+          <SignedOut>
+            <SignInButton />
+          </SignedOut>
         </div>
       </div>
     </header>
