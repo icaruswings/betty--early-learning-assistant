@@ -11,7 +11,7 @@ import {
   GraduationCap,
   FileText,
   Brain,
-  Heart
+  Heart,
 } from "lucide-react";
 import { useUser, UserButton, SignedIn, SignedOut, SignInButton } from "@clerk/remix";
 import { useTheme } from "remix-themes";
@@ -53,7 +53,7 @@ export default function Index() {
           <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 md:flex-row md:items-center md:gap-12">
             <div className="flex flex-1 flex-col">
               <h1 className="mb-4 text-4xl font-bold md:text-5xl">
-                Supporting early childhood educators to excel
+                Supporting early childhood educators to exceed
               </h1>
               <p className="mb-8 text-lg text-muted-foreground">
                 Save hours each week with your AI teaching assistant that understands EYLF and NQS.
@@ -64,8 +64,8 @@ export default function Index() {
                 {isSignedIn ? (
                   <Button asChild size="lg">
                     <Link to="/chat">
-                      <MessageSquare className="mr-2 h-5 w-5" />
-                      Start Chatting
+                      <MessageSquare className="h-5 w-5" />
+                      Ask Betty...
                     </Link>
                   </Button>
                 ) : (
@@ -174,10 +174,7 @@ export default function Index() {
           <div className="mx-auto w-full max-w-5xl px-4">
             <div className="rounded-lg border bg-card p-8 shadow-lg">
               <div className="mb-6 flex items-center gap-3">
-                <h2 className="text-2xl font-semibold">Coming Soon</h2>
-                <span className="rounded-full bg-primary/10 px-3 py-1 text-sm text-primary">
-                  in-development
-                </span>
+                <h2 className="text-2xl font-semibold">Launching in 2025</h2>
               </div>
               <p className="mb-6 text-lg text-muted-foreground">
                 Transform your teaching insights into meaningful documentation. Create detailed
@@ -196,6 +193,12 @@ export default function Index() {
                     Create engaging stories that capture and celebrate learning progress.
                   </p>
                 </div>
+                <div className="rounded-lg border bg-card/50 p-4">
+                  <h3 className="mb-2 font-semibold">Play-based learning ideas</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Get inspired with creative play activities that support learning outcomes.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -206,7 +209,7 @@ export default function Index() {
           <div className="mx-auto w-full max-w-5xl px-4">
             <div className="mb-12 text-center">
               <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-sm text-primary">
-                <span>🎉 Introductory Pricing - Limited Time Only</span>
+                <span>🎉 Early-bird Pricing - Limited Time Only 🎉</span>
               </div>
               <h2 className="mb-4 text-3xl font-bold">Simple, transparent pricing</h2>
               <p className="mx-auto max-w-2xl text-lg text-muted-foreground">

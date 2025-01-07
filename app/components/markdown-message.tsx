@@ -15,7 +15,7 @@ interface MarkdownMessageProps {
 // Style constants
 const STYLES = {
   container: {
-    base: "px-8 py-4",
+    base: "px-8 py-4 text-base",
     user: "ml-auto max-w-[80%] rounded-2xl bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100",
   },
   code: {
@@ -59,7 +59,7 @@ export function MarkdownMessage({ content, isUserMessage, className }: MarkdownM
         <p className="whitespace-pre-wrap">{content}</p>
       ) : (
         <ReactMarkdown
-          className="prose prose-sm max-w-none dark:prose-invert"
+          className="prose-md prose max-w-none dark:prose-invert"
           remarkPlugins={[remarkGfm]}
           rehypePlugins={[rehypeHighlight]}
           components={MarkdownComponents}

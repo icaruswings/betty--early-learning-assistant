@@ -120,7 +120,7 @@
 // }
 
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/remix";
-import { Binoculars, Book, Home, LogIn, MessageSquare, Settings } from "lucide-react";
+import { Binoculars, Blocks, Book, Home, LogIn, MessageSquare, Settings } from "lucide-react";
 import { useMemo } from "react";
 import {
   Sidebar,
@@ -178,6 +178,9 @@ export function AppSidebar() {
                   <Link to="/learning/observations">
                     <Binoculars />
                     <span>Observations</span>
+                    <span className="ml-auto rounded-full bg-muted px-2 py-0.5 text-xs">
+                      Coming Soon
+                    </span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -186,6 +189,20 @@ export function AppSidebar() {
                   <Link to="/learning/stories">
                     <Book />
                     <span>Stories</span>
+                    <span className="ml-auto rounded-full bg-muted px-2 py-0.5 text-xs">
+                      Coming Soon
+                    </span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to="/learning/activities">
+                    <Blocks />
+                    <span>Play-to-learn</span>
+                    <span className="ml-auto rounded-full bg-muted px-2 py-0.5 text-xs">
+                      Coming Soon
+                    </span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

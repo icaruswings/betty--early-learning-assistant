@@ -4,19 +4,18 @@ import { ConversationStarters } from "~/components/conversation-starters";
 import { getAuth } from "@clerk/remix/ssr.server";
 import { useChatState } from "~/hooks/use-chat-state";
 import { useChatMessages } from "~/hooks/use-chat-messages";
-// import { useChatSuggestions } from "~/hooks/use-chat-suggestions";
 import EmptyState from "~/components/chat/empty-state";
 import MessageList from "~/components/chat/message-list";
 import ChatInput from "~/components/chat/input";
 import { ChatScrollAnchor } from "~/components/chat/chat-scroll-anchor";
-import { MessageSquare, ArrowDown } from "lucide-react";
+import { MessageSquare } from "lucide-react";
 import { usePageHeader } from "~/hooks/use-page-header";
 import { Message } from "~/schemas/chat";
-import { Button } from "~/components/ui/button";
 import ScrollToBottomButton from "~/components/scroll-to-bottom-button";
+import { cn } from "~/lib/utils";
 
 export const meta: MetaFunction = () => {
-  return [{ title: "Chat - Early Learning Assistant" }];
+  return [{ title: "Ask Betty - Early Learning Assistant" }];
 };
 
 export async function loader(args: LoaderFunctionArgs) {
@@ -74,7 +73,7 @@ export default function Chat() {
   const [isAtBottom, setIsAtBottom] = useState(true);
 
   useEffect(() => {
-    setTitle("Chat");
+    setTitle("Ask Betty");
     setIcon(MessageSquare);
   }, [setTitle, setIcon]);
 
@@ -126,11 +125,16 @@ export default function Chat() {
           )}
         </div>
 
-        {!isAtBottom && !isEmpty && (
-          <div className="sticky bottom-4 flex justify-center">
-            <ScrollToBottomButton onClick={scrollToBottom} />
-          </div>
-        )}
+        <div className={cn("sticky bottom-4 flex h-10 justify-center")}>
+          <ScrollToBottomButton
+            className={cn(
+              "transition-[opacity,_display]",
+              "starting:opacity-0 transition-discrete duration-600 ease-in-out",
+              !isAtBottom && !isEmpty ? "visible opacity-100" : "hidden opacity-0"
+            )}
+            onClick={scrollToBottom}
+          />
+        </div>
       </div>
       <div className="sticky bottom-0 z-10 bg-background/80 backdrop-blur">
         <div className="container max-w-3xl pb-4">

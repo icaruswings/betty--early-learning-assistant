@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import plugin from "tailwindcss/plugin";
 
 export default {
   darkMode: ["class"],
@@ -90,5 +91,20 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
+  plugins: [
+    require("tailwindcss-animate"),
+    require("@tailwindcss/typography"),
+    plugin(function ({ addVariant, addUtilities }) {
+      addVariant("starting", "@starting-style");
+
+      addUtilities({
+        ".transition-display": {
+          transitionProperty: "display",
+        },
+        ".transition-discrete": {
+          transitionBehavior: "allow-discrete",
+        },
+      });
+    }),
+  ],
 } satisfies Config;
