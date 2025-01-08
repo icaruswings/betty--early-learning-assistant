@@ -46,6 +46,7 @@ type ChatAction =
   | { type: "APPEND_ASSISTANT_MESSAGE"; payload: string }
   | { type: "SET_ERROR"; payload: string }
   | { type: "CLEAR_ERROR" }
+  | { type: "SET_MESSAGES"; payload: Message[] }
   | { type: "SET_SUGGESTIONS"; payload: string[] }
   | { type: "SET_LOADING_SUGGESTIONS"; payload: boolean }
   | { type: "SET_LOADING"; payload: boolean }
@@ -102,6 +103,9 @@ function chatReducer(state: ChatState, action: ChatAction): ChatState {
     case "CLEAR_ERROR":
       return { ...state, error: null };
 
+    case "SET_MESSAGES":
+      return { ...state, messages: action.payload };
+
     case "SET_SUGGESTIONS":
       return { ...state, suggestions: action.payload };
 
@@ -122,8 +126,8 @@ function chatReducer(state: ChatState, action: ChatAction): ChatState {
   }
 }
 
-export function useChatState() {
-  const [state, dispatch] = useReducer(chatReducer, initialState);
+export function useChatState(initial?: Partial<ChatState>) {
+  const [state, dispatch] = useReducer(chatReducer, { ...initialState, ...initial });
 
   const setInput = useCallback((input: string) => {
     dispatch({ type: "SET_INPUT", payload: input });
@@ -150,6 +154,10 @@ export function useChatState() {
     dispatch({ type: "CLEAR_ERROR" });
   }, []);
 
+  const setMessages = useCallback((messages: Message[]) => {
+    dispatch({ type: "SET_MESSAGES", payload: messages });
+  }, []);
+
   const setSuggestions = useCallback((suggestions: string[]) => {
     dispatch({ type: "SET_SUGGESTIONS", payload: suggestions });
   }, []);
@@ -174,6 +182,7 @@ export function useChatState() {
     appendAssistantMessage,
     setError,
     clearError,
+    setMessages,
     setSuggestions,
     setLoadingSuggestions,
     setLoading,

@@ -1,10 +1,8 @@
 import { useRef, useEffect, useState } from "react";
 import { LoaderFunctionArgs, redirect, type MetaFunction } from "@remix-run/node";
-import { ConversationStarters } from "~/components/conversation-starters";
 import { getAuth } from "@clerk/remix/ssr.server";
 import { useChatState } from "~/hooks/use-chat-state";
 import { useChatMessages } from "~/hooks/use-chat-messages";
-import EmptyState from "~/components/chat/empty-state";
 import MessageList from "~/components/chat/message-list";
 import ChatInput from "~/components/chat/input";
 import { ChatScrollAnchor } from "~/components/chat/chat-scroll-anchor";
@@ -13,6 +11,10 @@ import { usePageHeader } from "~/hooks/use-page-header";
 import { Message } from "~/schemas/chat";
 import ScrollToBottomButton from "~/components/scroll-to-bottom-button";
 import { cn } from "~/lib/utils";
+import { useParams } from "@remix-run/react";
+import { api } from "../../convex/_generated/api";
+import { useQuery } from "convex/react";
+import { Id } from "../../convex/_generated/dataModel";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Ask Betty - Early Learning Assistant" }];
@@ -24,39 +26,18 @@ export async function loader(args: LoaderFunctionArgs) {
   return null;
 }
 
-const EmptyStateContent = ({ onSelect }: { onSelect: (content: string) => Promise<void> }) => {
-  return (
-    <div className="flex flex-col gap-6">
-      <EmptyState />
-      <ConversationStarters onSelect={onSelect} />
-    </div>
-  );
-};
-
-const ConversationContent = ({
-  messages,
-  isLoading,
-  scrollAreaRef,
-  isAtBottom,
-}: {
-  messages: Message[];
-  isLoading: boolean;
-  scrollAreaRef: React.RefObject<HTMLDivElement>;
-  isAtBottom: boolean;
-}) => {
-  return (
-    <div className="relative h-full">
-      <MessageList messages={messages} />
-      <ChatScrollAnchor
-        trackVisibility={isLoading}
-        isAtBottom={isAtBottom}
-        scrollAreaRef={scrollAreaRef}
-      />
-    </div>
-  );
-};
-
 export default function Chat() {
+  const { id } = useParams();
+
+  const conversation = useQuery(api.chats.getConversation, {
+    conversationId: id as Id<"conversations">,
+  });
+
+  const existingMessages =
+    useQuery(api.chats.getMessages, {
+      conversationId: id as Id<"conversations">,
+    }) || [];
+
   const {
     messages,
     isLoading,
@@ -66,16 +47,34 @@ export default function Chat() {
     setError,
     setLoading,
     removeLastMessage,
+    setMessages,
   } = useChatState();
 
   const { setTitle, setIcon } = usePageHeader();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const [isAtBottom, setIsAtBottom] = useState(true);
 
+  // Set the conversation title and messages once loaded
   useEffect(() => {
-    setTitle("Ask Betty");
-    setIcon(MessageSquare);
-  }, [setTitle, setIcon]);
+    if (conversation) {
+      setTitle(conversation.title);
+      setIcon(MessageSquare);
+    }
+
+    return () => {
+      setTitle("");
+      setIcon(null);
+    };
+  }, [conversation, setTitle, setIcon]);
+
+  // Load existing messages
+  useEffect(() => {
+    if (!existingMessages) {
+      return;
+    }
+
+    setMessages(existingMessages.map(({ role, content }) => ({ content, role })));
+  }, [existingMessages, setMessages]);
 
   const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
     const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
@@ -98,8 +97,6 @@ export default function Chat() {
     },
   });
 
-  const isEmpty = messages.length === 0;
-
   const scrollToBottom = () => {
     if (scrollAreaRef.current) {
       scrollAreaRef.current.scrollTo({
@@ -109,20 +106,26 @@ export default function Chat() {
     }
   };
 
+  if (!conversation || !existingMessages) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <p className="text-muted-foreground">Loading conversation...</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex h-full flex-col overflow-hidden">
-      <div ref={scrollAreaRef} className="relative flex-1 overflow-y-auto" onScroll={handleScroll}>
-        <div className="container max-w-3xl">
-          {isEmpty ? (
-            <EmptyStateContent onSelect={sendMessage} />
-          ) : (
-            <ConversationContent
-              messages={messages}
-              isLoading={isLoading}
-              scrollAreaRef={scrollAreaRef}
+    <div className="flex h-full flex-col">
+      <div ref={scrollAreaRef} onScroll={handleScroll} className="flex-1 overflow-y-auto px-4">
+        <div className="mx-auto max-w-3xl space-y-4 py-4">
+          <div className="relative h-full">
+            <MessageList messages={messages} />
+            <ChatScrollAnchor
+              trackVisibility={isLoading}
               isAtBottom={isAtBottom}
+              scrollAreaRef={scrollAreaRef}
             />
-          )}
+          </div>
         </div>
 
         <div className={cn("sticky bottom-4 flex h-10 justify-center")}>
@@ -130,15 +133,21 @@ export default function Chat() {
             className={cn(
               "transition-[opacity,_display]",
               "starting:opacity-0 transition-discrete duration-600 ease-in-out",
-              !isAtBottom && !isEmpty ? "visible opacity-100" : "hidden opacity-0"
+              !isAtBottom ? "visible opacity-100" : "hidden opacity-0"
             )}
             onClick={scrollToBottom}
           />
         </div>
       </div>
-      <div className="sticky bottom-0 z-10 bg-background/80 backdrop-blur">
-        <div className="container max-w-3xl pb-4">
-          <ChatInput onSubmit={sendMessage} isLoading={isLoading} />
+
+      <div className="border-t bg-background px-4">
+        <div className="mx-auto max-w-3xl py-4">
+          <ChatInput
+            isLoading={isLoading}
+            onSubmit={async (content) => {
+              await sendMessage(content);
+            }}
+          />
         </div>
       </div>
     </div>
