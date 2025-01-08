@@ -120,9 +120,8 @@ export function AppSidebar() {
           appearance={{
             baseTheme: theme === "dark" ? dark : undefined,
             elements: {
-              userButtonBox: {
-                flexDirection: "row-reverse",
-              },
+              userButtonPopoverCard: { pointerEvents: "initial" },
+              userButtonBox: { flexDirection: "row-reverse" },
             },
           }}
         />
