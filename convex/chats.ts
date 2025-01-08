@@ -1,6 +1,5 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
-import { Id } from "./_generated/dataModel";
 
 // Get all conversations for a user
 export const listConversations = query({
@@ -103,15 +102,15 @@ export const deleteConversation = mutation({
   },
   handler: async (ctx, args) => {
     const { conversationId } = args;
-    
+
     // Delete all messages in the conversation
     const messages = await ctx.db
       .query("messages")
       .filter((q) => q.eq(q.field("conversationId"), conversationId))
       .collect();
-    
+
     await Promise.all(messages.map((msg) => ctx.db.delete(msg._id)));
-    
+
     // Delete the conversation
     await ctx.db.delete(conversationId);
   },

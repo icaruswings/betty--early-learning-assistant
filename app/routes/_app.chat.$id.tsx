@@ -74,6 +74,16 @@ export default function Chat() {
     }
 
     setMessages(existingMessages.map(({ role, content }) => ({ content, role })));
+    
+    // Scroll to bottom after a short delay to ensure messages are rendered
+    setTimeout(() => {
+      if (scrollAreaRef.current) {
+        scrollAreaRef.current.scrollTo({
+          top: scrollAreaRef.current.scrollHeight,
+          behavior: "smooth"
+        });
+      }
+    }, 100);
   }, [existingMessages, setMessages]);
 
   const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
