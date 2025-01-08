@@ -11,10 +11,7 @@ interface SuggestionsResponse {
 }
 
 export class ChatService {
-  static async sendMessage(
-    messages: Message[],
-    model: ModelId
-  ): Promise<Response> {
+  static async sendMessage(messages: Message[], model: ModelId): Promise<Response> {
     const response = await fetch("/api/chat", {
       method: "POST",
       headers: {
@@ -28,6 +25,23 @@ export class ChatService {
     }
 
     return response;
+  }
+
+  static async generateTitle(messages: Message[]): Promise<Response> {
+    const response = await fetch("/api/generate-title", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ messages }),
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error("Failed to send message");
+    }
+
+    return data.title || "New Conversation";
   }
 
   static async fetchSuggestions(messages: Message[]): Promise<string[]> {
