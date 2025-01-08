@@ -26,8 +26,8 @@ export function PageHeader({
     >
       <div className="flex h-full w-full flex-none items-center">
         <div className="flex flex-1 items-center gap-4">
-          {includeSidebarTrigger && <SidebarTrigger className="md:hidden [&_svg]:size-4" />}
-          {Icon && <Icon className="h-5 w-5" />}
+          {includeSidebarTrigger && <SidebarTrigger className="md:hidden [&_svg]:size-5" />}
+          {Icon && <Icon className="size-5" />}
           <h1 className="m-0 p-0 text-lg font-semibold">{title}</h1>
         </div>
         <div className="hidden md:block">

@@ -12,6 +12,7 @@ import {
   FileText,
   Brain,
   Heart,
+  Loader,
 } from "lucide-react";
 import { useUser, UserButton, SignedIn, SignedOut, SignInButton } from "@clerk/remix";
 import { useTheme } from "remix-themes";
@@ -33,7 +34,7 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index() {
-  const { isSignedIn } = useUser();
+  const { isSignedIn, isLoaded } = useUser();
   const [theme] = useTheme();
 
   const { setIcon, setTitle } = usePageHeader();
@@ -70,10 +71,17 @@ export default function Index() {
                   </Button>
                 ) : (
                   <Button asChild size="lg">
-                    <Link to="/sign-in">
-                      <LogIn className="mr-2 h-5 w-5" />
-                      Get Started Free
-                    </Link>
+                    {isLoaded ? (
+                      <Link to="/sign-in">
+                        <LogIn className="size-5" />
+                        <span>Sign In</span>
+                      </Link>
+                    ) : (
+                      <div>
+                        <Loader className="size-5 animate-spin" />
+                        <span>Loading...</span>
+                      </div>
+                    )}
                   </Button>
                 )}
               </div>

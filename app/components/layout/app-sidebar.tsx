@@ -30,7 +30,7 @@ export function AppSidebar() {
     <Sidebar collapsible="icon">
       <SidebarHeader className="h-12">
         <div className="flex items-center justify-start">
-          <SidebarTrigger className="size-8 [&_svg]:size-4" />
+          <SidebarTrigger className="size-8 [&_svg]:size-5" />
         </div>
       </SidebarHeader>
       <SidebarContent>
@@ -38,8 +38,8 @@ export function AppSidebar() {
           <SidebarGroup className="border-t">
             <SidebarGroupContent>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link to="/" onClick={onClick}>
+                <SidebarMenuButton asChild size="lg">
+                  <Link className="flex flex-row gap-3" to="/" onClick={onClick}>
                     <Home />
                     <span>Home</span>
                   </Link>
@@ -48,11 +48,15 @@ export function AppSidebar() {
             </SidebarGroupContent>
           </SidebarGroup>
           <SidebarGroup className="border-t">
-            <SidebarGroupLabel>Learning</SidebarGroupLabel>
+            <SidebarGroupLabel className="h-10">Learning</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link to="/learning/observations" onClick={onClick}>
+                <SidebarMenuButton asChild size="lg">
+                  <Link
+                    className="flex flex-row gap-3"
+                    to="/learning/observations"
+                    onClick={onClick}
+                  >
                     <Binoculars />
                     <span>Observations</span>
                     <span className="ml-auto rounded-full bg-muted px-2 py-0.5 text-xs">
@@ -62,8 +66,8 @@ export function AppSidebar() {
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link to="/learning/stories" onClick={onClick}>
+                <SidebarMenuButton asChild size="lg">
+                  <Link className="flex flex-row gap-3" to="/learning/stories" onClick={onClick}>
                     <Book />
                     <span>Stories</span>
                     <span className="ml-auto rounded-full bg-muted px-2 py-0.5 text-xs">
@@ -73,8 +77,8 @@ export function AppSidebar() {
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link to="/learning/activities" onClick={onClick}>
+                <SidebarMenuButton asChild size="lg">
+                  <Link className="flex flex-row gap-3" to="/learning/activities" onClick={onClick}>
                     <Blocks />
                     <span>Play-to-learn</span>
                     <span className="ml-auto rounded-full bg-muted px-2 py-0.5 text-xs">
@@ -86,19 +90,19 @@ export function AppSidebar() {
             </SidebarGroupContent>
           </SidebarGroup>
           <SidebarGroup className="border-t">
-            <SidebarGroupLabel>Practice Support</SidebarGroupLabel>
+            <SidebarGroupLabel className="h-10">Practice Support</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link to="/chat" onClick={onClick}>
+                <SidebarMenuButton asChild size="lg">
+                  <Link className="flex flex-row gap-3" to="/chat" onClick={onClick}>
                     <MessageSquare />
                     <span>Ask Betty</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link to="/chat-history" onClick={onClick}>
+                <SidebarMenuButton asChild size="lg">
+                  <Link className="flex flex-row gap-3" to="/chat-history" onClick={onClick}>
                     <History />
                     <span>Previous Chats</span>
                   </Link>
@@ -109,8 +113,8 @@ export function AppSidebar() {
           <SidebarGroup className="border-t">
             <SidebarGroupContent>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link to="/settings" onClick={onClick}>
+                <SidebarMenuButton asChild size="lg">
+                  <Link className="flex flex-row gap-3" to="/settings" onClick={onClick}>
                     <Settings />
                     <span>Settings</span>
                   </Link>
