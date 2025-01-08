@@ -91,7 +91,10 @@ export const renameConversation = mutation({
   },
   handler: async (ctx, args) => {
     const { conversationId, title } = args;
-    await ctx.db.patch(conversationId, { title });
+    await ctx.db.patch(conversationId, {
+      title,
+      updatedAt: Date.now(),
+    });
   },
 });
 
@@ -113,5 +116,48 @@ export const deleteConversation = mutation({
 
     // Delete the conversation
     await ctx.db.delete(conversationId);
+  },
+});
+
+// Create a new conversation
+export const createConversation = mutation({
+  args: {
+    userId: v.string(),
+    title: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const conversationId = await ctx.db.insert("conversations", {
+      userId: args.userId,
+      title: args.title,
+      createdAt: Date.now(),
+    });
+
+    return conversationId;
+  },
+});
+
+// Save a new message to a conversation
+export const saveMessage = mutation({
+  args: {
+    conversationId: v.id("conversations"),
+    role: v.union(v.literal("user"), v.literal("assistant")),
+    content: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const now = Date.now();
+
+    const messageId = await ctx.db.insert("messages", {
+      conversationId: args.conversationId,
+      role: args.role,
+      content: args.content,
+      createdAt: now,
+    });
+
+    // Update the conversation's updatedAt timestamp
+    await ctx.db.patch(args.conversationId, {
+      updatedAt: now,
+    });
+
+    return messageId;
   },
 });

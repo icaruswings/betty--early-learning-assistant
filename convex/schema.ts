@@ -6,7 +6,7 @@ export default defineSchema({
     userId: v.string(),
     title: v.string(),
     createdAt: v.number(),
-    updatedAt: v.number(),
+    updatedAt: v.optional(v.number()),
     summary: v.optional(v.string()),
   }),
 
