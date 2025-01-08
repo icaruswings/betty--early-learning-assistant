@@ -12,6 +12,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarTrigger,
+  useSidebar,
 } from "~/components/ui/sidebar";
 import { useTheme } from "remix-themes";
 import { dark } from "@clerk/themes";
@@ -19,6 +20,11 @@ import { Link } from "@remix-run/react";
 
 export function AppSidebar() {
   const [theme] = useTheme();
+  const { setOpenMobile } = useSidebar();
+
+  const onClick = () => {
+    setOpenMobile(false);
+  };
 
   return (
     <Sidebar collapsible="icon">
@@ -33,7 +39,7 @@ export function AppSidebar() {
             <SidebarGroupContent>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link to="/">
+                  <Link to="/" onClick={onClick}>
                     <Home />
                     <span>Home</span>
                   </Link>
@@ -46,7 +52,7 @@ export function AppSidebar() {
             <SidebarGroupContent>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link to="/learning/observations">
+                  <Link to="/learning/observations" onClick={onClick}>
                     <Binoculars />
                     <span>Observations</span>
                     <span className="ml-auto rounded-full bg-muted px-2 py-0.5 text-xs">
@@ -57,7 +63,7 @@ export function AppSidebar() {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link to="/learning/stories">
+                  <Link to="/learning/stories" onClick={onClick}>
                     <Book />
                     <span>Stories</span>
                     <span className="ml-auto rounded-full bg-muted px-2 py-0.5 text-xs">
@@ -68,7 +74,7 @@ export function AppSidebar() {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link to="/learning/activities">
+                  <Link to="/learning/activities" onClick={onClick}>
                     <Blocks />
                     <span>Play-to-learn</span>
                     <span className="ml-auto rounded-full bg-muted px-2 py-0.5 text-xs">
@@ -84,7 +90,7 @@ export function AppSidebar() {
             <SidebarGroupContent>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link to="/chat" className="flex-1">
+                  <Link to="/chat" onClick={onClick}>
                     <MessageSquare />
                     <span>Ask Betty</span>
                   </Link>
@@ -92,7 +98,7 @@ export function AppSidebar() {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link to="/chat-history">
+                  <Link to="/chat-history" onClick={onClick}>
                     <History />
                     <span>Previous Chats</span>
                   </Link>
@@ -104,7 +110,7 @@ export function AppSidebar() {
             <SidebarGroupContent>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link to="/settings">
+                  <Link to="/settings" onClick={onClick}>
                     <Settings />
                     <span>Settings</span>
                   </Link>
