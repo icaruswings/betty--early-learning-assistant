@@ -105,7 +105,7 @@ export default function ChatHistory() {
                 <div className="flex items-start justify-between">
                   <h2 className="text-lg font-semibold text-card-foreground">{chat.title}</h2>
                   <span className="text-sm text-muted-foreground">
-                    {formatDistanceToNow(new Date(chat.updatedAt), {
+                    {formatDistanceToNow(chat.updatedAt || chat.createdAt, {
                       addSuffix: true,
                     })}
                   </span>
@@ -191,7 +191,7 @@ export default function ChatHistory() {
       </div>
 
       <Dialog open={!!renamingChat} onOpenChange={() => setRenamingChat(null)}>
-        <DialogContent className="sm:max-w-[425px] flex flex-col gap-0">
+        <DialogContent className="flex flex-col gap-0 sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Rename conversation</DialogTitle>
             <DialogDescription>Enter a new title for this conversation.</DialogDescription>
@@ -216,7 +216,7 @@ export default function ChatHistory() {
       </Dialog>
 
       <Dialog open={!!deletingChatId} onOpenChange={() => setDeletingChatId(null)}>
-        <DialogContent className="sm:max-w-[425px] flex flex-col gap-0">
+        <DialogContent className="flex flex-col gap-0 sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Delete conversation</DialogTitle>
             <DialogDescription>

@@ -6,6 +6,7 @@ import { usePageHeader } from "~/hooks/use-page-header";
 import { SidebarTrigger } from "../ui/sidebar";
 import { cn } from "~/lib/utils";
 import { ClassValue } from "clsx";
+import { Link } from "@remix-run/react";
 
 export function PageHeader({
   className,
@@ -30,16 +31,19 @@ export function PageHeader({
           {Icon && <Icon className="size-5" />}
           <h1 className="m-0 p-0 text-lg font-semibold">{title}</h1>
         </div>
-        <div className="hidden md:block">
-          <SignedIn>
-            <UserButton
-              appearance={{
-                baseTheme: theme === "dark" ? dark : undefined,
-              }}
-            />
-          </SignedIn>
+        <div className="hidden h-full items-center md:flex">
+          <UserButton
+            appearance={{
+              baseTheme: theme === "dark" ? dark : undefined,
+            }}
+          />
+
           <SignedOut>
-            <SignInButton />
+            <div className="flex flex-row gap-1.5 font-semibold">
+              <Link to="/sign-in">Sign In</Link>
+              <span className="font-normal">or</span>
+              <Link to="/waitlist">Join the waitlist!</Link>
+            </div>
           </SignedOut>
         </div>
       </div>

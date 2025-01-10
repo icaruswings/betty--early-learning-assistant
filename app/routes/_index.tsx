@@ -3,7 +3,6 @@ import { Link } from "@remix-run/react";
 import { Button } from "~/components/ui/button";
 import {
   MessageSquare,
-  LogIn,
   Check,
   Info,
   Clock,
@@ -13,10 +12,10 @@ import {
   Brain,
   Heart,
   Loader,
+  CalendarClock,
 } from "lucide-react";
-import { useUser, UserButton, SignedIn, SignedOut, SignInButton } from "@clerk/remix";
+import { useUser } from "@clerk/remix";
 import { useTheme } from "remix-themes";
-import { dark } from "@clerk/themes";
 import { PageHeader } from "~/components/layout/page-header";
 import { usePageHeader } from "~/hooks/use-page-header";
 import { useEffect } from "react";
@@ -72,9 +71,9 @@ export default function Index() {
                 ) : (
                   <Button asChild size="lg">
                     {isLoaded ? (
-                      <Link to="/sign-in">
-                        <LogIn className="size-5" />
-                        <span>Sign In</span>
+                      <Link to="/waitlist">
+                        <CalendarClock className="size-5" />
+                        <span>Join the waitlist!</span>
                       </Link>
                     ) : (
                       <div>
@@ -182,8 +181,13 @@ export default function Index() {
           <div className="mx-auto w-full max-w-5xl px-4">
             <div className="rounded-lg border bg-card p-8 shadow-lg">
               <div className="mb-6 flex items-center gap-3">
-                <h2 className="text-2xl font-semibold">Launching in 2025</h2>
+                <h2 className="text-2xl font-semibold">Launching mid-2025</h2>
               </div>
+              <p className="mb-6 text-lg text-muted-foreground">
+                Our Pedagogy coach is currently in beta testing phase and will be open for sign-ups
+                in a matter of weeks, Join the waitlist we can share updates with you and stay tuned
+                for our launch date and more exciting feature announcements!
+              </p>
               <p className="mb-6 text-lg text-muted-foreground">
                 Transform your teaching insights into meaningful documentation. Create detailed
                 observations and engaging learning narratives that showcase children's growth.
