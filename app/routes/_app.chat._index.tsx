@@ -13,7 +13,6 @@ import { usePageHeader } from "~/hooks/use-page-header";
 import { Message } from "~/schemas/chat";
 import ScrollToBottomButton from "~/components/scroll-to-bottom-button";
 import { cn } from "~/lib/utils";
-import { useParams } from "@remix-run/react";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Ask Betty - Early Learning Assistant" }];

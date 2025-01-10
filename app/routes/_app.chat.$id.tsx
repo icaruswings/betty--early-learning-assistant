@@ -8,7 +8,6 @@ import ChatInput from "~/components/chat/input";
 import { ChatScrollAnchor } from "~/components/chat/chat-scroll-anchor";
 import { MessageSquare } from "lucide-react";
 import { usePageHeader } from "~/hooks/use-page-header";
-import { Message } from "~/schemas/chat";
 import ScrollToBottomButton from "~/components/scroll-to-bottom-button";
 import { cn } from "~/lib/utils";
 import { useParams } from "@remix-run/react";
@@ -74,13 +73,13 @@ export default function Chat() {
     }
 
     setMessages(existingMessages.map(({ role, content }) => ({ content, role })));
-    
+
     // Scroll to bottom after a short delay to ensure messages are rendered
     setTimeout(() => {
       if (scrollAreaRef.current) {
         scrollAreaRef.current.scrollTo({
           top: scrollAreaRef.current.scrollHeight,
-          behavior: "smooth"
+          behavior: "smooth",
         });
       }
     }, 100);

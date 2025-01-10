@@ -24,6 +24,11 @@ import {
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { toast } from "sonner";
+import { type MetaFunction } from "@remix-run/node";
+
+export const meta: MetaFunction = () => {
+  return [{ title: "Ask Betty - Early Learning Assistant" }];
+};
 
 export default function ChatHistory() {
   const { user } = useUser();

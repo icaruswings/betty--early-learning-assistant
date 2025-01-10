@@ -22,14 +22,7 @@ import { useEffect } from "react";
 import Footer from "~/components/layout/footer";
 
 export const meta: MetaFunction = () => {
-  return [
-    { title: "AskBetty" },
-    {
-      name: "description",
-      content:
-        "Save hours on documentation with an AI teaching assistant that understands EYLF and NQS. Streamline your workflow and improve quality outcomes.",
-    },
-  ];
+  return [{ title: "Ask Betty - Early Learning Assistant" }];
 };
 
 export default function Index() {
@@ -232,7 +225,7 @@ export default function Index() {
 
             <div className="grid gap-8 md:grid-cols-3">
               {/* Free Trial */}
-              <div className="relative rounded-lg border bg-card p-6 shadow-sm">
+              <div className="relative flex flex-col rounded-lg border bg-card p-6 shadow-sm">
                 <div className="mb-4">
                   <h3 className="text-xl font-semibold">Free Trial</h3>
                   <div className="mt-4 flex items-baseline">
@@ -254,18 +247,15 @@ export default function Index() {
                     <span>No credit card required</span>
                   </li>
                 </ul>
-                <Button className="w-full" variant="outline">
-                  Start Free Trial
+                <Button className="mt-auto w-full" variant="outline" asChild>
+                  <Link to="/waitlist">Join the waitlist!</Link>
                 </Button>
               </div>
 
-              {/* Personal */}
-              <div className="relative rounded-lg border bg-card p-6 shadow-sm">
-                <div className="absolute -top-3 right-4 rounded-full bg-primary px-3 py-1 text-xs text-primary-foreground">
-                  Most Popular
-                </div>
+              {/* Educator */}
+              <div className="relative -mx-2 flex scale-105 flex-col rounded-lg border bg-card p-8 shadow-lg">
                 <div className="mb-4">
-                  <h3 className="text-xl font-semibold">Personal</h3>
+                  <h3 className="text-xl font-semibold">Educator</h3>
                   <div className="mt-4 flex items-baseline">
                     <span className="text-3xl font-bold">$14</span>
                     <span className="ml-1 text-muted-foreground">/month</span>
@@ -286,16 +276,18 @@ export default function Index() {
                     <span>Priority support</span>
                   </li>
                 </ul>
-                <Button className="w-full">Subscribe Now</Button>
+                <Button className="mt-auto w-full" asChild>
+                  <Link to="/waitlist">Join the waitlist!</Link>
+                </Button>
               </div>
 
               {/* Center */}
-              <div className="relative rounded-lg border bg-card p-6 shadow-sm">
-                <div className="absolute -top-3 right-4 rounded-full bg-primary/10 px-3 py-1 text-xs text-primary">
+              <div className="relative flex flex-col rounded-lg border bg-card p-6 shadow-sm">
+                {/* <div className="absolute -top-3 right-4 rounded-full bg-primary/10 px-3 py-1 text-xs text-primary">
                   Coming Soon
-                </div>
+                </div> */}
                 <div className="mb-4">
-                  <h3 className="text-xl font-semibold">Center</h3>
+                  <h3 className="text-xl font-semibold">Centre</h3>
                   <div className="mt-4 flex items-baseline">
                     <span className="text-3xl font-bold">$9</span>
                     <span className="ml-1 text-muted-foreground">/month per seat</span>
@@ -313,15 +305,15 @@ export default function Index() {
                   </li>
                   <li className="flex items-center gap-2">
                     <Check className="h-4 w-4 text-primary" />
-                    <span>Center management tools</span>
+                    <span>Centre management tools</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <Check className="h-4 w-4 text-primary" />
                     <span>Priority support</span>
                   </li>
                 </ul>
-                <Button className="w-full" variant="outline" disabled>
-                  Join Waitlist
+                <Button className="mt-auto w-full" variant="outline" asChild>
+                  <Link to="/waitlist">Join the waitlist!</Link>
                 </Button>
               </div>
             </div>

@@ -10,11 +10,12 @@ import { Link } from "@remix-run/react";
 
 export function PageHeader({
   className,
+  children,
   includeSidebarTrigger = false,
-}: {
+}: PropsWithChildren<{
   className?: ClassValue;
   includeSidebarTrigger?: boolean;
-}) {
+}>) {
   const [theme] = useTheme();
   const { title, Icon } = usePageHeader();
 
@@ -26,12 +27,13 @@ export function PageHeader({
       )}
     >
       <div className="flex h-full w-full flex-none items-center">
-        <div className="flex flex-1 items-center gap-4">
+        <div className="flex flex-none items-center gap-4">
           {includeSidebarTrigger && <SidebarTrigger className="md:hidden [&_svg]:size-5" />}
           {Icon && <Icon className="size-5" />}
           <h1 className="m-0 p-0 text-lg font-semibold">{title}</h1>
         </div>
-        <div className="hidden h-full items-center md:flex">
+        <div className="flex-1">{children}</div>
+        <div className="hidden h-full flex-none items-center md:flex">
           <UserButton
             appearance={{
               baseTheme: theme === "dark" ? dark : undefined,

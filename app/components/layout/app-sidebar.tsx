@@ -96,7 +96,7 @@ export function AppSidebar() {
                 <SidebarMenuButton asChild size="lg">
                   <Link className="flex flex-row gap-3" to="/chat" onClick={onClick}>
                     <MessageSquare />
-                    <span>Ask Betty</span>
+                    <span>Ask Betty ...</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
