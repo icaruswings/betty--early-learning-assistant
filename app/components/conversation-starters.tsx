@@ -24,7 +24,7 @@ function LoadingState() {
         <div className="h-8 w-8" />
       </div>
 
-      <div className="flex flex-row gap-2 md:grid md:grid-cols-2">
+      <div className="relative flex flex-row gap-2 md:grid md:grid-cols-2">
         {Array.from({ length: isMdScreen ? 2 : 4 }).map((_, i) => (
           <div
             key={i}
