@@ -1,5 +1,5 @@
 import type { Message } from "~/schemas/chat";
-import type { ModelId } from "~/components/model-selector";
+import type { ModelId } from "~/lib/constants";
 
 interface ChatResponse {
   content: string;
