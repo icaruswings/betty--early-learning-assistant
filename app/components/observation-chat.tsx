@@ -3,7 +3,7 @@ import { MarkdownMessage } from "~/components/markdown-message";
 import { type Message } from "~/schemas/chat";
 import { useStreamReader } from "~/hooks/use-stream-reader";
 import { ChatService } from "~/services/chat-service";
-import ChatInput from "~/components/chat/input";
+import ChatInput from "~/components/chat/ChatInput";
 
 interface ObservationChatProps {
   onSave: (observation: string) => void;

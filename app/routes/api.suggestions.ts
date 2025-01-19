@@ -1,22 +1,14 @@
 import OpenAI from "openai";
 import type { ActionFunction } from "@remix-run/node";
-import { Suggestions } from "~/lib/responses";
-import { ServerError } from "~/lib/errors";
+import { ServerError, Suggestions } from "~/lib/responses";
 import { getAuth } from "@clerk/remix/ssr.server";
+import { ensureHttpMethodAllowed, ensureSessionExists } from "~/lib/middleware";
 
 export const action: ActionFunction = async (args) => {
   const { request } = args;
 
-  // Ensure the request method is POST
-  if (request.method !== "POST") {
-    return new Response("Method Not Allowed", { status: 405 });
-  }
-
-  const { sessionId } = await getAuth(args);
-
-  if (!sessionId) {
-    throw new Response("Unauthorized", { status: 401 });
-  }
+  ensureHttpMethodAllowed(request, ["POST"]);
+  await ensureSessionExists(args);
 
   const openai = new OpenAI({
     baseURL: "https://oai.hconeai.com/v1",

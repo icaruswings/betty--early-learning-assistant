@@ -1,27 +1,23 @@
 import type { Message } from "~/schemas/chat";
 import type { ModelId } from "~/lib/constants";
-
-interface ChatResponse {
-  content: string;
-  error: string | null;
-}
-
-interface SuggestionsResponse {
-  suggestions: string[];
-}
+import { ServerError } from "~/lib/responses";
 
 export class ChatService {
-  static async sendMessage(messages: Message[], model: ModelId): Promise<Response> {
+  static async sendMessage(
+    messages: Message[],
+    newMessage: Message,
+    model: ModelId
+  ): Promise<Response> {
     const response = await fetch("/api/chat", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ messages, model }),
+      body: JSON.stringify({ messages, newMessage, model }),
     });
 
     if (!response.ok) {
-      throw new Error("Failed to send message");
+      throw ServerError("Failed to send message");
     }
 
     return response;
@@ -38,7 +34,7 @@ export class ChatService {
 
     const data = await response.json();
     if (!response.ok) {
-      throw new Error("Failed to send message");
+      throw ServerError("Failed to send message");
     }
 
     return data.title || "New Conversation";
@@ -55,7 +51,7 @@ export class ChatService {
 
     const data = await response.json();
     if (!response.ok) {
-      throw new Error("Failed to fetch suggestions");
+      throw ServerError("Failed to fetch suggestions");
     }
 
     return data.suggestions || [];

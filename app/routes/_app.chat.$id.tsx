@@ -2,10 +2,9 @@ import { useRef, useEffect, useState } from "react";
 import { LoaderFunctionArgs, redirect, type MetaFunction } from "@remix-run/node";
 import { getAuth } from "@clerk/remix/ssr.server";
 import { useChatState } from "~/hooks/use-chat-state";
-import { useChatMessages } from "~/hooks/use-chat-messages";
-import MessageList from "~/components/chat/message-list";
-import ChatInput from "~/components/chat/input";
-import { ChatScrollAnchor } from "~/components/chat/chat-scroll-anchor";
+import MessageList from "~/components/chat/MessageList";
+import ChatInput from "~/components/chat/ChatInput";
+import { ChatScrollAnchor } from "~/components/chat/ChatScrollAnchor";
 import { MessageSquare } from "lucide-react";
 import { usePageHeader } from "~/hooks/use-page-header";
 import ScrollToBottomButton from "~/components/scroll-to-bottom-button";
@@ -14,6 +13,8 @@ import { useParams } from "@remix-run/react";
 import { api } from "../../convex/_generated/api";
 import { useQuery } from "convex/react";
 import { Id } from "../../convex/_generated/dataModel";
+import { ChatService } from "~/services/chat-service";
+import { useStreamReader } from "~/hooks/use-stream-reader";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Ask Betty - Early Learning Assistant" }];
@@ -91,20 +92,28 @@ export default function Chat() {
     setIsAtBottom(isBottom);
   };
 
-  // Chat message handling
-  const { sendMessage } = useChatMessages({
-    messages,
-    model,
-    onMessageStart: startMessage,
-    onMessageStream: appendAssistantMessage,
-    onMessageComplete: () => {
-      setLoading(false);
-    },
-    onMessageError: (error) => {
-      setError(error);
+  const { streamReader } = useStreamReader();
+
+  async function sendMessage(content: string) {
+    startMessage(content);
+
+    const response = await ChatService.sendMessage(messages, { role: "user", content }, model);
+
+    const { content: streamContent, error: streamError } = await streamReader(response, {
+      onChunk(chunk) {
+        appendAssistantMessage(chunk);
+      },
+      onComplete(finalContent) {
+        setLoading(false);
+      },
+    });
+
+    if (streamError) {
+      console.error(streamError);
+      setError(streamError);
       removeLastMessage();
-    },
-  });
+    }
+  }
 
   const scrollToBottom = () => {
     if (scrollAreaRef.current) {
@@ -141,7 +150,7 @@ export default function Chat() {
           <ScrollToBottomButton
             className={cn(
               "transition-[opacity,_display]",
-              "starting:opacity-0 transition-discrete duration-600 ease-in-out",
+              "duration-600 ease-in-out transition-discrete starting:opacity-0",
               !isAtBottom ? "visible opacity-100" : "hidden opacity-0"
             )}
             onClick={scrollToBottom}

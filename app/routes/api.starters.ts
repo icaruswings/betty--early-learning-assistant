@@ -1,16 +1,12 @@
 import OpenAI from "openai";
 import { type LoaderFunction } from "@remix-run/node";
-import { ServerError } from "~/lib/errors";
-import { Starters } from "~/lib/responses";
+import { ServerError, Starters } from "~/lib/responses";
 import { STARTER_PROMPT } from "~/config/prompts";
 import { getAuth } from "@clerk/remix/ssr.server";
+import { ensureSessionExists } from "~/lib/middleware";
 
 export const loader: LoaderFunction = async (args) => {
-  const { sessionId } = await getAuth(args);
-
-  if (!sessionId) {
-    throw new Response("Unauthorized", { status: 401 });
-  }
+  await ensureSessionExists(args);
 
   const openai = new OpenAI({
     baseURL: "https://oai.hconeai.com/v1",

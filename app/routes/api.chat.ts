@@ -1,120 +1,49 @@
-import OpenAI from "openai";
 import { PEDAGOGY_PROMPT } from "~/config/prompts";
-import type { ActionFunction, DataFunctionArgs } from "@remix-run/node";
-import { ServerError } from "~/lib/errors";
-import { getAuth } from "@clerk/remix/ssr.server";
+import type { ActionFunction } from "@remix-run/node";
+import { ServerError } from "~/lib/responses";
+import { ModelId } from "~/lib/constants";
+import { AIMessage, HumanMessage, SystemMessage } from "@langchain/core/messages";
+import { Message } from "~/schemas/chat";
+import { Id } from "convex/_generated/dataModel";
+import { ensureHttpMethodAllowed, ensureSessionExists } from "~/lib/middleware";
+import { streamChatCompletion } from "~/services/chat.server";
+import useStreamingResponse from "~/hooks/useStreamingResponse";
 
-function ensureHttpMethodAllowed(request: Request, allowedMethods: string[]) {
-  if (!allowedMethods.includes(request.method)) {
-    throw new Response("Method Not Allowed", { status: 405 });
-  }
-}
-
-async function ensureSessionExists(args: DataFunctionArgs) {
-  const { sessionId } = await getAuth(args);
-  if (!sessionId) {
-    throw new Response("Unauthorized", { status: 401 });
-  }
-}
+export type ChatRequestBody = {
+  messages: Message[];
+  newMessage: string;
+  chatId: Id<"conversations">;
+  model: ModelId;
+};
 
 export const action: ActionFunction = async (args) => {
   const { request } = args;
 
   ensureHttpMethodAllowed(request, ["POST"]);
-  ensureSessionExists(args);
+  await ensureSessionExists(args);
 
-  // Parse the incoming request body
-  const { messages: userMessages, model } = await request.json();
-
-  // Combine default messages with user messages
-  const messages = [
-    {
-      role: "system",
-      content: PEDAGOGY_PROMPT,
-    },
-    ...userMessages.filter((msg: any) => msg.role === "user"),
-  ];
-
-  // Initialize OpenAI client
-  const openai = new OpenAI({
-    baseURL: "https://oai.hconeai.com/v1",
-    apiKey: process.env.OPENAI_API_KEY,
-    defaultHeaders: {
-      "Helicone-Auth": `Bearer ${process.env.HELICONE_API_KEY}`,
-    },
-  });
+  const { messages, newMessage, chatId, model } = (await request.json()) as ChatRequestBody;
 
   try {
-    // Create a streaming completion
-    const stream = await openai.chat.completions.create({
-      model: model,
-      messages: messages,
-      temperature: 0.7,
-      max_tokens: 1000,
-      stream: true,
-      stream_options: {
-        include_usage: true,
-      },
-    });
+    const langChainMessages = [
+      new SystemMessage(PEDAGOGY_PROMPT),
+      ...messages.map((message) =>
+        message.role === "assistant" ? new AIMessage(message.content) : new HumanMessage(message)
+      ),
+      new HumanMessage(newMessage),
+    ];
 
-    // Create a TransformStream to convert chunks to SSE (Server-sent events) format
-    const encoder = new TextEncoder();
-    const transformStream = new TransformStream({
-      async transform(chunk, controller) {
-        try {
-          if (chunk.choices && chunk.choices[0]?.delta?.content !== undefined) {
-            const content = chunk.choices[0].delta.content;
-            const data = JSON.stringify({ content });
-            controller.enqueue(encoder.encode(`data: ${data}\n\n`));
-          }
-        } catch (error) {
-          console.error("Error in transform stream:", error);
-          const errorData = JSON.stringify({ error: "Error processing stream chunk" });
-          controller.enqueue(encoder.encode(`data: ${errorData}\n\n`));
-        }
-      },
-      flush(controller) {
-        try {
-          const data = JSON.stringify({ content: "", done: true });
-          controller.enqueue(encoder.encode(`data: ${data}\n\n`));
-        } catch (error) {
-          console.error("Error in transform stream flush:", error);
-        }
-      },
-    });
+    const eventStream = await streamChatCompletion(langChainMessages, model);
 
-    // Create a readable stream from the OpenAI stream
-    const readable = new ReadableStream({
-      async start(controller) {
-        try {
-          for await (const chunk of stream) {
-            controller.enqueue(chunk);
-          }
-          controller.close();
-        } catch (error) {
-          console.error("Error in readable stream:", error);
-          controller.error(error);
-        }
-      },
-      cancel() {
-        // Ensure we clean up if the stream is cancelled
-        stream.controller.abort();
-      },
-    });
-
-    // Pipe through the transform stream
-    const responseStream = readable.pipeThrough(transformStream);
-
-    // Return the streaming response
-    return new Response(responseStream, {
+    return new Response(eventStream, {
       headers: {
         "Content-Type": "text/event-stream",
-        "Cache-Control": "no-cache",
         Connection: "keep-alive",
+        "X-Accel-Buffering": "no", // Disable buffering for nginx which is required for SSE to work properly
       },
     });
   } catch (error) {
-    console.error("Error in chat API:", error);
-    return ServerError("Error processing chat request");
+    console.error("Error in chat completion:", error);
+    throw ServerError("Failed to get chat completion");
   }
 };
