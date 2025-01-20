@@ -137,7 +137,7 @@ export default function Chat() {
       <div ref={scrollAreaRef} onScroll={handleScroll} className="flex-1 overflow-y-auto px-4">
         <div className="mx-auto max-w-3xl space-y-4 py-4">
           <div className="relative h-full">
-            <MessageList messages={messages} />
+            <MessageList messages={messages} isStreaming={isLoading} />
             <ChatScrollAnchor
               trackVisibility={isLoading}
               isAtBottom={isAtBottom}

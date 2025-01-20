@@ -123,12 +123,12 @@ export const deleteConversation = mutation({
 export const createConversation = mutation({
   args: {
     userId: v.string(),
-    title: v.string(),
+    title: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const conversationId = await ctx.db.insert("conversations", {
       userId: args.userId,
-      title: args.title,
+      title: args.title || "New Conversation",
       createdAt: Date.now(),
     });
 

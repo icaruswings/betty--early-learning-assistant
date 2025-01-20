@@ -60,8 +60,12 @@ export default function ChatInput({
   };
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
-    // Check for Command + Return (Mac) or Control + Return (Windows)
-    if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+    if (event.key === "Enter") {
+      if (event.shiftKey) {
+        // Allow line break on Shift + Enter
+        return;
+      }
+      // Prevent default Enter behavior and submit the form
       event.preventDefault();
       formRef.current?.requestSubmit();
     }
@@ -70,11 +74,7 @@ export default function ChatInput({
   const isEmpty = !content.trim();
 
   return (
-    <form
-      ref={formRef}
-      onSubmit={handleSubmit}
-      className="flex w-full flex-none items-end gap-2"
-    >
+    <form ref={formRef} onSubmit={handleSubmit} className="flex w-full flex-none items-end gap-2">
       <div
         ref={containerRef}
         onClick={focusInput}

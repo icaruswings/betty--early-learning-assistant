@@ -3,7 +3,6 @@ import { LoaderFunctionArgs, redirect, type MetaFunction } from "@remix-run/node
 import { ConversationStarters } from "~/components/conversation-starters";
 import { getAuth } from "@clerk/remix/ssr.server";
 import { useChatState } from "~/hooks/use-chat-state";
-import { useChatMessages } from "~/hooks/use-chat-messages";
 import EmptyState from "~/components/chat/EmptyState";
 import MessageList from "~/components/chat/MessageList";
 import ChatInput from "~/components/chat/ChatInput";
@@ -15,16 +14,20 @@ import ScrollToBottomButton from "~/components/scroll-to-bottom-button";
 import { cn } from "~/lib/utils";
 import { ChatService } from "~/services/chat-service";
 import { useStreamReader } from "~/hooks/use-stream-reader";
-import { ServerError } from "~/lib/responses";
+import { useMutation } from "convex/react";
+import { api } from "convex/_generated/api";
+import { useLoaderData } from "@remix-run/react";
+import { Id } from "convex/_generated/dataModel";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Ask Betty - Early Learning Assistant" }];
 };
 
 export async function loader(args: LoaderFunctionArgs) {
-  const { sessionId } = await getAuth(args);
+  const { sessionId, userId } = await getAuth(args);
   if (!sessionId) return redirect("/");
-  return null;
+
+  return { currentUser: userId };
 }
 
 const EmptyStateContent = ({ onSelect }: { onSelect: (content: string) => Promise<void> }) => {
@@ -49,7 +52,7 @@ const ConversationContent = ({
 }) => {
   return (
     <div className="relative h-full">
-      <MessageList messages={messages} />
+      <MessageList messages={messages} isStreaming={isLoading} />
       <ChatScrollAnchor
         trackVisibility={isLoading}
         isAtBottom={isAtBottom}
@@ -60,6 +63,13 @@ const ConversationContent = ({
 };
 
 export default function Chat() {
+  const { currentUser } = useLoaderData<typeof loader>();
+
+  let conversationId: Id<"conversations">;
+  const createConversation = useMutation(api.chats.createConversation);
+  const saveMessage = useMutation(api.chats.saveMessage);
+  const updateTitle = useMutation(api.chats.renameConversation);
+
   const {
     messages,
     isLoading,
@@ -91,6 +101,14 @@ export default function Chat() {
   async function sendMessage(content: string) {
     startMessage(content);
 
+    if (!conversationId) {
+      // create newconversation
+      conversationId = await createConversation({ userId: currentUser });
+      // change the URL to the new conversation
+      // without reloading the page
+      // window.history.replaceState(null, "", `/chat/${conversationId}`);
+    }
+
     const response = await ChatService.sendMessage(messages, { role: "user", content }, model);
 
     const { content: streamContent, error: streamError } = await streamReader(response, {
@@ -99,6 +117,16 @@ export default function Chat() {
       },
       onComplete(finalContent) {
         setLoading(false);
+
+        // save user AND assistant message pair
+        const userMessage: Message = { role: "user", content };
+
+        saveMessage({ conversationId, ...userMessage });
+        saveMessage({ conversationId, role: "assistant", content: finalContent });
+
+        ChatService.generateTitle([userMessage]).then(async (title) => {
+          await updateTitle({ conversationId, title });
+        });
       },
     });
 

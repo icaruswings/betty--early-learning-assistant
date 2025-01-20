@@ -23,7 +23,7 @@ export class ChatService {
     return response;
   }
 
-  static async generateTitle(messages: Message[]): Promise<Response> {
+  static async generateTitle(messages: Message[]): Promise<string> {
     const response = await fetch("/api/generate-title", {
       method: "POST",
       headers: {
@@ -33,6 +33,7 @@ export class ChatService {
     });
 
     const data = await response.json();
+
     if (!response.ok) {
       throw ServerError("Failed to send message");
     }

@@ -93,3 +93,46 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+.result-streaming > :not(ol):not(ul):not(pre):not(div):last-child:after,
+.result-streaming > pre:last-child code:after {
+  content: "●";
+  font-family: Circle, system-ui, sans-serif;
+  line-height: normal;
+  vertical-align: baseline;
+}
+
+@supports (selector(:has(*))) {
+  .result-streaming > :is(ul, ol):last-child > li:last-child:not(:has(* > li)):after,
+  .result-streaming
+    > :is(ul, ol):last-child
+    > li:last-child
+    > :is(ul, ol):last-child
+    > li:last-child:after,
+  .result-streaming
+    > :is(ul, ol):last-child
+    > li:last-child
+    > :is(ul, ol):last-child
+    > li:last-child
+    > :is(ul, ol):last-child
+    > li:last-child:after,
+  .result-streaming > :is(ul, ol):last-child > li:last-child:has(p):after {
+    content: "●";
+    font-family: Circle, system-ui, sans-serif;
+    line-height: normal;
+    vertical-align: baseline;
+    margin-left: 0.25rem;
+  }
+}
+
+@supports not (selector(:has(*))) {
+  .result-streaming > ol:last-child > li:last-child:after,
+  .result-streaming > ul:last-child > li:last-child:after,
+  .result-streaming > ul:last-child > li:last-child > p:last-child:after {
+    content: "●";
+    font-family: Circle, system-ui, sans-serif;
+    line-height: normal;
+    vertical-align: baseline;
+    margin-left: 0.25rem;
+  }
+}
