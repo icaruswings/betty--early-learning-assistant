@@ -122,7 +122,6 @@ export default function Chat() {
           // save user/assistant message pair
           const userMessage: Message = { role: "user", content };
           saveMessage({ conversationId: newConversationId, ...userMessage });
-
           const assistantMessage: Message = { role: "assistant", content: finalContent };
           saveMessage({ conversationId: newConversationId, ...assistantMessage });
 

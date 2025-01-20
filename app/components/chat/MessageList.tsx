@@ -9,9 +9,13 @@ export default function MessageList({
   messages: Message[];
   isStreaming?: boolean;
 }) {
+  const lastAssistantIndex = [...messages].reverse().findIndex((m) => m.role === "assistant");
+
   return messages.map((message, i) => {
     const isUserMessage = message.role === "user";
     const isAssistantMessage = message.role === "assistant";
+    const isLastAssistantMessage =
+      isAssistantMessage && i === messages.length - 1 - lastAssistantIndex;
 
     return (
       <article key={i}>
@@ -26,7 +30,10 @@ export default function MessageList({
         {isAssistantMessage && (
           <div className="flex flex-1 flex-row gap-6 px-8 py-4 text-base">
             <HeartHandshakeIcon className="size-10 flex-none rounded-full border border-foreground/10 p-2 text-foreground/20" />
-            <MarkdownMessage isStreaming={isStreaming} content={message.content} />
+            <MarkdownMessage
+              isStreaming={isLastAssistantMessage && isStreaming}
+              content={message.content}
+            />
           </div>
         )}
       </article>
