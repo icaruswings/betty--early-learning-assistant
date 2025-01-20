@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import { LoaderFunctionArgs, redirect, type MetaFunction } from "@remix-run/node";
 import { ConversationStarters } from "~/components/conversation-starters";
 import { getAuth } from "@clerk/remix/ssr.server";
@@ -65,7 +65,7 @@ const ConversationContent = ({
 export default function Chat() {
   const { currentUser } = useLoaderData<typeof loader>();
 
-  let conversationId: Id<"conversations">;
+  const [conversationId, setConversationId] = useState<Id<"conversations">>();
   const createConversation = useMutation(api.chats.createConversation);
   const saveMessage = useMutation(api.chats.saveMessage);
   const updateTitle = useMutation(api.chats.renameConversation);
@@ -98,44 +98,51 @@ export default function Chat() {
 
   const { streamReader } = useStreamReader();
 
-  async function sendMessage(content: string) {
-    startMessage(content);
+  const sendMessage = useCallback(
+    async (content: string) => {
+      startMessage(content);
 
-    if (!conversationId) {
-      // create newconversation
-      conversationId = await createConversation({ userId: currentUser });
-      // change the URL to the new conversation
-      // without reloading the page
-      // window.history.replaceState(null, "", `/chat/${conversationId}`);
-    }
+      let newConversationId = conversationId;
 
-    const response = await ChatService.sendMessage(messages, { role: "user", content }, model);
+      if (!newConversationId) {
+        newConversationId = await createConversation({ userId: currentUser });
+        setConversationId(newConversationId);
+      }
 
-    const { content: streamContent, error: streamError } = await streamReader(response, {
-      onChunk(chunk) {
-        appendAssistantMessage(chunk);
-      },
-      onComplete(finalContent) {
-        setLoading(false);
+      const response = await ChatService.sendMessage(messages, { role: "user", content }, model);
 
-        // save user AND assistant message pair
-        const userMessage: Message = { role: "user", content };
+      const { content: streamContent, error: streamError } = await streamReader(response, {
+        onChunk(chunk) {
+          appendAssistantMessage(chunk);
+        },
+        onComplete(finalContent) {
+          setLoading(false);
+          appendAssistantMessage(finalContent);
 
-        saveMessage({ conversationId, ...userMessage });
-        saveMessage({ conversationId, role: "assistant", content: finalContent });
+          // save user/assistant message pair
+          const userMessage: Message = { role: "user", content };
+          saveMessage({ conversationId: newConversationId, ...userMessage });
 
-        ChatService.generateTitle([userMessage]).then(async (title) => {
-          await updateTitle({ conversationId, title });
-        });
-      },
-    });
+          const assistantMessage: Message = { role: "assistant", content: finalContent };
+          saveMessage({ conversationId: newConversationId, ...assistantMessage });
 
-    if (streamError) {
-      console.error(streamError);
-      setError(streamError);
-      removeLastMessage();
-    }
-  }
+          ChatService.generateTitle([userMessage]).then(async (title) => {
+            await updateTitle({
+              conversationId: newConversationId,
+              title,
+            });
+          });
+        },
+      });
+
+      if (streamError) {
+        console.error("Stream error:", streamError);
+        setError(streamError);
+        removeLastMessage();
+      }
+    },
+    [conversationId, createConversation, currentUser, messages, model, saveMessage, updateTitle]
+  );
 
   const isEmpty = messages.length === 0;
 
