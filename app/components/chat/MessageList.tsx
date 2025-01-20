@@ -28,7 +28,7 @@ export default function MessageList({
 
         {isAssistantMessage && <h6 className="sr-only">Betty said:</h6>}
         {isAssistantMessage && (
-          <div className="flex flex-1 flex-row gap-6 px-8 py-4 text-base">
+          <div className="flex flex-1 flex-row gap-6 px-2 py-4 text-base sm:px-8">
             <HeartHandshakeIcon className="size-10 flex-none rounded-full border border-foreground/10 p-2 text-foreground/20" />
             <MarkdownMessage
               isStreaming={isLastAssistantMessage && isStreaming}
