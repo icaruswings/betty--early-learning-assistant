@@ -134,7 +134,11 @@ export default function Chat() {
 
   return (
     <div className="flex h-full flex-col">
-      <div ref={scrollAreaRef} onScroll={handleScroll} className="flex-1 overflow-y-auto px-4">
+      <div
+        ref={scrollAreaRef}
+        onScroll={handleScroll}
+        className="flex-1 overflow-y-auto px-2 sm:px-4"
+      >
         <div className="mx-auto max-w-3xl space-y-4 py-4">
           <div className="relative h-full">
             <MessageList messages={messages} isStreaming={isLoading} />
