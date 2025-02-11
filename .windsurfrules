@@ -1,0 +1,133 @@
+You are an expert in Remix, Clerk, Convex, TailwindCSS, and TypeScript, focusing on scalable web development.
+
+**Key Principles**
+
+- Provide clear, precise Remix and TypeScript examples.
+- Apply immutability and pure functions where applicable.
+- Favor route modules and nested layouts for composition and modularity.
+- Use meaningful variable names (e.g., `isAuthenticated`, `userRole`).
+- Always use kebab-case for file names (e.g., `user-profile.tsx`).
+- Prefer named exports for loaders, actions, and components.
+
+**TypeScript & Remix**
+
+- Define data structures with interfaces for type safety.
+- Avoid the `any` type, fully utilize TypeScript's type system.
+- Organize files: imports, loaders/actions, component logic.
+- Use template strings for multi-line literals.
+- Utilize optional chaining and nullish coalescing.
+- Use nested layouts and dynamic routes where applicable.
+- Leverage loaders for efficient server-side rendering and data fetching.
+- Use `useFetcher` and `useLoaderData` for seamless data management between client and server.
+
+**File Naming Conventions**
+
+- `*.tsx` for React components
+- `*.ts` for utilities, types, and configurations
+- `root.tsx` for the root layout
+- All files use kebab-case.
+
+**Code Style**
+
+- Use single quotes for string literals.
+- Indent with 2 spaces.
+- Ensure clean code with no trailing whitespace.
+- Use `const` for immutable variables.
+- Use template strings for string interpolation.
+
+**Remix-Specific Guidelines**
+
+- Use `<Link>` for navigation, avoiding full page reloads.
+- Implement loaders and actions for server-side data loading and mutations.
+- Ensure accessibility with semantic HTML and ARIA labels.
+- Leverage route-based loading, error boundaries, and catch boundaries.
+- Use the `useFetcher` hook for non-blocking data updates.
+- Cache and optimize resource loading where applicable to improve performance.
+
+**Import Order**
+
+1. Remix core modules
+2. React and other core libraries
+3. Third-party packages
+4. Application-specific imports
+5. Environment-specific imports
+6. Relative path imports
+
+**Error Handling and Validation**
+
+- Implement error boundaries for catching unexpected errors.
+- Use custom error handling within loaders and actions.
+- Validate user input on both client and server using formData or JSON.
+
+**Testing**
+
+- Use `@testing-library/react` for component testing.
+- Write tests for loaders and actions ensuring data correctness.
+- Mock fetch requests and responses where applicable.
+
+**Performance Optimization**
+
+- Prefetch routes using `<Link prefetch="intent">` for faster navigation.
+- Defer non-essential JavaScript using `<Scripts defer />`.
+- Optimize nested layouts to minimize re-rendering.
+- Use Remix's built-in caching and data revalidation to optimize performance.
+
+**Security**
+
+- Prevent XSS by sanitizing user-generated content.
+- Use Remix's CSRF protection for form submissions.
+- Handle sensitive data on the server, never expose in client code.
+
+**Key Conventions**
+
+- Use Remix's loaders and actions to handle server-side logic.
+- Focus on reusability and modularity across routes and components.
+- Follow Remix’s best practices for file structure and data fetching.
+- Optimize for performance and accessibility.
+
+**Reference**
+Refer to Remix’s official documentation for best practices in Routes, Loaders, and Actions.
+
+# Rules
+
+- Use Australian english for customer facing messages & content.
+- Always maintain detailed JSDoc comments for non-route files and include usage examples where applicable.
+
+# Technology Stack and Constraints
+
+## Core Technologies
+
+- TypeScript
+- Node.js
+- LangChain & LangGraph for LLM Integration
+- AI Model: OpenAI ChatGPT-4o
+- Clerk for user profiles and authentication
+
+## Frontend
+
+- Remix
+- React
+- Tailwind CSS
+- shadcn/ui
+
+## Backend
+
+- Remix API only routes
+- Convex for real-time data access
+- Vercel for deployment
+
+# Project
+
+AskBetty is a personalised early childhood education assistant.
+
+## Description
+
+Early childhood educators in Australia face significant challenges in meeting their documentation requirements, including learning stories and observations. Limited time, inadequate access to resources, and staffing shortages force educators to rush documentation, often resulting in poor alignment with the Early Years Learning Framework (EYLF) and National Quality Standards (NQS). This not only undermines the quality of children’s learning experiences but also hinders centres’ ability to achieve and maintain an "Exceeding" rating. Educators need a solution that saves time, improves documentation quality, and ensures consistent alignment with educational frameworks—all while supporting their professional growth.
+
+AskBetty empowers early childhood centres to achieve and maintain "Exceeding" ratings by streamlining documentation, ensuring consistent alignment with EYLF outcomes and NQS quality areas, and supporting educators’ professional growth. With features that save up to 50% of documentation time, provide framework-aligned guidance, and offer personalized pedagogical coaching, AskBetty helps centres elevate the quality of their practice, reduce staff burnout, and create richer learning environments for children.
+
+## Features
+
+- AskBetty - a familiar ChatGPT like, chat interface that provides educators with a pedagogical coach and mentor to assist with their professional development, including understanding or aligning their planning with learning frameworks, refining or improving their teaching strategies, and personalised general advice to improve their practice. the assistent has deep knowledge of EYLF and NQS to provide tailored guidance and support on many aspects of ECE.
+- Documentation Assistant - a feature that helps educators write meaningful and EYLF-aligned learning stories through a guided conversation flow. Educators can simply choose a document type (eg. observation, learning story, reflection), link the document to a child, and begin by write jottings, then the context aware AI assistant will guide them through the writing process, providing suggestions and guidance that can be applied or discarded as appropriate, finally, the educator can review and publish their document.
+- Play-to-learn activity assistant - a tool to help educators create framework alisned play-to-learn activities. In a similar fashion to the documentation assistant, educators can provide an outline of an intended activity, and the AI assistant will guide them to generate a detailed plan, including activities, materials, options for different developmental milestones, and to document alignment with learning frameworks.

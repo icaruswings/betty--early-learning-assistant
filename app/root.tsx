@@ -41,43 +41,41 @@ export const loader = async (args: LoaderFunctionArgs) => {
 
 export const useRootLoaderData = () => useRouteLoaderData<typeof loader>("root");
 
-function Layout({ children }: { children: React.ReactNode }) {
+function App() {
   const data = useLoaderData<typeof loader>();
   const [theme] = useTheme();
 
   return (
-    <html lang="en" data-theme={theme} className={theme ?? ""}>
+    <html lang="en" data-theme={theme ?? ""}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
+        <PreventFlashOnWrongTheme ssrTheme={Boolean(data?.theme)} />
       </head>
       <body className={cn("font-sans antialiased")}>
-        {children}
+        <Outlet />
         <ScrollRestoration />
-        <PreventFlashOnWrongTheme ssrTheme={Boolean(data?.theme)} />
         <Scripts />
       </body>
     </html>
   );
 }
 
-function App() {
-  const { theme, ENV } = useLoaderData<typeof loader>();
-  const [convexClient] = useState(new ConvexReactClient(ENV.CONVEX_URL));
+function AppWithProviders() {
+  const data = useLoaderData<typeof loader>();
+  const [convexClient] = useState(new ConvexReactClient(data.ENV.CONVEX_URL));
 
   return (
-    <ThemeProvider specifiedTheme={theme} themeAction="/action/set-theme">
-      <ConvexProviderWithClerk client={convexClient} useAuth={useAuth}>
+    <ConvexProviderWithClerk client={convexClient} useAuth={useAuth}>
+      <ThemeProvider specifiedTheme={data.theme} themeAction="/action/set-theme">
         <PageHeaderProvider>
-          <Layout>
-            <Outlet />
-          </Layout>
+          <App />
         </PageHeaderProvider>
-      </ConvexProviderWithClerk>
-    </ThemeProvider>
+      </ThemeProvider>
+    </ConvexProviderWithClerk>
   );
 }
 
-export default ClerkApp(App);
+export default ClerkApp(AppWithProviders);

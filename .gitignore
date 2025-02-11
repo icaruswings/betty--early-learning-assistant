@@ -28,3 +28,4 @@ yarn-error.log*
 # Remix specific
 /public/build
 /public/assets
+.vercel

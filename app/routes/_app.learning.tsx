@@ -1,7 +1,6 @@
 import { getAuth } from "@clerk/remix/ssr.server";
 import { LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { Outlet } from "@remix-run/react";
-import { PropsWithChildren } from "react";
 
 export const loader = async (args: LoaderFunctionArgs) => {
   const { sessionId } = await getAuth(args);
