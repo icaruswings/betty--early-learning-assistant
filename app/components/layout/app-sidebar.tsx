@@ -1,5 +1,5 @@
 import { UserButton } from "@clerk/remix";
-import { Binoculars, Blocks, Book, Home, MessageSquare, Settings, History } from "lucide-react";
+import { Binoculars, Blocks, Book, Home, MessageSquare, MessageSquarePlus, Settings, History } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -16,13 +16,20 @@ import {
 } from "~/components/ui/sidebar";
 import { useTheme } from "remix-themes";
 import { dark } from "@clerk/themes";
-import { Link } from "@remix-run/react";
+import { Link, useNavigate } from "@remix-run/react";
+import { Button } from "~/components/ui/button";
 
 export function AppSidebar() {
   const [theme] = useTheme();
   const { setOpenMobile } = useSidebar();
+  const navigate = useNavigate();
 
   const onClick = () => {
+    setOpenMobile(false);
+  };
+
+  const handleNewChat = () => {
+    navigate("/chat");
     setOpenMobile(false);
   };
 
@@ -94,17 +101,28 @@ export function AppSidebar() {
             <SidebarGroupContent>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild size="lg">
-                  <Link className="flex flex-row gap-3" to="/chat" onClick={onClick}>
-                    <MessageSquare />
-                    <span>Ask Betty ...</span>
-                  </Link>
+                  <div className="flex w-full flex-row items-center gap-3">
+                    <Link className="flex flex-1 flex-row gap-3" to="/chat" onClick={onClick}>
+                      <MessageSquare />
+                      <span>Ask Betty ...</span>
+                    </Link>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={handleNewChat}
+                      className="ml-auto size-8 shrink-0"
+                      title="Start new chat"
+                    >
+                      <MessageSquarePlus className="size-4" />
+                    </Button>
+                  </div>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild size="lg">
                   <Link className="flex flex-row gap-3" to="/chat-history" onClick={onClick}>
                     <History />
-                    <span>Previous Chats</span>
+                    <span>Chat History</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -124,17 +142,13 @@ export function AppSidebar() {
           </SidebarGroup>
         </SidebarMenu>
       </SidebarContent>
-      <SidebarFooter className="md:hidden">
-        <UserButton
-          showName
-          appearance={{
-            baseTheme: theme === "dark" ? dark : undefined,
-            elements: {
-              userButtonPopoverCard: { pointerEvents: "initial" },
-              userButtonBox: { flexDirection: "row-reverse" },
-            },
-          }}
-        />
+      <SidebarFooter>
+        <div className="flex items-center justify-between p-4">
+          <UserButton
+            afterSignOutUrl="/sign-in"
+            appearance={{ baseTheme: theme === "dark" ? dark : undefined }}
+          />
+        </div>
       </SidebarFooter>
     </Sidebar>
   );

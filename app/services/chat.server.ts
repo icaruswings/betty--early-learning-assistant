@@ -22,3 +22,19 @@ export async function streamChatCompletion(messages: LangChainMessage[], modelId
     encoding: "text/event-stream",
   });
 }
+
+export async function chatCompletion(messages: LangChainMessage[], modelId: ModelId) {
+  const model = new ChatOpenAI({
+    model: modelId,
+    temperature: 0.7,
+    configuration: {
+      baseURL: "https://oai.hconeai.com/v1",
+      apiKey: process.env.OPENAI_API_KEY,
+      defaultHeaders: {
+        "Helicone-Auth": `Bearer ${process.env.HELICONE_API_KEY}`,
+      },
+    },
+  });
+
+  return await model.invoke(messages);
+}

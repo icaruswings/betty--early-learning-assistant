@@ -1,47 +1,31 @@
-import OpenAI from "openai";
 import { type LoaderFunction } from "@remix-run/node";
-import { ServerError, Starters } from "~/lib/responses";
 import { STARTER_PROMPT } from "~/config/prompts";
-import { getAuth } from "@clerk/remix/ssr.server";
 import { ensureSessionExists } from "~/lib/middleware";
+import { StructuredOutputParser } from "@langchain/core/output_parsers";
+import { z } from "zod";
+import { chatCompletion } from "~/services/chat.server";
+import { ModelId } from "~/lib/constants";
+import { HumanMessage, SystemMessage } from "@langchain/core/messages";
+
+const Schema = z.object({
+  starters: z.array(z.string()),
+});
 
 export const loader: LoaderFunction = async (args) => {
   await ensureSessionExists(args);
 
-  const openai = new OpenAI({
-    baseURL: "https://oai.hconeai.com/v1",
-    apiKey: process.env.OPENAI_API_KEY,
-    defaultHeaders: {
-      "Helicone-Auth": `Bearer ${process.env.HELICONE_API_KEY}`,
-    },
-  });
+  const parser = StructuredOutputParser.fromZodSchema(Schema);
 
-  try {
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        {
-          role: "system",
-          content: STARTER_PROMPT,
-        },
-        {
-          role: "user",
-          content: "Generate 4 conversation starters focused on teaching scenarios",
-        },
-      ],
-      temperature: 0.7,
-    });
+  const messages = [
+    new SystemMessage(`${STARTER_PROMPT}
+      ${parser.getFormatInstructions()}
+    `),
+    new HumanMessage(`
+      Generate 4 conversation starters.
+      - write them in the first person as if they are being asked by an educator.
+    `),
+  ];
 
-    const content = completion.choices[0]?.message?.content || "";
-    const starters = content
-      .split("\n")
-      .filter((line) => line.trim())
-      .map((line) => line.replace(/^\d+\.\s*/, ""))
-      .slice(0, 4);
-
-    return Starters(starters);
-  } catch (error) {
-    console.error("Error generating starters:", error);
-    return ServerError("Failed to generate conversation starters");
-  }
+  const response = await chatCompletion(messages, ModelId["GPT4o-mini"]);
+  return parser.parse(response.content as string);
 };

@@ -100,6 +100,8 @@ export default function Chat() {
 
   const sendMessage = useCallback(
     async (content: string) => {
+      console.log("sendMessage - ", content);
+
       startMessage(content);
 
       let newConversationId = conversationId;

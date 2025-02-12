@@ -1,6 +1,6 @@
 import { Button } from "./ui/button";
 import { MessageSquarePlus, RefreshCw } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { cn } from "~/lib/utils";
 import { LoadingDots } from "./ui/loading-dots";
 import { Skeleton } from "./ui/skeleton";
@@ -46,40 +46,34 @@ function LoadingState() {
 }
 
 export function ConversationStarters({ onSelect }: ConversationStartersProps) {
-  const [isLoading, setIsLoading] = useState(true);
   const isMdScreen = useIsMdScreen();
-  const [startersState, setStartersState] = useAtom(conversationStartersAtom);
 
-  const fetchStarters = async () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [starters, setStarters] = useState<string[]>([]);
+
+  const fetchStarters = useCallback(async () => {
     setIsLoading(true);
 
     try {
       const response = await fetch("/api/starters");
       const data = await response.json();
+
       if (response.ok && data.starters) {
-        setStartersState({
-          starters: data.starters,
-          lastFetched: Date.now(),
-        });
+        setStarters(data.starters);
       }
     } catch (error) {
       console.error("Error fetching starters:", error);
+      setStarters([]);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    // Only fetch if we haven't fetched before or if it's been more than 1 hour
-    const shouldFetch =
-      !startersState.lastFetched || Date.now() - startersState.lastFetched > 3600000;
-
-    if (shouldFetch) {
+    if (!isLoading && starters.length === 0) {
       fetchStarters();
-    } else {
-      setIsLoading(false);
     }
-  }, [startersState.lastFetched]);
+  }, [isLoading, starters]);
 
   if (isLoading) {
     return <LoadingState />;
@@ -103,7 +97,7 @@ export function ConversationStarters({ onSelect }: ConversationStartersProps) {
       </div>
 
       <div className="flex flex-row gap-2 md:grid md:grid-cols-2">
-        {startersState.starters.slice(0, isMdScreen ? 2 : undefined).map((starter, i) => (
+        {starters.map((starter, i) => (
           <Button
             key={i}
             variant="outline"

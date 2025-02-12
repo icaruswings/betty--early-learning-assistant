@@ -24,6 +24,8 @@ export const action: ActionFunction = async (args) => {
 
   const { messages, newMessage, chatId, model } = (await request.json()) as ChatRequestBody;
 
+  console.log("API request: ", messages, newMessage, chatId, model);
+
   try {
     const langChainMessages = [
       new SystemMessage(PEDAGOGY_PROMPT),
