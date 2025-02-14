@@ -1,4 +1,4 @@
-import { getAuth } from "@clerk/remix/ssr.server";
+import { getAuth, Session } from "@clerk/remix/ssr.server";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { MethodNotAllowed, Unauthorized } from "./responses";
 
@@ -9,9 +9,7 @@ export function ensureHttpMethodAllowed(request: Request, allowedMethods: string
 }
 
 export async function ensureSessionExists(args: LoaderFunctionArgs | ActionFunctionArgs) {
-  const { sessionId } = await getAuth(args);
-
-  if (!sessionId) {
-    throw Unauthorized();
-  }
+  const { sessionId, userId } = await getAuth(args);
+  if (!sessionId) throw Unauthorized();
+  return { sessionId, userId };
 }

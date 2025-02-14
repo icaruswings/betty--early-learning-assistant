@@ -32,38 +32,35 @@ const STYLES = {
   // link: "text-blue-600 hover:underline dark:text-blue-400",
 } as const;
 
-// const MarkdownComponents: Partial<Components> = {
-//   pre: ({ node, ...props }) => (
-//     <div className="group relative">
-//       <pre {...props} className={STYLES.code.pre} />
-//     </div>
-//   ),
-//   code: ({ node, inline, ...props }: { node?: any; inline?: boolean }) => (
-//     <code {...props} className={inline ? STYLES.code.inline : STYLES.code.block} />
-//   ),
-//   p: ({ children }) => <p className={cn("mb-4 last:mb-0")}>{children}</p>,
-//   ul: ({ children }) => <ul className={cn(STYLES.list.wrapper, "list-disc pl-6")}>{children}</ul>,
-//   ol: ({ children }) => (
-//     <ol className={cn(STYLES.list.wrapper, "list-decimal pl-6")}>{children}</ol>
-//   ),
-//   li: ({ children }) => <li className={STYLES.list.item}>{children}</li>,
-//   a: ({ children, href }) => (
-//     <a href={href} className={STYLES.link} target="_blank" rel="noopener noreferrer">
-//       {children}
-//     </a>
-//   ),
-// };
+const MarkdownComponents: Partial<Components> = {
+  //   pre: ({ node, ...props }) => (
+  //     <div className="group relative">
+  //       <pre {...props} className={STYLES.code.pre} />
+  //     </div>
+  //   ),
+  //   code: ({ node, inline, ...props }: { node?: any; inline?: boolean }) => (
+  //     <code {...props} className={inline ? STYLES.code.inline : STYLES.code.block} />
+  //   ),
+  //   p: ({ children }) => <p className={cn("mb-4 last:mb-0")}>{children}</p>,
+  //   ul: ({ children }) => <ul className={cn(STYLES.list.wrapper, "list-disc pl-6")}>{children}</ul>,
+  //   ol: ({ children }) => (
+  //     <ol className={cn(STYLES.list.wrapper, "list-decimal pl-6")}>{children}</ol>
+  //   ),
+  //   li: ({ children }) => <li className={STYLES.list.item}>{children}</li>,
+  //   a: ({ children, href }) => (
+  //     <a href={href} className={STYLES.link} target="_blank" rel="noopener noreferrer">
+  //       {children}
+  //     </a>
+  //   ),
+};
 
 export function MarkdownMessage({ content, isStreaming, className }: MarkdownMessageProps) {
   return (
     <ReactMarkdown
-      className={cn(
-        isStreaming && "result-streaming",
-        "prose-md prose max-w-none dark:prose-invert"
-      )}
+      className={cn("prose-md prose max-w-none dark:prose-invert")}
       remarkPlugins={[remarkGfm]}
       rehypePlugins={[rehypeHighlight]}
-      // components={MarkdownComponents}
+      components={MarkdownComponents}
     >
       {content}
     </ReactMarkdown>

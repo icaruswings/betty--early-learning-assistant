@@ -19,6 +19,7 @@ import { ConvexReactClient } from "convex/react";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
 import { cn } from "./lib/utils";
 import { PageHeaderProvider } from "./hooks/use-page-header";
+import { TooltipProvider } from "./components/ui/tooltip";
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: stylesheet }];
 
@@ -46,7 +47,7 @@ function App() {
   const [theme] = useTheme();
 
   return (
-    <html lang="en" data-theme={theme ?? ""}>
+    <html lang="en" className={cn(theme)}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -71,7 +72,9 @@ function AppWithProviders() {
     <ConvexProviderWithClerk client={convexClient} useAuth={useAuth}>
       <ThemeProvider specifiedTheme={data.theme} themeAction="/action/set-theme">
         <PageHeaderProvider>
-          <App />
+          <TooltipProvider>
+            <App />
+          </TooltipProvider>
         </PageHeaderProvider>
       </ThemeProvider>
     </ConvexProviderWithClerk>

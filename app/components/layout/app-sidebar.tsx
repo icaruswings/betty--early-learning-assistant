@@ -1,5 +1,14 @@
 import { UserButton } from "@clerk/remix";
-import { Binoculars, Blocks, Book, Home, MessageSquare, MessageSquarePlus, Settings, History } from "lucide-react";
+import {
+  Binoculars,
+  Blocks,
+  Book,
+  Home,
+  MessageSquare,
+  MessageSquarePlus,
+  Settings,
+  History,
+} from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -144,10 +153,7 @@ export function AppSidebar() {
       </SidebarContent>
       <SidebarFooter>
         <div className="flex items-center justify-between p-4">
-          <UserButton
-            afterSignOutUrl="/sign-in"
-            appearance={{ baseTheme: theme === "dark" ? dark : undefined }}
-          />
+          <UserButton appearance={{ baseTheme: theme === "dark" ? dark : undefined }} />
         </div>
       </SidebarFooter>
     </Sidebar>

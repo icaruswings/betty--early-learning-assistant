@@ -21,7 +21,9 @@ export const action: ActionFunction = async (args) => {
 
   const parser = StructuredOutputParser.fromZodSchema(Schema);
 
-  const { previousMessages } = await request.json();
+  const { messages: previousMessages } = await request.json();
+
+  console.log({ previousMessages });
 
   const messages = [
     new SystemMessage(`${STARTER_PROMPT}

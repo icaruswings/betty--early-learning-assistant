@@ -16,17 +16,16 @@ import { ChatService } from "~/services/chat-service";
 import { useStreamReader } from "~/hooks/use-stream-reader";
 import { useMutation } from "convex/react";
 import { api } from "convex/_generated/api";
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData, useParams } from "@remix-run/react";
 import { Id } from "convex/_generated/dataModel";
+import { ensureSessionExists } from "~/lib/middleware";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Ask Betty - Early Learning Assistant" }];
 };
 
 export async function loader(args: LoaderFunctionArgs) {
-  const { sessionId, userId } = await getAuth(args);
-  if (!sessionId) return redirect("/");
-
+  const { sessionId, userId } = await ensureSessionExists(args);
   return { currentUser: userId };
 }
 
@@ -63,9 +62,14 @@ const ConversationContent = ({
 };
 
 export default function Chat() {
+  const params = useParams();
+
   const { currentUser } = useLoaderData<typeof loader>();
 
-  const [conversationId, setConversationId] = useState<Id<"conversations">>();
+  const [conversationId, setConversationId] = useState<Id<"conversations"> | undefined>(
+    (params.chatId as Id<"conversations">) ?? undefined
+  );
+
   const createConversation = useMutation(api.chats.createConversation);
   const saveMessage = useMutation(api.chats.saveMessage);
   const updateTitle = useMutation(api.chats.renameConversation);
@@ -100,8 +104,6 @@ export default function Chat() {
 
   const sendMessage = useCallback(
     async (content: string) => {
-      console.log("sendMessage - ", content);
-
       startMessage(content);
 
       let newConversationId = conversationId;
